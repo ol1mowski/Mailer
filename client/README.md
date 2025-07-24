@@ -1,69 +1,170 @@
-# React + TypeScript + Vite
+# Mailer Dashboard - System zarządzania mailami
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Nowoczesna aplikacja do zarządzania listami mailingowymi zbudowana w React 19, TypeScript i TailwindCSS.
 
-Currently, two official plugins are available:
+## 🚀 Funkcjonalności
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Nowoczesny system logowania** z walidacją Zod
+- **Responsywny dashboard** z statystykami
+- **Animowany background** z efektami wizualnymi
+- **Kompletna obsługa błędów** formularzy
+- **Testy TDD** z Vitest i React Testing Library
+- **TypeScript** z pełnym typowaniem
+- **TailwindCSS** z shadcn/ui komponentami
 
-## Expanding the ESLint configuration
+## 🛠️ Technologie
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React 19** - Najnowsza wersja React
+- **TypeScript 4** - Typowanie statyczne
+- **Vite** - Szybki bundler i dev server
+- **TailwindCSS 3.3.5** - Utility-first CSS framework
+- **Zod** - Walidacja schematów
+- **React Hook Form** - Zarządzanie formularzami
+- **Lucide React** - Ikony
+- **Vitest** - Framework testowy
+- **React Testing Library** - Testowanie komponentów
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 📦 Instalacja
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+```bash
+# Zainstaluj zależności
+npm install
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Uruchom serwer deweloperski
+npm run dev
+
+# Uruchom testy
+npm run test
+
+# Uruchom testy w trybie watch
+npm run test:ui
+
+# Uruchom testy z coverage
+npm run test:coverage
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🔐 Dane testowe
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Aby przetestować system logowania, użyj następujących danych:
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Email:** `admin@mailer.com`
+- **Hasło:** `password123`
+
+## 🏗️ Struktura projektu
+
 ```
+src/
+├── components/
+│   ├── auth/
+│   │   ├── LoginForm.tsx      # Formularz logowania
+│   │   ├── LoginCard.tsx      # Karta logowania
+│   │   ├── LoginPage.tsx      # Strona logowania
+│   │   └── __tests__/         # Testy komponentów auth
+│   ├── dashboard/
+│   │   └── Dashboard.tsx      # Dashboard po zalogowaniu
+│   └── ui/                    # Komponenty UI (shadcn style)
+│       ├── button.tsx
+│       ├── input.tsx
+│       └── label.tsx
+├── hooks/
+│   ├── useAuth.ts             # Custom hook autoryzacji
+│   └── __tests__/             # Testy hooków
+├── constants/
+│   └── auth.ts                # Stałe autoryzacji
+├── types/
+│   └── auth.ts                # Typy TypeScript
+├── schemas/
+│   └── auth.ts                # Schematy walidacji Zod
+├── lib/
+│   └── utils.ts               # Utility functions
+└── test/
+    └── setup.ts               # Setup testów
+```
+
+## 🧪 Testy (TDD Approach)
+
+Projekt wykorzystuje podejście Test-Driven Development (TDD):
+
+```bash
+# Uruchom wszystkie testy
+npm run test
+
+# Uruchom testy w trybie watch z UI
+npm run test:ui
+
+# Uruchom testy jednorazowo
+npm run test:run
+
+# Sprawdź coverage
+npm run test:coverage
+```
+
+### Przykład testu:
+
+```typescript
+describe('LoginForm', () => {
+  it('should show validation error for invalid email', async () => {
+    render(<LoginForm />)
+    
+    const emailInput = screen.getByLabelText(/email/i)
+    fireEvent.blur(emailInput)
+    
+    await waitFor(() => {
+      expect(screen.getByText(/email jest wymagany/i)).toBeInTheDocument()
+    })
+  })
+})
+```
+
+## 🎨 Styling
+
+Aplikacja używa TailwindCSS z custom design system:
+
+- **CSS Variables** dla spójnych kolorów
+- **Shadcn/ui** komponenty
+- **Responsive design** dla wszystkich urządzeń
+- **Dark mode ready** (przygotowane zmienne)
+
+## 🔧 Konfiguracja
+
+### Path Mapping
+Projekt używa aliasów TypeScript:
+```typescript
+import { useAuth } from '@/hooks/useAuth'
+import { Button } from '@/components/ui/button'
+```
+
+### TailwindCSS
+Konfiguracja w `tailwind.config.ts` z custom colors i design tokens.
+
+### Vite
+Konfiguracja w `vite.config.ts` z aliasami i pluginami React.
+
+## 📱 Responsywność
+
+Aplikacja jest w pełni responsywna i działa na:
+- Desktop (1200px+)
+- Tablet (768px - 1199px)
+- Mobile (320px - 767px)
+
+## 🚀 Deployment
+
+```bash
+# Build produkcyjny
+npm run build
+
+# Preview build
+npm run preview
+```
+
+## 🤝 Contributing
+
+1. Fork projektu
+2. Stwórz feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit zmiany (`git commit -m 'Add some AmazingFeature'`)
+4. Push do branch (`git push origin feature/AmazingFeature`)
+5. Otwórz Pull Request
+
+## 📄 Licencja
+
+Ten projekt jest dostępny na licencji MIT.
