@@ -61,12 +61,11 @@ export const useSettings = () => {
   const saveSettings = async () => {
     setIsLoading(true)
     setError(null)
-    
+
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
       console.log('Settings saved:', settings)
-      // Tutaj można dodać rzeczywiste wywołanie API
-    } catch (err) {
+    } catch {
       setError('Nie udało się zapisać ustawień')
     } finally {
       setIsLoading(false)

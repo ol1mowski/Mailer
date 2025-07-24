@@ -29,7 +29,7 @@ export const useAnalytics = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
       console.log('Export data')
-    } catch (err) {
+    } catch {
       setError('Nie udało się wyeksportować danych')
     } finally {
       setIsLoading(false)

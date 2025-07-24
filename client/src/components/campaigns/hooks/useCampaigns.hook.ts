@@ -21,7 +21,7 @@ export const useCampaigns = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
       console.log('Add campaign')
-    } catch (err) {
+    } catch {
       setError('Nie udało się utworzyć kampanii')
     } finally {
       setIsLoading(false)
@@ -35,7 +35,7 @@ export const useCampaigns = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 500))
       console.log('Edit campaign', id)
-    } catch (err) {
+    } catch {
       setError('Nie udało się edytować kampanii')
     } finally {
       setIsLoading(false)
@@ -49,7 +49,7 @@ export const useCampaigns = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 500))
       setCampaigns(prev => prev.filter(campaign => campaign.id !== id))
-    } catch (err) {
+    } catch {
       setError('Nie udało się usunąć kampanii')
     } finally {
       setIsLoading(false)
@@ -67,7 +67,7 @@ export const useCampaigns = () => {
           ? { ...campaign, status: 'sending' }
           : campaign
       ))
-    } catch (err) {
+    } catch {
       setError('Nie udało się uruchomić kampanii')
     } finally {
       setIsLoading(false)
@@ -85,7 +85,7 @@ export const useCampaigns = () => {
           ? { ...campaign, status: 'draft' }
           : campaign
       ))
-    } catch (err) {
+    } catch {
       setError('Nie udało się wstrzymać kampanii')
     } finally {
       setIsLoading(false)

@@ -21,7 +21,7 @@ export const useEmailTemplates = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
       console.log('Add template')
-    } catch (err) {
+    } catch {
       setError('Nie udało się utworzyć szablonu')
     } finally {
       setIsLoading(false)
@@ -35,7 +35,7 @@ export const useEmailTemplates = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 500))
       console.log('Edit template', id)
-    } catch (err) {
+    } catch {
       setError('Nie udało się edytować szablonu')
     } finally {
       setIsLoading(false)
@@ -49,7 +49,7 @@ export const useEmailTemplates = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 500))
       console.log('Duplicate template', id)
-    } catch (err) {
+    } catch {
       setError('Nie udało się skopiować szablonu')
     } finally {
       setIsLoading(false)
@@ -63,7 +63,7 @@ export const useEmailTemplates = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 500))
       setTemplates(prev => prev.filter(template => template.id !== id))
-    } catch (err) {
+    } catch {
       setError('Nie udało się usunąć szablonu')
     } finally {
       setIsLoading(false)
@@ -81,7 +81,7 @@ export const useEmailTemplates = () => {
           ? { ...template, isActive: !template.isActive }
           : template
       ))
-    } catch (err) {
+    } catch {
       setError('Nie udało się zmienić statusu szablonu')
     } finally {
       setIsLoading(false)

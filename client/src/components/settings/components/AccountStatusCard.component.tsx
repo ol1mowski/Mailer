@@ -18,7 +18,7 @@ export const AccountStatusCard = ({ accountStatus }: AccountStatusCardProps) => 
             </p>
           </div>
           <div className="flex items-center space-x-2">
-            <Badge variant={getStatusBadgeVariant(accountStatus.status) as any}>
+                         <Badge variant={getStatusBadgeVariant(accountStatus.status) as 'default' | 'secondary' | 'destructive'}>
               {accountStatus.status === 'active' ? 'Aktywne' : 
                accountStatus.status === 'inactive' ? 'Nieaktywne' : 'Zawieszone'}
             </Badge>

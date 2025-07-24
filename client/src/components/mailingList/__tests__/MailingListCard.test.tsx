@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { MailingListCard } from '../components/MailingListCard.component'
-import { type MailingList } from '@/types'
+import type { MailingList } from '../types/mailingList.types'
 
 const mockMailingList: MailingList = {
   id: '1',
@@ -9,14 +9,15 @@ const mockMailingList: MailingList = {
   description: 'Test description',
   contacts: [],
   tags: ['test', 'demo'],
-  createdAt: new Date('2024-01-01'),
-  updatedAt: new Date('2024-01-01'),
+  createdAt: '2024-01-01',
+  updatedAt: '2024-01-01',
 }
 
 const mockHandlers = {
   onEdit: vi.fn(),
   onDelete: vi.fn(),
   onSendEmail: vi.fn(),
+  isLoading: false,
 }
 
 describe('MailingListCard', () => {
@@ -81,7 +82,7 @@ describe('MailingListCard', () => {
     const mailingListWithContacts = {
       ...mockMailingList,
       contacts: [
-        { id: '1', email: 'test@example.com', firstName: 'Test', lastName: 'User', tags: [], isSubscribed: true, createdAt: new Date(), updatedAt: new Date() }
+        { id: '1', email: 'test@example.com', name: 'Test User', subscribed: true }
       ]
     }
 

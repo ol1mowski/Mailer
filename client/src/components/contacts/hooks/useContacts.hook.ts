@@ -21,7 +21,7 @@ export const useContacts = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
       console.log('Add contact')
-    } catch (err) {
+    } catch {
       setError('Nie udało się dodać kontaktu')
     } finally {
       setIsLoading(false)
@@ -35,7 +35,7 @@ export const useContacts = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 500))
       setContacts(prev => prev.filter(contact => contact.id !== id))
-    } catch (err) {
+    } catch {
       setError('Nie udało się usunąć kontaktu')
     } finally {
       setIsLoading(false)

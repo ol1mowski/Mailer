@@ -8,7 +8,7 @@ interface QuickActionsProps {
 
 export const QuickActionsComponent = ({ actions }: QuickActionsProps) => {
   const getIcon = (iconName: string) => {
-    const iconMap: Record<string, React.ComponentType<any>> = {
+    const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
       Mail,
       Users,
       BarChart3,

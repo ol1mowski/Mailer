@@ -30,7 +30,7 @@ export const CampaignCard = ({
           <div className="flex items-center space-x-2 mb-1">
             <h3 className="font-medium text-gray-900">{campaign.name}</h3>
             <Badge
-              variant={getStatusColor(campaign.status) as any}
+              variant={getStatusColor(campaign.status) as 'default' | 'secondary' | 'destructive'}
               className="text-xs"
             >
               {getStatusLabel(campaign.status)}

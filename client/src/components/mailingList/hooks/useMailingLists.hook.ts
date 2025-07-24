@@ -32,7 +32,7 @@ export const useMailingLists = () => {
       }
       
       setMailingLists(prev => [...prev, newList])
-    } catch (err) {
+    } catch {
       setError('Nie udało się utworzyć listy mailingowej')
     } finally {
       setIsLoading(false)
@@ -57,7 +57,7 @@ export const useMailingLists = () => {
             }
           : list
       ))
-    } catch (err) {
+    } catch {
       setError('Nie udało się zaktualizować listy mailingowej')
     } finally {
       setIsLoading(false)
@@ -71,7 +71,7 @@ export const useMailingLists = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 500))
       setMailingLists(prev => prev.filter(list => list.id !== id))
-    } catch (err) {
+    } catch {
       setError('Nie udało się usunąć listy mailingowej')
     } finally {
       setIsLoading(false)

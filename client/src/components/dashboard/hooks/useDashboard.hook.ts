@@ -3,9 +3,9 @@ import type { DashboardStats, QuickAction, RecentActivity } from '../types/dashb
 import { mockDashboardStats, mockQuickActions, mockRecentActivities } from '../data/mockDashboard.data'
 
 export const useDashboard = () => {
-  const [stats, setStats] = useState<DashboardStats>(mockDashboardStats)
-  const [quickActions, setQuickActions] = useState<QuickAction[]>(mockQuickActions)
-  const [recentActivities, setRecentActivities] = useState<RecentActivity[]>(mockRecentActivities)
+  const [stats] = useState<DashboardStats>(mockDashboardStats)
+  const [quickActions] = useState<QuickAction[]>(mockQuickActions)
+  const [recentActivities] = useState<RecentActivity[]>(mockRecentActivities)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -15,9 +15,8 @@ export const useDashboard = () => {
     
     try {
       await new Promise(resolve => setTimeout(resolve, 1000))
-      // Tutaj można dodać rzeczywiste wywołanie API
       console.log('Refreshing dashboard stats')
-    } catch (err) {
+    } catch {
       setError('Nie udało się odświeżyć danych')
     } finally {
       setIsLoading(false)
