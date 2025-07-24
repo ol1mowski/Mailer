@@ -5,8 +5,8 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { loginSchema, type LoginFormData } from '@/schemas/auth'
-import { useAuth } from '@/hooks/useAuth'
+import { loginSchema, type LoginFormData } from '../schemas/auth.schemas'
+import { useAuth } from '../hooks/auth.hook'
 
 interface LoginFormProps {
   onSuccess?: () => void
@@ -98,9 +98,7 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
       </Button>
 
       <div className="text-center text-sm text-muted-foreground">
-        <p>Dane testowe:</p>
-        <p>Email: admin@mailer.com</p>
-        <p>Hasło: password123</p>
+        <p>Demo: admin@mailer.com / password123</p>
       </div>
     </form>
   )

@@ -1,5 +1,5 @@
 import { Mail, Shield } from 'lucide-react'
-import { LoginForm } from './LoginForm'
+import { LoginForm } from './LoginForm.component'
 
 interface LoginCardProps {
   onSuccess?: () => void

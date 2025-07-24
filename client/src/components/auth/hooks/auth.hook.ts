@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
-import { type AuthState, type User, type LoginCredentials, type AuthError } from '../types/auth'
-import { AUTH_ERROR_MESSAGES } from '../constants/auth'
+import { type AuthState, type User, type LoginCredentials, type AuthError } from '../types/auth.types'
+import { AUTH_ERROR_MESSAGES } from '../constants/auth.constants'
 
 const initialState: AuthState = {
   isAuthenticated: false,

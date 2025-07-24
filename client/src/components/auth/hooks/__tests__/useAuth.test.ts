@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { useAuth } from '../useAuth'
+import { useAuth } from '../auth.hook'
 
 const localStorageMock = {
   getItem: vi.fn(),
@@ -40,6 +40,7 @@ describe('useAuth', () => {
         password: 'password123',
       })
       
+      // Fast-forward time to simulate API delay
       vi.advanceTimersByTime(1000)
       await promise
     })
@@ -93,6 +94,7 @@ describe('useAuth', () => {
   it('should clear error', () => {
     const { result } = renderHook(() => useAuth())
 
+    // First set an error
     act(() => {
       result.current.clearError()
     })

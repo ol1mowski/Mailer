@@ -8,7 +8,7 @@ export default {
     extend: {
       colors: {
         primary: '#6366f1',
-        secondary: '#ec4899',
+        secondary: '#3b82f6',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

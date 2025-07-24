@@ -1,10 +1,9 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { LoginForm } from '../LoginForm'
-import { useAuth } from '@/hooks/useAuth'
+import { LoginForm } from '../components/LoginForm.component'
+import { useAuth } from '../hooks/auth.hook'
 
-// Mock useAuth hook
-vi.mock('@/hooks/useAuth')
+vi.mock('../hooks/auth.hook')
 const mockUseAuth = vi.mocked(useAuth)
 
 describe('LoginForm', () => {

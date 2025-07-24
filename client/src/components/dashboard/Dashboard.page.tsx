@@ -1,6 +1,6 @@
 import { LogOut, Mail, Users, Settings, BarChart3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/components/auth/hooks/auth.hook'
 
 export const Dashboard = () => {
   const { user, logout } = useAuth()
@@ -10,7 +10,7 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -54,8 +54,8 @@ export const Dashboard = () => {
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <Users className="h-6 w-6 text-green-600" />
+              <div className="p-2 bg-cyan-100 rounded-lg">
+                <Users className="h-6 w-6 text-cyan-600" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Kontakty</p>
@@ -66,8 +66,8 @@ export const Dashboard = () => {
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <BarChart3 className="h-6 w-6 text-purple-600" />
+              <div className="p-2 bg-indigo-100 rounded-lg">
+                <BarChart3 className="h-6 w-6 text-indigo-600" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Otwarcia</p>
@@ -78,8 +78,8 @@ export const Dashboard = () => {
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <Settings className="h-6 w-6 text-orange-600" />
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Settings className="h-6 w-6 text-blue-600" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Szablony</p>
@@ -105,9 +105,9 @@ export const Dashboard = () => {
                 <li>• Sprawdź statystyki</li>
               </ul>
             </div>
-            <div className="p-4 bg-green-50 rounded-lg">
-              <h3 className="font-semibold text-green-900 mb-2">Ostatnie aktywności</h3>
-              <ul className="text-sm text-green-800 space-y-1">
+            <div className="p-4 bg-cyan-50 rounded-lg">
+              <h3 className="font-semibold text-cyan-900 mb-2">Ostatnie aktywności</h3>
+              <ul className="text-sm text-cyan-800 space-y-1">
                 <li>• Mail wysłany 2 min temu</li>
                 <li>• Nowy kontakt dodany</li>
                 <li>• Szablon zaktualizowany</li>
