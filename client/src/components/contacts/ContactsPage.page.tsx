@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button.component'
 import { Input } from '@/components/ui/input.component'
 import { Badge } from '@/components/ui/badge.component'
 import { Card } from '@/components/ui/card.component'
+import { Loading } from '@/components/ui/loading.component'
+import { ErrorMessage } from '@/components/ui/errorMessage.component'
 import { CONTACT_TAGS } from '@/constants/app.constants'
 import { cn } from '@/utils'
 
@@ -67,6 +69,8 @@ export const ContactsPage = () => {
   const [contacts, setContacts] = useState<Contact[]>(mockContacts)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -76,13 +80,33 @@ export const ContactsPage = () => {
     return matchesSearch && matchesTags
   })
 
-  const handleAddContact = () => {
-    // TODO: Implement add contact modal
-    console.log('Add contact')
+  const handleAddContact = async () => {
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      // Symulacja API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      console.log('Add contact')
+    } catch (err) {
+      setError('Nie udało się dodać kontaktu')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleDeleteContact = (id: string) => {
-    setContacts(prev => prev.filter(contact => contact.id !== id))
+  const handleDeleteContact = async (id: string) => {
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500))
+      setContacts(prev => prev.filter(contact => contact.id !== id))
+    } catch (err) {
+      setError('Nie udało się usunąć kontaktu')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const toggleTag = (tag: string) => {
@@ -93,17 +117,35 @@ export const ContactsPage = () => {
     )
   }
 
+  if (isLoading && contacts.length === 0) {
+    return <Loading fullScreen text="Ładowanie kontaktów..." />
+  }
+
   return (
     <div className="space-y-6">
+      {/* Error Message */}
+      {error && (
+        <ErrorMessage 
+          message={error} 
+          onClose={() => setError(null)}
+        />
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Kontakty</h1>
           <p className="text-gray-600">Zarządzaj swoimi kontaktami i listami mailingowymi</p>
         </div>
-        <Button onClick={handleAddContact}>
-          <Plus className="h-4 w-4 mr-2" />
-          Dodaj kontakt
+        <Button onClick={handleAddContact} disabled={isLoading}>
+          {isLoading ? (
+            <Loading size="sm" variant="dots" />
+          ) : (
+            <>
+              <Plus className="h-4 w-4 mr-2" />
+              Dodaj kontakt
+            </>
+          )}
         </Button>
       </div>
 
@@ -118,6 +160,7 @@ export const ContactsPage = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -186,6 +229,7 @@ export const ContactsPage = () => {
             <h2 className="text-lg font-semibold text-gray-900">
               Lista kontaktów ({filteredContacts.length})
             </h2>
+            {isLoading && <Loading size="sm" variant="dots" />}
           </div>
           
           <div className="space-y-4">
@@ -228,13 +272,14 @@ export const ContactsPage = () => {
                     {contact.status === 'active' ? 'Aktywny' : 'Nieaktywny'}
                   </Badge>
                   
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDeleteContact(contact.id)}
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
+                                     <Button
+                     variant="ghost"
+                     size="sm"
+                     onClick={() => handleDeleteContact(contact.id)}
+                     disabled={isLoading}
+                   >
+                     <MoreHorizontal className="h-4 w-4" />
+                   </Button>
                 </div>
               </div>
             ))}
@@ -249,12 +294,12 @@ export const ContactsPage = () => {
                     : 'Dodaj swój pierwszy kontakt, aby rozpocząć'
                   }
                 </p>
-                {!searchTerm && selectedTags.length === 0 && (
-                  <Button onClick={handleAddContact}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Dodaj kontakt
-                  </Button>
-                )}
+                                 {!searchTerm && selectedTags.length === 0 && (
+                   <Button onClick={handleAddContact} disabled={isLoading}>
+                     <Plus className="h-4 w-4 mr-2" />
+                     Dodaj kontakt
+                   </Button>
+                 )}
               </div>
             )}
           </div>

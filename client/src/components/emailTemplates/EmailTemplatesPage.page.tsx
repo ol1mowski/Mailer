@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, Plus, Filter, MoreHorizontal, FileText, Edit, Copy, Trash2, Eye } from 'lucide-react'
+import { Search, Plus, Filter, MoreHorizontal, FileText, Edit, Copy, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button.component'
 import { Input } from '@/components/ui/input.component'
 import { Badge } from '@/components/ui/badge.component'

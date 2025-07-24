@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { Search, Plus, Filter, MoreHorizontal, Mail, Users, BarChart3, Calendar, Play, Pause, Trash2, Edit } from 'lucide-react'
+import { Search, Plus, Filter,Mail, Users, BarChart3, Calendar, Play, Pause, Trash2, Edit } from 'lucide-react'
 import { Button } from '@/components/ui/button.component'
 import { Input } from '@/components/ui/input.component'
 import { Badge } from '@/components/ui/badge.component'
 import { Card } from '@/components/ui/card.component'
+import { Loading } from '@/components/ui/loading.component'
+import { ErrorMessage } from '@/components/ui/errorMessage.component'
 import { CAMPAIGN_STATUSES } from '@/constants/app.constants'
 
 interface Campaign {
@@ -84,6 +86,8 @@ export const CampaignsPage = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>(mockCampaigns)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedStatus, setSelectedStatus] = useState<string>('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const filteredCampaigns = campaigns.filter(campaign => {
     const matchesSearch = campaign.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -92,34 +96,82 @@ export const CampaignsPage = () => {
     return matchesSearch && matchesStatus
   })
 
-  const handleAddCampaign = () => {
-    // TODO: Implement add campaign modal
-    console.log('Add campaign')
+  const handleAddCampaign = async () => {
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      console.log('Add campaign')
+    } catch (err) {
+      setError('Nie udało się utworzyć kampanii')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleEditCampaign = (id: string) => {
-    // TODO: Implement edit campaign modal
-    console.log('Edit campaign', id)
+  const handleEditCampaign = async (id: string) => {
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500))
+      console.log('Edit campaign', id)
+    } catch (err) {
+      setError('Nie udało się edytować kampanii')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleDeleteCampaign = (id: string) => {
-    setCampaigns(prev => prev.filter(campaign => campaign.id !== id))
+  const handleDeleteCampaign = async (id: string) => {
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500))
+      setCampaigns(prev => prev.filter(campaign => campaign.id !== id))
+    } catch (err) {
+      setError('Nie udało się usunąć kampanii')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleStartCampaign = (id: string) => {
-    setCampaigns(prev => prev.map(campaign => 
-      campaign.id === id 
-        ? { ...campaign, status: 'sending' }
-        : campaign
-    ))
+  const handleStartCampaign = async (id: string) => {
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 300))
+      setCampaigns(prev => prev.map(campaign => 
+        campaign.id === id 
+          ? { ...campaign, status: 'sending' }
+          : campaign
+      ))
+    } catch (err) {
+      setError('Nie udało się uruchomić kampanii')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handlePauseCampaign = (id: string) => {
-    setCampaigns(prev => prev.map(campaign => 
-      campaign.id === id 
-        ? { ...campaign, status: 'draft' }
-        : campaign
-    ))
+  const handlePauseCampaign = async (id: string) => {
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 300))
+      setCampaigns(prev => prev.map(campaign => 
+        campaign.id === id 
+          ? { ...campaign, status: 'draft' }
+          : campaign
+      ))
+    } catch (err) {
+      setError('Nie udało się wstrzymać kampanii')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const getStatusColor = (status: string) => {
@@ -140,17 +192,35 @@ export const CampaignsPage = () => {
     return sent > 0 ? Math.round((clicked / sent) * 100) : 0
   }
 
+  if (isLoading && campaigns.length === 0) {
+    return <Loading fullScreen text="Ładowanie kampanii..." />
+  }
+
   return (
     <div className="space-y-6">
+      {/* Error Message */}
+      {error && (
+        <ErrorMessage 
+          message={error} 
+          onClose={() => setError(null)}
+        />
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Kampanie</h1>
           <p className="text-gray-600">Zarządzaj kampaniami email i śledź ich wyniki</p>
         </div>
-        <Button onClick={handleAddCampaign}>
-          <Plus className="h-4 w-4 mr-2" />
-          Nowa kampania
+        <Button onClick={handleAddCampaign} disabled={isLoading}>
+          {isLoading ? (
+            <Loading size="sm" variant="dots" />
+          ) : (
+            <>
+              <Plus className="h-4 w-4 mr-2" />
+              Nowa kampania
+            </>
+          )}
         </Button>
       </div>
 

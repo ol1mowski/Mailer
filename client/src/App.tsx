@@ -5,24 +5,19 @@ import { Layout } from '@/components/layout/Layout.component'
 import { Dashboard } from '@/components/dashboard/Dashboard.page'
 import { MailingListsPage } from '@/components/mailingList/MailingListsPage.page'
 import { ContactsPage } from '@/components/contacts/ContactsPage.page'
-import { EmailTemplatesPage } from '@/components/email-templates/EmailTemplatesPage.page'
+import { EmailTemplatesPage } from '@/components/emailTemplates/EmailTemplatesPage.page'
 import { CampaignsPage } from '@/components/campaigns/CampaignsPage.page'
 import { AnalyticsPage } from '@/components/analytics/AnalyticsPage.page'
 import { SettingsPage } from '@/components/settings/SettingsPage.page'
+import { ErrorBoundary } from '@/components/ui/errorBoundary.component'
+import { Loading } from '@/components/ui/loading.component'
 import { ROUTES } from '@/constants/app.constants'
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth()
   
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Ładowanie...</p>
-        </div>
-      </div>
-    )
+    return <Loading fullScreen text="Weryfikacja autoryzacji..." />
   }
   
   if (!isAuthenticated) {
@@ -36,19 +31,13 @@ const App = () => {
   const { isAuthenticated, isLoading } = useAuth()
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Ładowanie...</p>
-        </div>
-      </div>
-    )
+    return <Loading fullScreen text="Inicjalizacja aplikacji..." />
   }
 
   return (
-    <Router>
-      <Routes>
+    <ErrorBoundary>
+      <Router>
+        <Routes>
         <Route 
           path="/login" 
           element={isAuthenticated ? <Navigate to={ROUTES.DASHBOARD} replace /> : <LoginPage />} 
@@ -132,7 +121,8 @@ const App = () => {
           element={<Navigate to={ROUTES.DASHBOARD} replace />} 
         />
       </Routes>
-    </Router>
+      </Router>
+    </ErrorBoundary>
   )
 }
 
