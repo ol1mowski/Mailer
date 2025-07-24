@@ -1,4 +1,4 @@
-import { EmailTemplate, EmailTemplateFilters, EmailTemplateStats } from '../types/emailTemplate.types'
+import type { EmailTemplate, EmailTemplateFilters, EmailTemplateStats } from '../types/emailTemplate.types'
 import { EMAIL_TEMPLATE_CATEGORIES } from '@/constants/app.constants'
 
 export const filterEmailTemplates = (templates: EmailTemplate[], filters: EmailTemplateFilters): EmailTemplate[] => {

@@ -1,4 +1,4 @@
-import { EmailTemplate } from '../types/emailTemplate.types'
+import type { EmailTemplate } from '../types/emailTemplate.types'
 
 export const mockEmailTemplates: EmailTemplate[] = [
   {

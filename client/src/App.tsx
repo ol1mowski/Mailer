@@ -8,7 +8,7 @@ import { ContactsPage } from '@/components/contacts'
 import { EmailTemplatesPage } from '@/components/emailTemplates'
 import { CampaignsPage } from '@/components/campaigns'
 import { AnalyticsPage } from '@/components/analytics'
-import { SettingsPage } from '@/components/settings/SettingsPage.page'
+import { SettingsPage } from '@/components/settings'
 import { ErrorBoundary, Loading } from '@/components/ui'
 import { ROUTES } from '@/constants/app.constants'
 

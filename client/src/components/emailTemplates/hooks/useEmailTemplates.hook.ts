@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { EmailTemplate, EmailTemplateFilters } from '../types/emailTemplate.types'
+import type { EmailTemplate, EmailTemplateFilters } from '../types/emailTemplate.types'
 import { mockEmailTemplates } from '../data/mockEmailTemplates.data'
 import { filterEmailTemplates } from '../utils/emailTemplateUtils.utils'
 
