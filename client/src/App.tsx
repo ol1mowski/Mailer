@@ -7,7 +7,7 @@ import { MailingListsPage } from '@/components/mailingList/MailingListsPage.page
 import { ContactsPage } from '@/components/contacts'
 import { EmailTemplatesPage } from '@/components/emailTemplates'
 import { CampaignsPage } from '@/components/campaigns/CampaignsPage.page'
-import { AnalyticsPage } from '@/components/analytics/AnalyticsPage.page'
+import { AnalyticsPage } from '@/components/analytics'
 import { SettingsPage } from '@/components/settings/SettingsPage.page'
 import { ErrorBoundary, Loading } from '@/components/ui'
 import { ROUTES } from '@/constants/app.constants'
