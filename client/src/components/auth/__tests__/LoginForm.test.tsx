@@ -1,10 +1,20 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { BrowserRouter } from 'react-router-dom'
 import { LoginForm } from '../components/LoginForm.component'
 import { useAuth } from '../hooks/auth.hook'
 
 vi.mock('../hooks/auth.hook')
 const mockUseAuth = vi.mocked(useAuth)
+
+const mockNavigate = vi.fn()
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom')
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  }
+})
 
 describe('LoginForm', () => {
   const mockLogin = vi.fn()
@@ -20,10 +30,15 @@ describe('LoginForm', () => {
       user: null,
       logout: vi.fn(),
     })
+    mockNavigate.mockClear()
   })
 
   it('renders login form with all fields', () => {
-    render(<LoginForm />)
+    render(
+      <BrowserRouter>
+        <LoginForm />
+      </BrowserRouter>
+    )
     
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/hasło/i)).toBeInTheDocument()
@@ -31,7 +46,11 @@ describe('LoginForm', () => {
   })
 
   it('shows validation error for invalid email', async () => {
-    render(<LoginForm />)
+    render(
+      <BrowserRouter>
+        <LoginForm />
+      </BrowserRouter>
+    )
     
     const emailInput = screen.getByLabelText(/email/i)
     fireEvent.blur(emailInput)
@@ -42,7 +61,11 @@ describe('LoginForm', () => {
   })
 
   it('shows validation error for invalid email format', async () => {
-    render(<LoginForm />)
+    render(
+      <BrowserRouter>
+        <LoginForm />
+      </BrowserRouter>
+    )
     
     const emailInput = screen.getByLabelText(/email/i)
     fireEvent.change(emailInput, { target: { value: 'invalid-email' } })
@@ -54,7 +77,11 @@ describe('LoginForm', () => {
   })
 
   it('shows validation error for short password', async () => {
-    render(<LoginForm />)
+    render(
+      <BrowserRouter>
+        <LoginForm />
+      </BrowserRouter>
+    )
     
     const passwordInput = screen.getByLabelText(/hasło/i)
     fireEvent.change(passwordInput, { target: { value: '123' } })
@@ -68,7 +95,11 @@ describe('LoginForm', () => {
   it('submits form with valid data', async () => {
     mockLogin.mockResolvedValue(null)
     
-    render(<LoginForm />)
+    render(
+      <BrowserRouter>
+        <LoginForm />
+      </BrowserRouter>
+    )
     
     const emailInput = screen.getByLabelText(/email/i)
     const passwordInput = screen.getByLabelText(/hasło/i)
@@ -97,7 +128,11 @@ describe('LoginForm', () => {
       logout: vi.fn(),
     })
     
-    render(<LoginForm />)
+    render(
+      <BrowserRouter>
+        <LoginForm />
+      </BrowserRouter>
+    )
     
     expect(screen.getByRole('button', { name: /logowanie/i })).toBeInTheDocument()
   })
@@ -113,13 +148,21 @@ describe('LoginForm', () => {
       logout: vi.fn(),
     })
     
-    render(<LoginForm />)
+    render(
+      <BrowserRouter>
+        <LoginForm />
+      </BrowserRouter>
+    )
     
     expect(screen.getByText(/nieprawidłowy email lub hasło/i)).toBeInTheDocument()
   })
 
   it('toggles password visibility', () => {
-    render(<LoginForm />)
+    render(
+      <BrowserRouter>
+        <LoginForm />
+      </BrowserRouter>
+    )
     
     const passwordInput = screen.getByLabelText(/hasło/i)
     const toggleButton = screen.getByRole('button', { name: '' }) // Eye icon button

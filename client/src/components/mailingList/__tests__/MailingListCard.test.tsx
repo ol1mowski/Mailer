@@ -31,7 +31,7 @@ describe('MailingListCard', () => {
 
     expect(screen.getByText('Test List')).toBeInTheDocument()
     expect(screen.getByText('Test description')).toBeInTheDocument()
-    expect(screen.getByText('0 kontaktów')).toBeInTheDocument()
+    expect(screen.getByText('0 / 0 subskrybentów')).toBeInTheDocument()
     expect(screen.getByText('test')).toBeInTheDocument()
     expect(screen.getByText('demo')).toBeInTheDocument()
   })
@@ -44,8 +44,11 @@ describe('MailingListCard', () => {
       />
     )
 
-    const editButton = screen.getByText('Edytuj')
-    fireEvent.click(editButton)
+    const editButtons = screen.getAllByRole('button')
+    const editButton = editButtons.find(button => 
+      button.querySelector('svg[class*="square-pen"]')
+    )
+    fireEvent.click(editButton!)
 
     expect(mockHandlers.onEdit).toHaveBeenCalledWith('1')
   })
@@ -58,21 +61,31 @@ describe('MailingListCard', () => {
       />
     )
 
-    const deleteButton = screen.getByRole('button', { name: '' })
-    fireEvent.click(deleteButton)
+    const deleteButtons = screen.getAllByRole('button')
+    const deleteButton = deleteButtons.find(button => 
+      button.querySelector('svg[class*="trash"]')
+    )
+    fireEvent.click(deleteButton!)
 
     expect(mockHandlers.onDelete).toHaveBeenCalledWith('1')
   })
 
   it('calls onSendEmail when send button is clicked', () => {
+    const mailingListWithContacts = {
+      ...mockMailingList,
+      contacts: [
+        { id: '1', email: 'test@example.com', name: 'Test User', subscribed: true }
+      ]
+    }
+
     render(
       <MailingListCard
-        mailingList={mockMailingList}
+        mailingList={mailingListWithContacts}
         {...mockHandlers}
       />
     )
 
-    const sendButton = screen.getByText('Wyślij')
+    const sendButton = screen.getByText('Wyślij mail')
     fireEvent.click(sendButton)
 
     expect(mockHandlers.onSendEmail).toHaveBeenCalledWith('1')
@@ -93,7 +106,7 @@ describe('MailingListCard', () => {
       />
     )
 
-    expect(screen.getByText('1 kontaktów')).toBeInTheDocument()
+    expect(screen.getByText('1 / 1 subskrybentów')).toBeInTheDocument()
   })
 
   it('renders without description when not provided', () => {
