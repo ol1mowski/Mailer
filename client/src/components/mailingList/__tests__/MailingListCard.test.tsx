@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
-import { MailingListCard } from '../MailingListCard.component'
+import { MailingListCard } from '../components/MailingListCard.component'
 import { type MailingList } from '@/types'
 
 const mockMailingList: MailingList = {
