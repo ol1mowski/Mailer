@@ -1,6 +1,6 @@
 import { MoreHorizontal, Edit, Copy, Trash2 } from 'lucide-react'
 import { Badge, Button } from '@/components/ui'
-import { EmailTemplate } from '../types/emailTemplate.types'
+import type { EmailTemplate } from '../types/emailTemplate.types'
 import { getCategoryLabel } from '../utils/emailTemplateUtils.utils'
 
 interface EmailTemplateCardProps {

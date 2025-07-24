@@ -5,7 +5,6 @@ import { MailingListForm } from './MailingListForm.component'
 import { Button } from '@/components/ui/button.component'
 import { Input } from '@/components/ui/input.component'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card.component'
-import { Badge } from '@/components/ui/badge.component'
 import { Plus, Search, Users, Mail } from 'lucide-react'
 import { type MailingListFormData } from '@/schemas/validation.schemas'
 import { debounce } from '@/utils'
@@ -84,7 +83,6 @@ export const MailingListsPage = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Listy mailingowe</h1>
@@ -158,7 +156,6 @@ export const MailingListsPage = () => {
         </CardContent>
       </Card>
 
-      {/* Form Modal */}
       {showForm && (
         <Card>
           <CardHeader>
@@ -168,7 +165,7 @@ export const MailingListsPage = () => {
           </CardHeader>
           <CardContent>
             <MailingListForm
-              initialData={editingListData}
+              initialData={editingListData || undefined}
               onSubmit={editingList ? handleUpdateMailingList : handleAddMailingList}
               onCancel={handleCancel}
               loading={loading}
@@ -177,7 +174,6 @@ export const MailingListsPage = () => {
         </Card>
       )}
 
-      {/* Error */}
       {error && (
         <Card className="border-red-200 bg-red-50">
           <CardContent className="p-4">
@@ -186,7 +182,6 @@ export const MailingListsPage = () => {
         </Card>
       )}
 
-      {/* Lists Grid */}
       {!showForm && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredLists.map(mailingList => (
@@ -201,7 +196,6 @@ export const MailingListsPage = () => {
         </div>
       )}
 
-      {/* Empty State */}
       {!showForm && filteredLists.length === 0 && (
         <Card>
           <CardContent className="p-12 text-center">
