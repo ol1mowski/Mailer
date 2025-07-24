@@ -1,0 +1,8 @@
+export { Dashboard } from './Dashboard.page'
+export { DashboardStatsComponent } from './components/DashboardStats.component'
+export { DashboardWelcomeComponent } from './components/DashboardWelcome.component'
+export { QuickActionsComponent } from './components/QuickActions.component'
+export { RecentActivitiesComponent } from './components/RecentActivities.component'
+export { DashboardContentComponent } from './components/DashboardContent.component'
+export { useDashboard } from './hooks/useDashboard.hook'
+export type { DashboardStats, QuickAction, RecentActivity } from './types/dashboard.types' 

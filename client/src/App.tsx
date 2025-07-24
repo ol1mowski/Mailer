@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useAuth } from '@/components/auth/hooks/auth.hook'
 import { LoginPage } from '@/components/auth/LoginPage.page'
 import { Layout } from '@/components/layout/Layout.component'
-import { Dashboard } from '@/components/dashboard/Dashboard.page'
+import { Dashboard } from '@/components/dashboard'
 import { MailingListsPage } from '@/components/mailingList/MailingListsPage.page'
 import { ContactsPage } from '@/components/contacts'
 import { EmailTemplatesPage } from '@/components/emailTemplates'
