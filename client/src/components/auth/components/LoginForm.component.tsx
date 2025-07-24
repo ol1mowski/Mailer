@@ -2,11 +2,13 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button.component'
 import { Input } from '@/components/ui/input.component'
 import { Label } from '@/components/ui/label.component'
 import { loginSchema, type LoginFormData } from '../schemas/auth.schemas'
 import { useAuth } from '../hooks/auth.hook'
+import { ROUTES } from '@/constants/app.constants'
 
 interface LoginFormProps {
   onSuccess?: () => void
@@ -15,6 +17,7 @@ interface LoginFormProps {
 export const LoginForm = ({ onSuccess }: LoginFormProps) => {
   const [showPassword, setShowPassword] = useState(false)
   const { login, isLoading, error, clearError } = useAuth()
+  const navigate = useNavigate()
 
   const {
     register,
@@ -31,6 +34,7 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
     
     if (!result) {
       onSuccess?.()
+      navigate(ROUTES.DASHBOARD)
     }
   }
 

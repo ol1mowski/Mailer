@@ -1,15 +1,139 @@
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from '@/components/auth/hooks/auth.hook'
 import { LoginPage } from '@/components/auth/LoginPage.page'
+import { Layout } from '@/components/layout/Layout.component'
 import { Dashboard } from '@/components/dashboard/Dashboard.page'
+import { MailingListsPage } from '@/components/mailingList/MailingListsPage.page'
+import { ContactsPage } from '@/components/contacts/ContactsPage.page'
+import { EmailTemplatesPage } from '@/components/email-templates/EmailTemplatesPage.page'
+import { CampaignsPage } from '@/components/campaigns/CampaignsPage.page'
+import { AnalyticsPage } from '@/components/analytics/AnalyticsPage.page'
+import { SettingsPage } from '@/components/settings/SettingsPage.page'
+import { ROUTES } from '@/constants/app.constants'
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, isLoading } = useAuth()
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Ładowanie...</p>
+        </div>
+      </div>
+    )
+  }
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
+  
+  return <>{children}</>
+}
 
 const App = () => {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, isLoading } = useAuth()
 
-  if (isAuthenticated) {
-    return <Dashboard />
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Ładowanie...</p>
+        </div>
+      </div>
+    )
   }
 
-  return <LoginPage />
+  return (
+    <Router>
+      <Routes>
+        <Route 
+          path="/login" 
+          element={isAuthenticated ? <Navigate to={ROUTES.DASHBOARD} replace /> : <LoginPage />} 
+        />
+        <Route
+          path={ROUTES.DASHBOARD}
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Dashboard />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.MAILING_LISTS}
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <MailingListsPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.CONTACTS}
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ContactsPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.EMAIL_TEMPLATES}
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <EmailTemplatesPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.CAMPAIGNS}
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <CampaignsPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.ANALYTICS}
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AnalyticsPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.SETTINGS}
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <SettingsPage />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/" 
+          element={<Navigate to={ROUTES.DASHBOARD} replace />} 
+        />
+        <Route 
+          path="*" 
+          element={<Navigate to={ROUTES.DASHBOARD} replace />} 
+        />
+      </Routes>
+    </Router>
+  )
 }
 
 export default App
