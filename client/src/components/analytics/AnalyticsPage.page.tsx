@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BarChart3, TrendingUp, Users, Mail, MousePointer, Calendar, Download, Filter } from 'lucide-react'
+import { TrendingUp, Users, Mail, MousePointer, Download, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button.component'
 import { Card } from '@/components/ui/card.component'
 import { Badge } from '@/components/ui/badge.component'
