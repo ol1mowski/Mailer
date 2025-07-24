@@ -50,7 +50,7 @@ export const useAuth = () => {
         
         return error
       }
-    } catch (error) {
+    } catch {
       const networkError: AuthError = {
         type: 'network',
         message: AUTH_ERROR_MESSAGES.NETWORK_ERROR,

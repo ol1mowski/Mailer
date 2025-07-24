@@ -1,5 +1,5 @@
 import { LogOut, Mail, Users, Settings, BarChart3 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button.component'
 import { useAuth } from '@/components/auth/hooks/auth.hook'
 
 export const Dashboard = () => {
