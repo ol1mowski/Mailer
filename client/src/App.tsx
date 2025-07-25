@@ -1,128 +1,75 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { useAuth } from '@/components/auth/hooks/auth.hook'
-import { LoginPage } from '@/components/auth/LoginPage.page'
-import { Layout } from '@/components/layout/Layout.component'
-import { Dashboard } from '@/components/dashboard'
-import { MailingListsPage } from '@/components/mailingList'
-import { ContactsPage } from '@/components/contacts'
-import { EmailTemplatesPage } from '@/components/emailTemplates'
-import { CampaignsPage } from '@/components/campaigns'
-import { AnalyticsPage } from '@/components/analytics'
-import { SettingsPage } from '@/components/settings'
-import { ErrorBoundary, Loading } from '@/components/ui'
-import { ROUTES } from '@/constants/app.constants'
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Toaster } from 'react-hot-toast';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './providers/AuthProvider';
+import { queryClient } from './lib/queryClient';
+import { LoginPage } from './components/auth/LoginPage.page';
+import { Layout } from './components/layout/Layout.component';
+import { Dashboard } from './components/dashboard/Dashboard.page';
+import { ContactsPage } from './components/contacts/ContactsPage.page';
+import { MailingListsPage } from './components/mailingList/MailingListsPage.page';
+import { EmailTemplatesPage } from './components/emailTemplates/EmailTemplatesPage.page';
+import { CampaignsPage } from './components/campaigns/CampaignsPage.page';
+import { AnalyticsPage } from './components/analytics/AnalyticsPage.page';
+import { SettingsPage } from './components/settings/SettingsPage.page';
+import { useAuth } from './hooks/useAuth.hook';
+import { ROUTES } from './constants/app.constants';
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isLoading } = useAuth()
-  
-  if (isLoading) {
-    return <Loading fullScreen text="Weryfikacja autoryzacji..." />
-  }
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
-  }
-  
-  return <>{children}</>
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen bg-gray-50">
+            <AppContent />
+            <Toaster 
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#363636',
+                  color: '#fff',
+                },
+              }}
+            />
+          </div>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </Router>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
 }
 
-const App = () => {
-  const { isAuthenticated, isLoading } = useAuth()
+function AppContent() {
+  const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <Loading fullScreen text="Inicjalizacja aplikacji..." />
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <LoginPage />;
   }
 
   return (
-    <ErrorBoundary>
-      <Router>
-        <Routes>
-        <Route 
-          path="/login" 
-          element={isAuthenticated ? <Navigate to={ROUTES.DASHBOARD} replace /> : <LoginPage />} 
-        />
-        <Route
-          path={ROUTES.DASHBOARD}
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <Dashboard />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={ROUTES.MAILING_LISTS}
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <MailingListsPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={ROUTES.CONTACTS}
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <ContactsPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={ROUTES.EMAIL_TEMPLATES}
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <EmailTemplatesPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={ROUTES.CAMPAIGNS}
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <CampaignsPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={ROUTES.ANALYTICS}
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <AnalyticsPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path={ROUTES.SETTINGS}
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <SettingsPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route 
-          path="/" 
-          element={<Navigate to={ROUTES.DASHBOARD} replace />} 
-        />
-        <Route 
-          path="*" 
-          element={<Navigate to={ROUTES.DASHBOARD} replace />} 
-        />
+    <Layout>
+      <Routes>
+        <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+        <Route path={ROUTES.CONTACTS} element={<ContactsPage />} />
+        <Route path={ROUTES.MAILING_LISTS} element={<MailingListsPage />} />
+        <Route path={ROUTES.EMAIL_TEMPLATES} element={<EmailTemplatesPage />} />
+        <Route path={ROUTES.CAMPAIGNS} element={<CampaignsPage />} />
+        <Route path={ROUTES.ANALYTICS} element={<AnalyticsPage />} />
+        <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
+        <Route path="*" element={<Navigate to={ROUTES.DASHBOARD} replace />} />
       </Routes>
-      </Router>
-    </ErrorBoundary>
-  )
+    </Layout>
+  );
 }
 
-export default App
+export default App;

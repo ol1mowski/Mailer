@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { useAuth } from '@/components/auth/hooks/auth.hook'
+import { useAuth } from '@/hooks/useAuth.hook'
 import { Button } from '@/components/ui/button.component'
 import { 
   Mail, 
@@ -106,17 +106,17 @@ export const Layout = ({ children }: LayoutProps) => {
           </nav>
 
           <div className="p-4 border-t">
-            <div className="flex items-center mb-4">
-              <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                <span className="text-blue-600 font-semibold text-sm">
-                  {user.name.charAt(0).toUpperCase()}
-                </span>
+                          <div className="flex items-center mb-4">
+                <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-blue-600 font-semibold text-sm">
+                    {user.firstName.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900">{user.firstName} {user.lastName}</p>
+                  <p className="text-xs text-gray-500">{user.email}</p>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                <p className="text-xs text-gray-500">{user.email}</p>
-              </div>
-            </div>
             <Button
               variant="outline"
               size="sm"

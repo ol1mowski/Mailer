@@ -32,7 +32,7 @@ class ApiClient {
         'Content-Type': 'application/json',
         ...options.headers,
       },
-      credentials: 'include', // Ważne dla HTTP-only cookies
+      credentials: 'include',
     };
 
     const config = {
@@ -53,7 +53,6 @@ class ApiClient {
           success: false,
         }));
 
-        // Obsługa błędów walidacji
         if (response.status === 400 && errorData.errors) {
           const errorMessages = Object.values(errorData.errors).join(', ');
           throw new Error(errorMessages);
@@ -76,7 +75,6 @@ class ApiClient {
     }
   }
 
-  // GET request
   async get<T>(endpoint: string, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'GET',
@@ -84,7 +82,6 @@ class ApiClient {
     });
   }
 
-  // POST request
   async post<T>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'POST',
@@ -93,7 +90,6 @@ class ApiClient {
     });
   }
 
-  // PUT request
   async put<T>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'PUT',
@@ -102,7 +98,6 @@ class ApiClient {
     });
   }
 
-  // DELETE request
   async delete<T>(endpoint: string, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'DELETE',
@@ -113,7 +108,6 @@ class ApiClient {
 
 export const apiClient = new ApiClient(API_BASE_URL);
 
-// Typy dla autentykacji
 export interface LoginRequest {
   email: string;
   password: string;
@@ -140,7 +134,6 @@ export interface AuthResponse {
   user?: User;
 }
 
-// API endpoints
 export const authApi = {
   login: (data: LoginRequest) => 
     apiClient.post<AuthResponse>('/auth/login', data),

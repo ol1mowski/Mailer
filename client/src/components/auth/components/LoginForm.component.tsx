@@ -1,59 +1,89 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Button } from '@/components/ui/button.component'
-import { Input } from '@/components/ui/input.component'
-import { Label } from '@/components/ui/label.component'
-import { loginSchema, type LoginFormData } from '../schemas/auth.schemas'
-import { useAuth } from '../hooks/auth.hook'
-import { ROUTES } from '@/constants/app.constants'
+import { useState } from 'react';
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { useAuth } from '../../../hooks/useAuth.hook';
+import { Button } from '../../ui/button.component';
+import { Input } from '../../ui/input.component';
+import { Label } from '../../ui/label.component';
 
-interface LoginFormProps {
-  onSuccess?: () => void
-}
+export const LoginForm = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState<string>('');
+  
+  const { login, isLoading } = useAuth();
 
-export const LoginForm = ({ onSuccess }: LoginFormProps) => {
-  const [showPassword, setShowPassword] = useState(false)
-  const { login, isLoading, error, clearError } = useAuth()
-  const navigate = useNavigate()
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    mode: 'onBlur',
-  })
-
-  const onSubmit = async (data: LoginFormData) => {
-    clearError()
-    const result = await login(data)
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
     
-    if (!result) {
-      onSuccess?.()
-      navigate(ROUTES.DASHBOARD)
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
-  }
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.email) {
+      newErrors.email = 'Email jest wymagany';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Nieprawidłowy format email';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Hasło jest wymagane';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Hasło musi mieć minimum 6 znaków';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoginError('');
+
+    try {
+      await login(formData);
+    } catch (error) {
+      if (error instanceof Error) {
+        setLoginError(error.message);
+      } else {
+        setLoginError('Wystąpił błąd podczas logowania');
+      }
+    }
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <div className="relative">
           <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             id="email"
+            name="email"
             type="email"
+            value={formData.email}
+            onChange={handleInputChange}
             placeholder="admin@mailer.com"
-            className="pl-10"
-            {...register('email')}
+            className={`pl-10 ${errors.email ? 'border-red-500' : ''}`}
+            disabled={isLoading}
+            autoComplete="email"
           />
         </div>
         {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
+          <p className="text-sm text-red-600">{errors.email}</p>
         )}
       </div>
 
@@ -63,10 +93,14 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
           <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             id="password"
+            name="password"
             type={showPassword ? 'text' : 'password'}
+            value={formData.password}
+            onChange={handleInputChange}
             placeholder="••••••••"
-            className="pl-10 pr-10"
-            {...register('password')}
+            className={`pl-10 pr-10 ${errors.password ? 'border-red-500' : ''}`}
+            disabled={isLoading}
+            autoComplete="current-password"
           />
           <Button
             type="button"
@@ -83,13 +117,18 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
           </Button>
         </div>
         {errors.password && (
-          <p className="text-sm text-destructive">{errors.password.message}</p>
+          <p className="text-sm text-red-600">{errors.password}</p>
         )}
       </div>
 
-      {error && (
-        <div className="rounded-md bg-destructive/15 p-3">
-          <p className="text-sm text-destructive">{error}</p>
+      {loginError && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+          <p className="text-sm text-red-600 flex items-center">
+            <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {loginError}
+          </p>
         </div>
       )}
 
@@ -100,10 +139,6 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
       >
         {isLoading ? 'Logowanie...' : 'Zaloguj się'}
       </Button>
-
-      <div className="text-center text-sm text-muted-foreground">
-        <p>Demo: admin@mailer.com / password123</p>
-      </div>
     </form>
-  )
-} 
+  );
+}; 

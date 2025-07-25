@@ -1,9 +1,11 @@
 package maile.com.example.mailer.service;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +74,17 @@ public class AuthService {
     }
     
     public User getCurrentUser() {
-        // Ta metoda będzie implementowana później z SecurityContext
+        // Implementacja z SecurityContext
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.isAuthenticated() && 
+                !(authentication instanceof AnonymousAuthenticationToken)) {
+                String email = authentication.getName();
+                return userRepository.findByEmail(email).orElse(null);
+            }
+        } catch (Exception e) {
+            // Log error if needed
+        }
         return null;
     }
 } 

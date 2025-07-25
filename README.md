@@ -1,215 +1,209 @@
-# Mailer - Email Campaign Management System
+# Mailer - System Zarządzania Emailami
 
-A comprehensive email campaign management system built with modern web technologies. This application provides a robust platform for managing mailing lists, creating campaigns, and tracking email performance.
+Kompletny system zarządzania emailami z autentykacją JWT i HTTP-only cookies.
 
-## 🚀 Features
+## 🚀 Funkcjonalności
 
-- **User Authentication & Authorization** - Secure login system with role-based access
-- **Dashboard** - Intuitive interface for campaign management
-- **Email Campaign Management** - Create, edit, and schedule email campaigns
-- **Mailing List Management** - Organize and segment your subscriber lists
-- **Real-time Analytics** - Track campaign performance and engagement metrics
-- **Responsive Design** - Optimized for desktop and mobile devices
+- **Autentykacja JWT** z HTTP-only cookies dla bezpieczeństwa
+- **Spring Boot Backend** z bazą H2
+- **React Frontend** z TypeScript i TailwindCSS
+- **React Query** do zarządzania stanem i cache'owaniem
+- **Walidacja** po stronie serwera i klienta
+- **Obsługa błędów** z powiadomieniami toast
 
-## 🛠️ Tech Stack
-
-### Frontend
-- **React 19** - Latest React with concurrent features and improved performance
-- **TypeScript 5.8** - Type-safe development with enhanced developer experience
-- **Vite 7** - Fast build tool and development server
-- **TailwindCSS 3.3** - Utility-first CSS framework for rapid UI development
-- **React Hook Form 7** - Performant forms with easy validation
-- **Zod 4.0** - TypeScript-first schema validation
-- **Vitest 3.2** - Fast unit testing framework
-- **ESLint 9** - Code quality and consistency
+## 🛠️ Technologie
 
 ### Backend
-- **Spring Boot 3** - Modern Java framework for building web applications
-- **Java 17** - Latest LTS version with enhanced features
-- **Spring Security** - Comprehensive security framework
-- **Spring Data JPA** - Data access layer with JPA/Hibernate
-- **Maven** - Dependency management and build tool
-- **JUnit 5** - Unit testing framework
+- Spring Boot 3.5.3
+- Spring Security z JWT
+- Spring Data JPA
+- H2 Database
+- Maven
 
-## 📁 Project Structure
+### Frontend
+- React 18
+- TypeScript
+- TailwindCSS
+- React Query (TanStack Query)
+- React Hot Toast
+- Lucide React (ikony)
 
-```
-Mailer/
-├── client/                 # Frontend React application
-│   ├── src/
-│   │   ├── components/     # Reusable UI components
-│   │   │   ├── auth/       # Authentication components
-│   │   │   ├── dashboard/  # Dashboard components
-│   │   │   └── ui/         # Base UI components
-│   │   ├── hooks/          # Custom React hooks
-│   │   ├── lib/            # Utility functions
-│   │   └── test/           # Test setup and utilities
-│   ├── public/             # Static assets
-│   └── dist/               # Build output
-├── server/                 # Backend Spring Boot application
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/       # Java source code
-│   │   │   └── resources/  # Configuration files
-│   │   └── test/           # Test files
-│   └── target/             # Build output
-└── .github/                # GitHub Actions workflows
+## 📋 Wymagania
+
+- Java 17+
+- Node.js 18+
+- npm lub yarn
+
+## 🚀 Uruchomienie
+
+### 1. Backend (Spring Boot)
+
+```bash
+cd server
+./mvnw spring-boot:run
 ```
 
-## 🚀 Getting Started
+Backend będzie dostępny pod adresem: `http://localhost:8080`
 
-### Prerequisites
+### 2. Frontend (React)
 
-- **Node.js 18+** and **npm** for frontend development
-- **Java 17+** and **Maven** for backend development
-- **Git** for version control
+```bash
+cd client
+npm install
+npm run dev
+```
 
-### Frontend Setup
+Frontend będzie dostępny pod adresem: `http://localhost:5173` (lub 5174 jeśli 5173 jest zajęty)
 
-1. Navigate to the client directory:
-   ```bash
-   cd client
-   ```
+## 🔐 Dane testowe
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+System automatycznie tworzy testowych użytkowników przy pierwszym uruchomieniu:
 
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+- **Admin**: `admin@mailer.com` / `password123`
+- **User**: `user@mailer.com` / `password123`
 
-4. Run tests:
-   ```bash
-   npm run test:run
-   ```
+## 📡 API Endpoints
 
-5. Build for production:
-   ```bash
-   npm run build
-   ```
+### Autentykacja
+- `POST /api/auth/login` - Logowanie
+- `POST /api/auth/register` - Rejestracja
+- `POST /api/auth/logout` - Wylogowanie
+- `GET /api/auth/me` - Pobieranie aktualnego użytkownika
 
-### Backend Setup
+### Przykłady użycia
 
-1. Navigate to the server directory:
-   ```bash
-   cd server
-   ```
+#### Logowanie
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@mailer.com","password":"password123"}'
+```
 
-2. Build the project:
-   ```bash
-   ./mvnw clean install
-   ```
+#### Sprawdzanie aktualnego użytkownika
+```bash
+curl -X GET http://localhost:8080/api/auth/me \
+  -H "Cookie: auth-token=YOUR_JWT_TOKEN"
+```
 
-3. Run the application:
-   ```bash
-   ./mvnw spring-boot:run
-   ```
+## 🔧 Konfiguracja
 
-4. Run tests:
-   ```bash
-   ./mvnw test
-   ```
+### Backend (application.properties)
+```properties
+# Database
+spring.datasource.url=jdbc:h2:mem:mailerdb
+spring.datasource.username=sa
+spring.datasource.password=password
 
-## 🧪 Testing
+# JWT
+jwt.secret=your-super-secret-jwt-key
+jwt.expiration=86400000
+jwt.cookie-name=auth-token
 
-### Frontend Testing
-- **Unit Tests**: `npm run test:run`
-- **Coverage**: `npm run test:coverage`
-- **UI Testing**: `npm run test:ui`
+# CORS
+spring.web.cors.allowed-origins=http://localhost:5173
+```
 
-### Backend Testing
-- **Unit Tests**: `./mvnw test`
-- **Integration Tests**: `./mvnw verify`
+### Frontend (lib/api.ts)
+```typescript
+const API_BASE_URL = 'http://localhost:8080/api';
+```
 
-## 📦 CI/CD Pipeline
+## 🏗️ Architektura
 
-The project includes GitHub Actions workflows for:
+### Backend
+```
+src/main/java/maile/com/example/mailer/
+├── config/
+│   ├── SecurityConfig.java          # Konfiguracja Spring Security
+│   └── DataInitializer.java         # Inicjalizacja danych testowych
+├── controller/
+│   └── AuthController.java          # Endpointy autentykacji
+├── dto/
+│   ├── LoginRequest.java            # DTO logowania
+│   ├── RegisterRequest.java         # DTO rejestracji
+│   └── AuthResponse.java            # DTO odpowiedzi
+├── entity/
+│   └── User.java                    # Encja użytkownika
+├── repository/
+│   └── UserRepository.java          # Repository użytkowników
+├── security/
+│   └── JwtAuthenticationFilter.java # Filtr JWT
+├── service/
+│   ├── AuthService.java             # Serwis autentykacji
+│   ├── JwtService.java              # Serwis JWT
+│   └── CustomUserDetailsService.java # Serwis użytkowników
+└── exception/
+    └── GlobalExceptionHandler.java  # Globalny handler błędów
+```
 
-- **Automated Testing** - Runs on every push and pull request
-- **Code Quality Checks** - ESLint and TypeScript validation
-- **Security Audits** - Dependency vulnerability scanning
-- **Build Verification** - Ensures code compiles successfully
-- **Deployment** - Automated deployment to staging/production
+### Frontend
+```
+src/
+├── components/
+│   ├── auth/
+│   │   ├── LoginPage.page.tsx       # Strona logowania
+│   │   └── components/
+│   │       └── LoginForm.component.tsx
+│   └── dashboard/
+│       └── Dashboard.page.tsx       # Panel główny
+├── hooks/
+│   └── useAuth.hook.ts              # Hook autentykacji
+├── lib/
+│   ├── api.ts                       # Klient API
+│   └── queryClient.ts               # Konfiguracja React Query
+├── providers/
+│   └── AuthProvider.tsx             # Provider autentykacji
+└── App.tsx                          # Główny komponent
+```
 
-## 🔧 Development Scripts
+## 🔒 Bezpieczeństwo
+
+- **JWT Tokens** - Bezpieczne tokeny z określonym czasem wygaśnięcia
+- **HTTP-only Cookies** - Tokeny przechowywane w bezpiecznych cookies
+- **CORS** - Skonfigurowany dla localhost
+- **Walidacja** - Walidacja danych wejściowych po stronie serwera
+- **BCrypt** - Hasła hashowane z solą
+
+## 🧪 Testowanie
+
+### Backend
+```bash
+cd server
+./mvnw test
+```
 
 ### Frontend
 ```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run lint         # Run ESLint
-npm run test:run     # Run tests
-npm run test:coverage # Run tests with coverage
-npm run preview      # Preview production build
+cd client
+npm test
 ```
 
-### Backend
-```bash
-./mvnw spring-boot:run    # Run Spring Boot application
-./mvnw clean install      # Clean and install dependencies
-./mvnw test              # Run tests
-./mvnw verify            # Run integration tests
-```
+## 📝 Logi
 
-## 🏗️ Architecture
+Backend loguje:
+- Operacje autentykacji
+- Błędy walidacji
+- Informacje o użytkownikach
 
-### Frontend Architecture
-- **Component-Based**: Modular, reusable components
-- **Type Safety**: Full TypeScript integration
-- **State Management**: React hooks for local state
-- **Form Handling**: React Hook Form with Zod validation
-- **Styling**: TailwindCSS for consistent design system
+Frontend wyświetla:
+- Powiadomienia o sukcesie/błędach
+- Stan ładowania
+- Informacje o użytkowniku
 
-### Backend Architecture
-- **RESTful API**: Clean, RESTful endpoints
-- **Layered Architecture**: Controller → Service → Repository
-- **Security**: Spring Security with JWT authentication
-- **Data Access**: Spring Data JPA with Hibernate
-- **Validation**: Bean Validation for input validation
+## 🚀 Rozwój
 
-## 🔒 Security Features
+### Dodawanie nowych endpointów
+1. Utwórz DTO w `dto/`
+2. Dodaj metodę w serwisie
+3. Utwórz endpoint w kontrolerze
+4. Dodaj testy
 
-- **JWT Authentication** - Secure token-based authentication
-- **Role-Based Access Control** - Granular permissions
-- **Input Validation** - Server-side validation with Zod/Bean Validation
-- **CORS Configuration** - Cross-origin resource sharing setup
-- **Security Headers** - Protection against common vulnerabilities
+### Dodawanie nowych komponentów
+1. Utwórz komponent w `components/`
+2. Dodaj hook jeśli potrzebny
+3. Zintegruj z React Query
+4. Dodaj obsługę błędów
 
-## 📊 Performance
+## 📄 Licencja
 
-- **Frontend**: Vite for fast development and optimized builds
-- **Backend**: Spring Boot with optimized JVM settings
-- **Database**: Efficient queries with JPA/Hibernate
-- **Caching**: Spring Cache for improved response times
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-For support and questions:
-- Create an issue in the GitHub repository
-- Contact the development team
-- Check the documentation in the `/docs` folder
-
-## 🔄 Version History
-
-- **v1.0.0** - Initial release with basic email campaign management
-- **v1.1.0** - Added analytics and reporting features
-- **v1.2.0** - Enhanced security and performance improvements
-
----
-
-Built with ❤️ using modern web technologies
+MIT License
