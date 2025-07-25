@@ -74,7 +74,6 @@ public class AuthService {
     }
     
     public User getCurrentUser() {
-        // Implementacja z SecurityContext
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null && authentication.isAuthenticated() && 
@@ -83,7 +82,7 @@ public class AuthService {
                 return userRepository.findByEmail(email).orElse(null);
             }
         } catch (Exception e) {
-            // Log error if needed
+            e.printStackTrace();
         }
         return null;
     }

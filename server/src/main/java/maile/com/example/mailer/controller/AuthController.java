@@ -81,10 +81,6 @@ public class AuthController {
         return ResponseEntity.ok(AuthResponse.error("Nie zalogowano"));
     }
     
-    private void setAuthCookie(AuthResponse response, String token) {
-        // Ta metoda nie jest potrzebna, ale zachowuję dla kompatybilności
-    }
-    
     private void setAuthCookie(HttpServletResponse httpResponse, String token) {
         Cookie cookie = new Cookie(cookieName, token);
         cookie.setPath("/");
