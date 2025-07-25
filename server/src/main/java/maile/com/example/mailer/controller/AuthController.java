@@ -33,13 +33,14 @@ public class AuthController {
     }
     
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request,
+                                                HttpServletResponse httpResponse) {
         AuthResponse response = authService.register(request);
         
         if (response.isSuccess()) {
             User user = authService.getUserByEmail(request.getEmail());
             String token = authService.generateToken(user);
-            setAuthCookie(response, token);
+            setAuthCookie(httpResponse, token);
         }
         
         return ResponseEntity.ok(response);
@@ -68,7 +69,7 @@ public class AuthController {
         cookie.setMaxAge(0);
         httpResponse.addCookie(cookie);
         
-        return ResponseEntity.ok(AuthResponse.success("Wylogowano pomyślnie", null));
+        return ResponseEntity.ok(AuthResponse.success("Wylogowano pomyślnie"));
     }
     
     @GetMapping("/me")

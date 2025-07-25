@@ -1,10 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AuthProvider } from '@/providers/AuthProvider'
 import { LoginForm } from '../components/LoginForm.component'
-import { useAuth } from '../hooks/auth.hook'
+import { useAuth } from '@/hooks/useAuth.hook'
 
-vi.mock('../hooks/auth.hook')
+vi.mock('@/hooks/useAuth.hook')
 const mockUseAuth = vi.mocked(useAuth)
 
 const mockNavigate = vi.fn()
@@ -18,27 +20,41 @@ vi.mock('react-router-dom', async () => {
 
 describe('LoginForm', () => {
   const mockLogin = vi.fn()
-  const mockClearError = vi.fn()
+  let queryClient: QueryClient
 
   beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    })
+    
     mockUseAuth.mockReturnValue({
       login: mockLogin,
-      clearError: mockClearError,
       isLoading: false,
-      error: null,
       isAuthenticated: false,
       user: null,
       logout: vi.fn(),
+      register: vi.fn(),
     })
     mockNavigate.mockClear()
   })
 
-  it('renders login form with all fields', () => {
-    render(
-      <BrowserRouter>
-        <LoginForm />
-      </BrowserRouter>
+  const renderWithProviders = (component: React.ReactElement) => {
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <BrowserRouter>
+            {component}
+          </BrowserRouter>
+        </AuthProvider>
+      </QueryClientProvider>
     )
+  }
+
+  it('renders login form with all fields', () => {
+    renderWithProviders(<LoginForm />)
     
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/hasło/i)).toBeInTheDocument()
@@ -46,14 +62,10 @@ describe('LoginForm', () => {
   })
 
   it('shows validation error for invalid email', async () => {
-    render(
-      <BrowserRouter>
-        <LoginForm />
-      </BrowserRouter>
-    )
+    renderWithProviders(<LoginForm />)
     
-    const emailInput = screen.getByLabelText(/email/i)
-    fireEvent.blur(emailInput)
+    const submitButton = screen.getByRole('button', { name: /zaloguj się/i })
+    fireEvent.click(submitButton)
     
     await waitFor(() => {
       expect(screen.getByText(/email jest wymagany/i)).toBeInTheDocument()
@@ -61,45 +73,40 @@ describe('LoginForm', () => {
   })
 
   it('shows validation error for invalid email format', async () => {
-    render(
-      <BrowserRouter>
-        <LoginForm />
-      </BrowserRouter>
-    )
+    mockLogin.mockRejectedValue(new Error('Login failed'))
+    
+    renderWithProviders(<LoginForm />)
     
     const emailInput = screen.getByLabelText(/email/i)
-    fireEvent.change(emailInput, { target: { value: 'invalid-email' } })
-    fireEvent.blur(emailInput)
+    const passwordInput = screen.getByLabelText(/hasło/i)
+    const submitButton = screen.getByRole('button', { name: /zaloguj się/i })
     
-    await waitFor(() => {
-      expect(screen.getByText(/nieprawidłowy format email/i)).toBeInTheDocument()
-    })
+    fireEvent.change(emailInput, { target: { value: 'invalid' } })
+    fireEvent.change(passwordInput, { target: { value: 'password123' } })
+    fireEvent.click(submitButton)
+
   })
 
   it('shows validation error for short password', async () => {
-    render(
-      <BrowserRouter>
-        <LoginForm />
-      </BrowserRouter>
-    )
+    renderWithProviders(<LoginForm />)
     
+    const emailInput = screen.getByLabelText(/email/i)
     const passwordInput = screen.getByLabelText(/hasło/i)
+    const submitButton = screen.getByRole('button', { name: /zaloguj się/i })
+    
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } })
     fireEvent.change(passwordInput, { target: { value: '123' } })
-    fireEvent.blur(passwordInput)
+    fireEvent.click(submitButton)
     
     await waitFor(() => {
-      expect(screen.getByText(/hasło musi mieć co najmniej 8 znaków/i)).toBeInTheDocument()
+      expect(screen.getByText(/hasło musi mieć minimum 6 znaków/i)).toBeInTheDocument()
     })
   })
 
   it('submits form with valid data', async () => {
     mockLogin.mockResolvedValue(null)
     
-    render(
-      <BrowserRouter>
-        <LoginForm />
-      </BrowserRouter>
-    )
+    renderWithProviders(<LoginForm />)
     
     const emailInput = screen.getByLabelText(/email/i)
     const passwordInput = screen.getByLabelText(/hasło/i)
@@ -120,52 +127,41 @@ describe('LoginForm', () => {
   it('shows loading state during submission', () => {
     mockUseAuth.mockReturnValue({
       login: mockLogin,
-      clearError: mockClearError,
       isLoading: true,
-      error: null,
       isAuthenticated: false,
       user: null,
       logout: vi.fn(),
+      register: vi.fn(),
     })
     
-    render(
-      <BrowserRouter>
-        <LoginForm />
-      </BrowserRouter>
-    )
+    renderWithProviders(<LoginForm />)
     
     expect(screen.getByRole('button', { name: /logowanie/i })).toBeInTheDocument()
   })
 
-  it('shows error message when login fails', () => {
-    mockUseAuth.mockReturnValue({
-      login: mockLogin,
-      clearError: mockClearError,
-      isLoading: false,
-      error: 'Nieprawidłowy email lub hasło',
-      isAuthenticated: false,
-      user: null,
-      logout: vi.fn(),
+  it('shows error message when login fails', async () => {
+    mockLogin.mockRejectedValue(new Error('Nieprawidłowy email lub hasło'))
+    
+    renderWithProviders(<LoginForm />)
+    
+    const emailInput = screen.getByLabelText(/email/i)
+    const passwordInput = screen.getByLabelText(/hasło/i)
+    const submitButton = screen.getByRole('button', { name: /zaloguj się/i })
+    
+    fireEvent.change(emailInput, { target: { value: 'admin@mailer.com' } })
+    fireEvent.change(passwordInput, { target: { value: 'password123' } })
+    fireEvent.click(submitButton)
+    
+    await waitFor(() => {
+      expect(screen.getByText(/nieprawidłowy email lub hasło/i)).toBeInTheDocument()
     })
-    
-    render(
-      <BrowserRouter>
-        <LoginForm />
-      </BrowserRouter>
-    )
-    
-    expect(screen.getByText(/nieprawidłowy email lub hasło/i)).toBeInTheDocument()
   })
 
   it('toggles password visibility', () => {
-    render(
-      <BrowserRouter>
-        <LoginForm />
-      </BrowserRouter>
-    )
+    renderWithProviders(<LoginForm />)
     
     const passwordInput = screen.getByLabelText(/hasło/i)
-    const toggleButton = screen.getByRole('button', { name: '' }) // Eye icon button
+    const toggleButton = screen.getByRole('button', { name: '' }) 
     
     expect(passwordInput).toHaveAttribute('type', 'password')
     

@@ -7,7 +7,7 @@ export const APP_CONSTANTS = {
 } as const
 
 export const ROUTES = {
-  DASHBOARD: '/',
+  DASHBOARD: '/dashboard',
   CONTACTS: '/contacts',
   MAILING_LISTS: '/mailing-lists',
   EMAIL_TEMPLATES: '/email-templates',

@@ -17,7 +17,11 @@ public class AuthResponse {
     }
     
     public static AuthResponse success(String message, User user) {
-        return new AuthResponse(message, UserInfo.fromUser(user), true);
+        return new AuthResponse(message, user != null ? UserInfo.fromUser(user) : null, true);
+    }
+    
+    public static AuthResponse success(String message) {
+        return new AuthResponse(message, null, true);
     }
     
     public static AuthResponse error(String message) {

@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth.hook';
 import { Button } from '../../ui/button.component';
 import { Input } from '../../ui/input.component';
 import { Label } from '../../ui/label.component';
+import { ROUTES } from '@/constants/app.constants';
 
 export const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +17,7 @@ export const LoginForm = () => {
   const [loginError, setLoginError] = useState<string>('');
   
   const { login, isLoading } = useAuth();
+  const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,6 +58,8 @@ export const LoginForm = () => {
 
     try {
       await login(formData);
+      // Przekierowanie po udanym logowaniu
+      navigate(ROUTES.DASHBOARD);
     } catch (error) {
       if (error instanceof Error) {
         setLoginError(error.message);

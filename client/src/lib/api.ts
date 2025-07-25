@@ -1,6 +1,6 @@
 import { toast } from 'react-hot-toast';
 
-const API_BASE_URL = 'http://localhost:8080/api';
+export const API_BASE_URL = 'http://localhost:8080/api';
 
 export interface ApiError {
   message: string;
@@ -82,7 +82,7 @@ class ApiClient {
     });
   }
 
-  async post<T>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
+  async post<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
@@ -90,8 +90,8 @@ class ApiClient {
     });
   }
 
-  async put<T>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
-    return this.request<T>(endpoint, {
+  async put<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
+    return this.request<T>(endpoint, {  
       method: 'PUT',
       body: data ? JSON.stringify(data) : undefined,
       ...options,

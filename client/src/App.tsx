@@ -1,11 +1,10 @@
-import { QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './providers/AuthProvider';
-import { queryClient } from './lib/queryClient';
+import { useAuth } from './hooks/useAuth.hook';
 import { LoginPage } from './components/auth/LoginPage.page';
-import { Layout } from './components/layout/Layout.component';
 import { Dashboard } from './components/dashboard/Dashboard.page';
 import { ContactsPage } from './components/contacts/ContactsPage.page';
 import { MailingListsPage } from './components/mailingList/MailingListsPage.page';
@@ -13,8 +12,17 @@ import { EmailTemplatesPage } from './components/emailTemplates/EmailTemplatesPa
 import { CampaignsPage } from './components/campaigns/CampaignsPage.page';
 import { AnalyticsPage } from './components/analytics/AnalyticsPage.page';
 import { SettingsPage } from './components/settings/SettingsPage.page';
-import { useAuth } from './hooks/useAuth.hook';
+import { Layout } from './components/layout/Layout.component';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { ROUTES } from './constants/app.constants';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
 
 function App() {
   return (
@@ -23,7 +31,7 @@ function App() {
         <Router>
           <div className="min-h-screen bg-gray-50">
             <AppContent />
-            <Toaster 
+            <Toaster
               position="top-right"
               toastOptions={{
                 duration: 4000,
@@ -52,23 +60,21 @@ function AppContent() {
     );
   }
 
-  if (!isAuthenticated) {
-    return <LoginPage />;
-  }
-
   return (
-    <Layout>
-      <Routes>
-        <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
-        <Route path={ROUTES.CONTACTS} element={<ContactsPage />} />
-        <Route path={ROUTES.MAILING_LISTS} element={<MailingListsPage />} />
-        <Route path={ROUTES.EMAIL_TEMPLATES} element={<EmailTemplatesPage />} />
-        <Route path={ROUTES.CAMPAIGNS} element={<CampaignsPage />} />
-        <Route path={ROUTES.ANALYTICS} element={<AnalyticsPage />} />
-        <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
-        <Route path="*" element={<Navigate to={ROUTES.DASHBOARD} replace />} />
-      </Routes>
-    </Layout>
+    <Routes>
+      <Route path="/login" element={isAuthenticated ? <Navigate to={ROUTES.DASHBOARD} replace /> : <LoginPage />} />
+      <Route path="/" element={isAuthenticated ? <Navigate to={ROUTES.DASHBOARD} replace /> : <Navigate to="/login" replace />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path={ROUTES.DASHBOARD} element={<Layout><Dashboard /></Layout>} />
+        <Route path={ROUTES.CONTACTS} element={<Layout><ContactsPage /></Layout>} />
+        <Route path={ROUTES.MAILING_LISTS} element={<Layout><MailingListsPage /></Layout>} />
+        <Route path={ROUTES.EMAIL_TEMPLATES} element={<Layout><EmailTemplatesPage /></Layout>} />
+        <Route path={ROUTES.CAMPAIGNS} element={<Layout><CampaignsPage /></Layout>} />
+        <Route path={ROUTES.ANALYTICS} element={<Layout><AnalyticsPage /></Layout>} />
+        <Route path={ROUTES.SETTINGS} element={<Layout><SettingsPage /></Layout>} />
+      </Route>
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
 }
 

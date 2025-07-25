@@ -15,7 +15,7 @@ import {
 import { useState } from 'react'
 import { ROUTES } from '@/constants/app.constants'
 import { cn } from '@/utils'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 interface LayoutProps {
   children: ReactNode
@@ -35,13 +35,15 @@ export const Layout = ({ children }: LayoutProps) => {
   const { user, logout } = useAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
 
   if (!user) {
     return null
   }
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
+    navigate('/login')
   }
 
   const toggleSidebar = () => {
@@ -109,12 +111,14 @@ export const Layout = ({ children }: LayoutProps) => {
                           <div className="flex items-center mb-4">
                 <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
                   <span className="text-blue-600 font-semibold text-sm">
-                    {user.firstName.charAt(0).toUpperCase()}
+                    {user?.firstName ? user.firstName.charAt(0).toUpperCase() : 'U'}
                   </span>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{user.firstName} {user.lastName}</p>
-                  <p className="text-xs text-gray-500">{user.email}</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {user?.firstName} {user?.lastName}
+                  </p>
+                  <p className="text-xs text-gray-500">{user?.email}</p>
                 </div>
               </div>
             <Button
