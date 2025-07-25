@@ -8,7 +8,6 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
   const queryClient = useQueryClient();
 
-  // Automatyczne pobieranie użytkownika po odświeżeniu
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
@@ -18,14 +17,14 @@ export const useAuth = () => {
           queryClient.setQueryData(['currentUser'], response);
         }
       } catch (error) {
-        console.log('Brak aktywnej sesji');
+        console.log('Brak aktywnej sesji', error);
       } finally {
         setIsLoading(false);
       }
     };
 
     checkAuthStatus();
-  }, [queryClient]);
+  }, [queryClient]);  
 
 
   const loginMutation = useMutation({
