@@ -47,23 +47,11 @@ export const DeleteConfirmationComponent = ({
           </div>
           <div className="text-left">
             <p className="font-semibold text-gray-900">
-              {getFullName(contact.firstName, contact.lastName)}
+              {getFullName(contact.firstName)}
             </p>
             <p className="text-sm text-gray-600">{contact.email}</p>
           </div>
         </div>
-        
-        {contact.company && (
-          <p className="text-sm text-gray-600">
-            <span className="font-medium">Firma:</span> {contact.company}
-          </p>
-        )}
-        
-        {contact.phone && (
-          <p className="text-sm text-gray-600">
-            <span className="font-medium">Telefon:</span> {contact.phone}
-          </p>
-        )}
       </div>
 
       <div className="bg-red-50 border border-red-200 rounded-lg p-4">

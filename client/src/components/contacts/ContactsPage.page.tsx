@@ -1,13 +1,13 @@
-import { Loading, ErrorMessage, Modal } from '@/components/ui';
-import { useContacts } from './hooks/useContacts.hook';
-import { calculateContactStats } from './utils/contactUtils.utils';
 import { ContactHeader } from './components/ContactHeader.component';
 import { ContactFiltersComponent } from './components/ContactFilters.component';
 import { ContactStatsComponent } from './components/ContactStats.component';
 import { ContactList } from './components/ContactList.component';
-import { ContactFormComponent } from './components/ContactForm.component';
-import { ImportContactsComponent } from './components/ImportContacts.component';
+import { ContactFormComponent } from './components/ContactForm';
+import { ImportContactsComponent } from './components/ImportContacts';
 import { DeleteConfirmationComponent } from './components/DeleteConfirmation.component';
+import { useContacts } from './hooks/useContacts';
+import { ErrorMessage, Loading, Modal } from '@/components/ui';
+import { calculateContactStats } from './utils/contactUtils.utils';
 
 export const ContactsPage = () => {
   const {

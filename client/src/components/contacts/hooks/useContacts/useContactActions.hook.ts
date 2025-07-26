@@ -1,44 +1,33 @@
-import { useState, useEffect } from 'react';
 import { contactApi } from '@/lib/api';
-import type { Contact, ContactFilters } from '../types/contact.types';
+import type { Contact } from '../../types/contact.types';
 import type { CreateContactRequest, UpdateContactRequest, ImportContactsRequest } from '@/lib/api';
-import { filterContacts } from '../utils/contactUtils.utils';
 import { toast } from 'react-hot-toast';
 
-export const useContacts = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [filters, setFilters] = useState<ContactFilters>({
-    searchTerm: '',
-    selectedTags: []
-  });
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [showForm, setShowForm] = useState(false);
-  const [showImport, setShowImport] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [editingContact, setEditingContact] = useState<Contact | null>(null);
-  const [deletingContact, setDeletingContact] = useState<Contact | null>(null);
+interface UseContactActionsProps {
+  contacts: Contact[];
+  setContacts: React.Dispatch<React.SetStateAction<Contact[]>>;
+  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditingContact: React.Dispatch<React.SetStateAction<Contact | null>>;
+  setShowDeleteConfirm: React.Dispatch<React.SetStateAction<boolean>>;
+  setDeletingContact: React.Dispatch<React.SetStateAction<Contact | null>>;
+  setShowImport: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setError: React.Dispatch<React.SetStateAction<string | null>>;
+  editingContact: Contact | null;
+}
 
-  const filteredContacts = filterContacts(contacts, filters);
-
-  const fetchContacts = async () => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const contactsData = await contactApi.getAllContacts();
-      setContacts(contactsData.map(contact => ({
-        ...contact,
-        status: contact.status as 'active' | 'inactive' | 'unsubscribed'
-      })));
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Nie udało się pobrać kontaktów';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+export const useContactActions = ({
+  contacts,
+  setContacts,
+  setShowForm,
+  setEditingContact,
+  setShowDeleteConfirm,
+  setDeletingContact,
+  setShowImport,
+  setIsLoading,
+  setError,
+  editingContact
+}: UseContactActionsProps) => {
   const handleAddContact = async (data: CreateContactRequest) => {
     setIsLoading(true);
     setError(null);
@@ -105,16 +94,6 @@ export const useContacts = () => {
     }
   };
 
-  const openDeleteConfirm = (contact: Contact) => {
-    setDeletingContact(contact);
-    setShowDeleteConfirm(true);
-  };
-
-  const closeDeleteConfirm = () => {
-    setShowDeleteConfirm(false);
-    setDeletingContact(null);
-  };
-
   const handleImportContacts = async (contactsToImport: CreateContactRequest[]) => {
     setIsLoading(true);
     setError(null);
@@ -141,74 +120,10 @@ export const useContacts = () => {
     }
   };
 
-  const openAddForm = () => {
-    setEditingContact(null);
-    setShowForm(true);
-    setShowImport(false);
-  };
-
-  const openEditForm = (contact: Contact) => {
-    setEditingContact(contact);
-    setShowForm(true);
-    setShowImport(false);
-  };
-
-  const openImportForm = () => {
-    setShowImport(true);
-    setShowForm(false);
-    setEditingContact(null);
-  };
-
-  const closeForms = () => {
-    setShowForm(false);
-    setShowImport(false);
-    setShowDeleteConfirm(false);
-    setEditingContact(null);
-    setDeletingContact(null);
-  };
-
-  const updateFilters = (newFilters: Partial<ContactFilters>) => {
-    setFilters(prev => ({ ...prev, ...newFilters }));
-  };
-
-  const toggleTag = (tag: string) => {
-    setFilters(prev => ({
-      ...prev,
-      selectedTags: prev.selectedTags.includes(tag) 
-        ? prev.selectedTags.filter(t => t !== tag)
-        : [...prev.selectedTags, tag]
-    }));
-  };
-
-  const clearError = () => setError(null);
-
-  useEffect(() => {
-    fetchContacts();
-  }, []);
-
   return {
-    contacts,
-    filteredContacts,
-    filters,
-    isLoading,
-    error,
-    showForm,
-    showImport,
-    showDeleteConfirm,
-    editingContact,
-    deletingContact,
     handleAddContact,
     handleUpdateContact,
     handleDeleteContact,
-    handleImportContacts,
-    openAddForm,
-    openEditForm,
-    openImportForm,
-    openDeleteConfirm,
-    closeDeleteConfirm,
-    closeForms,
-    updateFilters,
-    toggleTag,
-    clearError
+    handleImportContacts
   };
 }; 
