@@ -40,7 +40,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/h2-console/**", "/api/dashboard/**").permitAll()
+                .requestMatchers("/api/auth/**", "/h2-console/**", "/api/dashboard/**", "/api/contacts/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

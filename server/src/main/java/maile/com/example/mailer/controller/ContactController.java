@@ -2,11 +2,11 @@ package maile.com.example.mailer.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maile.com.example.mailer.dto.DashboardStatsResponse;
-import maile.com.example.mailer.dto.RecentActivityResponse;
+import maile.com.example.mailer.dto.ContactResponse;
+import maile.com.example.mailer.dto.ContactStatsResponse;
 import maile.com.example.mailer.entity.User;
 import maile.com.example.mailer.repository.UserRepository;
-import maile.com.example.mailer.service.DashboardService;
+import maile.com.example.mailer.service.ContactService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/dashboard")
+@RequestMapping("/api/contacts")
 @RequiredArgsConstructor
 @Slf4j
-public class DashboardController {
+public class ContactController {
     
-    private final DashboardService dashboardService;
+    private final ContactService contactService;
     private final UserRepository userRepository;
     
     @GetMapping("/stats")
-    public ResponseEntity<DashboardStatsResponse> getDashboardStats() {
+    public ResponseEntity<ContactStatsResponse> getContactStats() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Long userId = 1L; // Default fallback
@@ -42,18 +42,18 @@ public class DashboardController {
                 }
             }
             
-            DashboardStatsResponse stats = dashboardService.getDashboardStats(userId);
-            log.info("Pobrano statystyki dashboard dla użytkownika: {}", userId);
+            ContactStatsResponse stats = contactService.getContactStats(userId);
+            log.info("Pobrano statystyki kontaktów dla użytkownika: {}", userId);
             
             return ResponseEntity.ok(stats);
         } catch (Exception e) {
-            log.error("Błąd podczas pobierania statystyk dashboard: ", e);
+            log.error("Błąd podczas pobierania statystyk kontaktów: ", e);
             return ResponseEntity.internalServerError().build();
         }
     }
     
-    @GetMapping("/activities")
-    public ResponseEntity<List<RecentActivityResponse>> getRecentActivities() {
+    @GetMapping
+    public ResponseEntity<List<ContactResponse>> getAllContacts() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Long userId = 1L; // Default fallback
@@ -69,12 +69,12 @@ public class DashboardController {
                 }
             }
             
-            List<RecentActivityResponse> activities = dashboardService.getRecentActivities(userId);
-            log.info("Pobrano aktywności dla użytkownika: {}", userId);
+            List<ContactResponse> contacts = contactService.getAllContacts(userId);
+            log.info("Pobrano kontakty dla użytkownika: {}", userId);
             
-            return ResponseEntity.ok(activities);
+            return ResponseEntity.ok(contacts);
         } catch (Exception e) {
-            log.error("Błąd podczas pobierania aktywności: ", e);
+            log.error("Błąd podczas pobierania kontaktów: ", e);
             return ResponseEntity.internalServerError().build();
         }
     }

@@ -169,4 +169,33 @@ export const dashboardApi = {
   
   getRecentActivities: () => 
     apiClient.get<RecentActivity[]>('/dashboard/activities'),
+};
+
+export interface Contact {
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  company?: string;
+  status: string;
+  tags: string[];
+  createdAt: string;
+}
+
+export interface ContactStats {
+  total: number;
+  active: number;
+  vip: number;
+  inactive: number;
+  withPhone: number;
+  withCompany: number;
+}
+
+export const contactApi = {
+  getStats: () => 
+    apiClient.get<ContactStats>('/contacts/stats'),
+  
+  getAllContacts: () => 
+    apiClient.get<Contact[]>('/contacts'),
 }; 

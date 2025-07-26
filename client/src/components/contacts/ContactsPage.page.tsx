@@ -48,7 +48,7 @@ export const ContactsPage = () => {
         isLoading={isLoading}
       />
 
-      <ContactStatsComponent stats={stats} />
+      <ContactStatsComponent stats={stats} isLoading={isLoading} />
 
       <ContactList
         contacts={filteredContacts}

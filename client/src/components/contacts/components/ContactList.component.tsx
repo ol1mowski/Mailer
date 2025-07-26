@@ -4,11 +4,11 @@ import type { Contact } from '../types/contact.types'
 import { ContactCard } from './ContactCard.component'
 
 interface ContactListProps {
-  contacts: Contact[]
-  onDelete: (id: string) => void
-  onAddContact: () => void
-  isLoading: boolean
-  hasFilters: boolean
+  contacts: Contact[];
+  onDelete: (id: number) => void;
+  onAddContact: () => void;
+  isLoading: boolean;
+  hasFilters: boolean;
 }
 
 export const ContactList = ({ 

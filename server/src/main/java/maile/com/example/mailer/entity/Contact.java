@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "contacts")
@@ -35,6 +36,11 @@ public class Contact {
     
     @Column
     private String company;
+    
+    @ElementCollection
+    @CollectionTable(name = "contact_tags", joinColumns = @JoinColumn(name = "contact_id"))
+    @Column(name = "tag")
+    private List<String> tags;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
