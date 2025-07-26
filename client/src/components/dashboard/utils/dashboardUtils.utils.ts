@@ -7,6 +7,24 @@ export const formatPercentage = (num: number): string => {
   return `${num}%`
 }
 
+export const formatTimestamp = (timestamp: string): string => {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+  
+  if (diffInMinutes < 1) {
+    return 'teraz';
+  } else if (diffInMinutes < 60) {
+    return `${diffInMinutes} min temu`;
+  } else if (diffInMinutes < 1440) {
+    const hours = Math.floor(diffInMinutes / 60);
+    return `${hours} godz. temu`;
+  } else {
+    const days = Math.floor(diffInMinutes / 1440);
+    return `${days} dni temu`;
+  }
+}
+
 export const getStatusColor = (status: string): string => {
   const colorMap: Record<string, string> = {
     success: 'text-green-600',

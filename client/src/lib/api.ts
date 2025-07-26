@@ -146,4 +146,27 @@ export const authApi = {
   
   getCurrentUser: () => 
     apiClient.get<AuthResponse>('/auth/me'),
+};
+
+export interface DashboardStats {
+  sentEmails: number;
+  contacts: number;
+  openRate: number;
+  templates: number;
+}
+
+export interface RecentActivity {
+  id: number;
+  type: string;
+  description: string;
+  status: string;
+  timestamp: string;
+}
+
+export const dashboardApi = {
+  getStats: () => 
+    apiClient.get<DashboardStats>('/dashboard/stats'),
+  
+  getRecentActivities: () => 
+    apiClient.get<RecentActivity[]>('/dashboard/activities'),
 }; 

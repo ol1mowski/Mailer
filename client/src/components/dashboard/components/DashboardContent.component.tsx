@@ -6,15 +6,16 @@ import type { QuickAction, RecentActivity } from '../types/dashboard.types'
 interface DashboardContentProps {
   quickActions: QuickAction[]
   recentActivities: RecentActivity[]
+  isLoading?: boolean;
 }
 
-export const DashboardContentComponent = ({ quickActions, recentActivities }: DashboardContentProps) => {
+export const DashboardContentComponent = ({ quickActions, recentActivities, isLoading = false }: DashboardContentProps) => {
   return (
     <div className="bg-white rounded-lg shadow p-8">
       <DashboardWelcomeComponent />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
         <QuickActionsComponent actions={quickActions} />
-        <RecentActivitiesComponent activities={recentActivities} />
+        <RecentActivitiesComponent activities={recentActivities} isLoading={isLoading} />
       </div>
     </div>
   )

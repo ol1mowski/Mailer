@@ -1,29 +1,47 @@
-import { useState } from 'react'
-import type { DashboardStats, QuickAction, RecentActivity } from '../types/dashboard.types'
-import { mockDashboardStats, mockQuickActions, mockRecentActivities } from '../data/mockDashboard.data'
+import { useState, useEffect } from 'react';
+import { dashboardApi } from '@/lib/api';
+import type { DashboardStats, QuickAction, RecentActivity } from '../types/dashboard.types';
+import { mockQuickActions } from '../data/mockDashboard.data';
 
 export const useDashboard = () => {
-  const [stats] = useState<DashboardStats>(mockDashboardStats)
-  const [quickActions] = useState<QuickAction[]>(mockQuickActions)
-  const [recentActivities] = useState<RecentActivity[]>(mockRecentActivities)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [quickActions] = useState<QuickAction[]>(mockQuickActions);
+  const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const refreshStats = async () => {
-    setIsLoading(true)
-    setError(null)
+  const fetchDashboardData = async () => {
+    setIsLoading(true);
+    setError(null);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      console.log('Refreshing dashboard stats')
-    } catch {
-      setError('Nie udało się odświeżyć danych')
+      const [statsData, activitiesData] = await Promise.all([
+        dashboardApi.getStats(),
+        dashboardApi.getRecentActivities()
+      ]);
+      
+      setStats(statsData);
+      setRecentActivities(activitiesData.map(activity => ({
+        ...activity,
+        status: activity.status as 'success' | 'info' | 'warning' | 'error'
+      })));
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Nie udało się pobrać danych dashboard';
+      setError(errorMessage);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  const clearError = () => setError(null)
+  const refreshStats = async () => {
+    await fetchDashboardData();
+  };
+
+  const clearError = () => setError(null);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
 
   return {
     stats,
@@ -33,5 +51,5 @@ export const useDashboard = () => {
     error,
     refreshStats,
     clearError
-  }
-} 
+  };
+}; 

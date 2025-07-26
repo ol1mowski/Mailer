@@ -8,6 +8,7 @@ export const Dashboard = () => {
     stats,
     quickActions,
     recentActivities,
+    isLoading,
     error,
     clearError
   } = useDashboard()
@@ -21,11 +22,12 @@ export const Dashboard = () => {
         />
       )}
 
-      <DashboardStatsComponent stats={stats} />
+      <DashboardStatsComponent stats={stats} isLoading={isLoading} />
       
       <DashboardContentComponent 
         quickActions={quickActions}
         recentActivities={recentActivities}
+        isLoading={isLoading}
       />
     </div>
   )
