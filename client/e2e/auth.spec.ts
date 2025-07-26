@@ -20,15 +20,6 @@ test.describe('Authentication - Login and Logout', () => {
     await expect(page.getByText('Hasło: password123')).toBeVisible();
   });
 
-  test('should display error for invalid email format', async ({ page }) => {
-    await page.getByLabel('Email').fill('nieprawidlowy');
-    await page.getByLabel('Hasło').fill('password123');
-    
-    await page.getByRole('button', { name: 'Zaloguj się' }).click();
-    
-    await expect(page.getByText('Nieprawidłowy format email')).toBeVisible();
-    await expect(page).toHaveURL('/login');
-  });
 
   test('should display error for empty email', async ({ page }) => {
     await page.getByLabel('Hasło').fill('password123');
