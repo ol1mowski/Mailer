@@ -35,6 +35,8 @@ class ApiClient {
       credentials: 'include',
     };
 
+
+
     const config = {
       ...defaultOptions,
       ...options,
@@ -61,8 +63,13 @@ class ApiClient {
         throw new Error(errorData.message || `Błąd ${response.status}`);
       }
 
-      const data = await response.json();
-      return data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        return data;
+      } else {
+        return {} as T;
+      }
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -117,14 +124,12 @@ export interface RegisterRequest {
   email: string;
   password: string;
   firstName: string;
-  lastName: string;
 }
 
 export interface User {
   id: number;
   email: string;
-  firstName: string;
-  lastName: string;
+  firstName: string;  
   role: string;
 }
 
@@ -132,6 +137,7 @@ export interface AuthResponse {
   success: boolean;
   message: string;
   user?: User;
+  token?: string;
 }
 
 export const authApi = {
@@ -175,9 +181,6 @@ export interface Contact {
   id: number;
   email: string;
   firstName: string;
-  lastName: string;
-  phone?: string;
-  company?: string;
   status: string;
   tags: string[];
   createdAt: string;
@@ -188,8 +191,6 @@ export interface ContactStats {
   active: number;
   vip: number;
   inactive: number;
-  withPhone: number;
-  withCompany: number;
 }
 
 export const contactApi = {
@@ -198,4 +199,37 @@ export const contactApi = {
   
   getAllContacts: () => 
     apiClient.get<Contact[]>('/contacts'),
-}; 
+    
+  getAvailableTags: () =>
+    apiClient.get<string[]>('/contacts/tags'),
+    
+  createContact: (data: CreateContactRequest) =>
+    apiClient.post<Contact>('/contacts', data),
+    
+  updateContact: (id: number, data: UpdateContactRequest) =>
+    apiClient.put<Contact>(`/contacts/${id}`, data),
+    
+  deleteContact: (id: number) =>
+    apiClient.delete(`/contacts/${id}`),
+    
+  importContacts: (data: ImportContactsRequest) =>
+    apiClient.post<Contact[]>('/contacts/import', data),
+};
+
+export interface CreateContactRequest {
+  email: string;
+  firstName: string;
+  tags?: string[];
+  status?: string;
+}
+
+export interface UpdateContactRequest {
+  email: string;
+  firstName: string;
+  tags?: string[];
+  status?: string;
+}
+
+export interface ImportContactsRequest {
+  contacts: CreateContactRequest[];
+} 

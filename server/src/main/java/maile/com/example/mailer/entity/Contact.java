@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,43 +17,66 @@ import java.util.List;
 @AllArgsConstructor
 public class Contact {
     
+    public enum ContactStatus {
+        ACTIVE, INACTIVE, UNSUBSCRIBED
+    }
+    
+    public enum ContactTag {
+        VIP("VIP"),
+        AKTYWNY("Aktywny"),
+        NEWSLETTER("Newsletter"),
+        NOWY_KLIENT("Nowy klient"),
+        TEST("Test"),
+        KLIENT("Klient"),
+        PREMIUM("Premium"),
+        PROSPEKT("Prospekt"),
+        PARTNER("Partner"),
+        DOSTAWCA("Dostawca");
+        
+        private final String displayName;
+        
+        ContactTag(String displayName) {
+            this.displayName = displayName;
+        }
+        
+        public String getDisplayName() {
+            return displayName;
+        }
+        
+        public static boolean isValidTag(String tag) {
+            for (ContactTag validTag : values()) {
+                if (validTag.displayName.equals(tag)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(nullable = false)
+
+    @Column(nullable = false, unique = true)
     private String email;
-    
-    @Column
+
+    @Column(nullable = false)
     private String firstName;
-    
-    @Column
-    private String lastName;
-    
-    @Column
-    private String phone;
-    
-    @Column
-    private String company;
-    
+
     @ElementCollection
     @CollectionTable(name = "contact_tags", joinColumns = @JoinColumn(name = "contact_id"))
     @Column(name = "tag")
     private List<String> tags;
-    
+
     @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private ContactStatus status = ContactStatus.ACTIVE;
+
     @Column(nullable = false)
-    private ContactStatus status;
-    
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-    
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    
-    public enum ContactStatus {
-        ACTIVE, INACTIVE, UNSUBSCRIBED
-    }
 } 

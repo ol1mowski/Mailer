@@ -14,6 +14,4 @@ public class ContactStatsResponse {
     private Long active;
     private Long vip;
     private Long inactive;
-    private Long withPhone;
-    private Long withCompany;
 } 

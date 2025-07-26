@@ -35,7 +35,6 @@ public class DataInitializer implements CommandLineRunner {
     
     @Override
     public void run(String... args) throws Exception {
-        // Dodaj testowego użytkownika jeśli nie istnieje
         User adminUser = null;
         if (!userRepository.existsByEmail("admin@mailer.com")) {
             adminUser = new User();
@@ -63,7 +62,6 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("Testowy użytkownik został utworzony: user@mailer.com / password123");
         }
         
-        // Dodaj dane testowe dla dashboard jeśli użytkownik admin istnieje
         if (adminUser != null) {
             initializeDashboardData(adminUser);
         }
@@ -72,8 +70,6 @@ public class DataInitializer implements CommandLineRunner {
     private void initializeDashboardData(User user) {   
         if (contactRepository.countByUserId(user.getId()) == 0) {
             String[] names = {"Jan", "Anna", "Piotr", "Maria", "Tomasz", "Katarzyna", "Marek", "Ewa", "Andrzej", "Joanna"};
-            String[] lastNames = {"Kowalski", "Nowak", "Wiśniewski", "Wójcik", "Lewandowski", "Kamiński", "Zieliński", "Szymański", "Woźniak", "Dąbrowski"};
-            String[] companies = {"TechCorp", "InnoSoft", "DataFlow", "CloudTech", "WebSolutions", "DigitalPro", "SmartSys", "NetWorks", "CodeLab", "AppStudio"};
             String[][] tags = {
                 {"VIP", "Aktywny"}, {"Newsletter"}, {"Nowy klient"}, {"VIP", "Aktywny"}, {"Test"},
                 {"Klient", "Premium"}, {"Newsletter", "Aktywny"}, {"VIP"}, {"Nowy klient"}, {"Klient"}
@@ -88,11 +84,8 @@ public class DataInitializer implements CommandLineRunner {
             for (int i = 1; i <= 15; i++) {
                 int index = (i - 1) % 10;
                 Contact contact = Contact.builder()
-                        .email(names[index].toLowerCase() + "." + lastNames[index].toLowerCase() + i + "@example.com")
+                        .email(names[index].toLowerCase() + i + "@example.com")
                         .firstName(names[index])
-                        .lastName(lastNames[index])
-                        .phone(i % 3 == 0 ? null : "+48 123 456 " + String.format("%03d", i))
-                        .company(i % 2 == 0 ? companies[index] : null)
                         .tags(java.util.Arrays.asList(tags[index]))
                         .status(statuses[index])
                         .user(user)
@@ -102,7 +95,6 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("Dodano 15 kontaktów testowych z różnymi tagami i statusami");
         }
         
-        // Dodaj szablony email testowe
         if (emailTemplateRepository.countByUserId(user.getId()) == 0) {
             for (int i = 1; i <= 8; i++) {
                 EmailTemplate template = EmailTemplate.builder()
@@ -118,7 +110,6 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("Dodano 8 szablonów email testowych");
         }
         
-        // Dodaj emaile testowe
         if (emailRepository.countByUserId(user.getId()) == 0) {
             for (int i = 1; i <= 25; i++) {
                 Email.EmailStatus status = i <= 20 ? Email.EmailStatus.OPENED : Email.EmailStatus.SENT;
@@ -140,8 +131,7 @@ public class DataInitializer implements CommandLineRunner {
             }
             System.out.println("Dodano 25 emaili testowych (20 otwartych, 5 wysłanych)");
         }
-        
-        // Dodaj aktywności testowe
+                
         if (activityRepository.findRecentActivitiesByUserId(user.getId()).isEmpty()) {
             String[] activityTypes = {"email", "contact", "template", "campaign"};
             String[] descriptions = {

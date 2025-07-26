@@ -5,7 +5,8 @@ import { ContactCard } from './ContactCard.component'
 
 interface ContactListProps {
   contacts: Contact[];
-  onDelete: (id: number) => void;
+  onDelete: (contact: Contact) => void;
+  onEdit: (contact: Contact) => void;
   onAddContact: () => void;
   isLoading: boolean;
   hasFilters: boolean;
@@ -14,6 +15,7 @@ interface ContactListProps {
 export const ContactList = ({ 
   contacts, 
   onDelete, 
+  onEdit,
   onAddContact, 
   isLoading, 
   hasFilters 
@@ -34,6 +36,7 @@ export const ContactList = ({
               key={contact.id}
               contact={contact}
               onDelete={onDelete}
+              onEdit={onEdit}
               isLoading={isLoading}
             />
           ))}
@@ -59,5 +62,5 @@ export const ContactList = ({
         </div>
       </div>
     </Card>
-  )
-} 
+  );
+}; 

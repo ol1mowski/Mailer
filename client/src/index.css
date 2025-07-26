@@ -53,6 +53,81 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Modal backdrop styles */
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    cursor: pointer;
+    /* Removed backdrop-blur to prevent form blur issues */
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+  
+  /* Ensure modal covers entire viewport */
+  .modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    pointer-events: auto;
+  }
+  
+  /* Modal content should not be blurred - stronger rules */
+  .modal-content {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+    z-index: 60;
+    position: relative;
+  }
+  
+  /* Ensure all content inside modal is not blurred */
+  .modal-content * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+  }
+  
+  /* Additional protection for modal content inner */
+  .modal-content-inner {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+  }
+  
+  .modal-content-inner * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+  }
+  
+  /* Force remove any blur effects from form elements */
+  .modal-content form,
+  .modal-content input,
+  .modal-content select,
+  .modal-content textarea,
+  .modal-content button,
+  .modal-content label,
+  .modal-content div {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+  }
+  
+  /* Prevent body scroll when modal is open */
+  body.modal-open {
+    overflow: hidden !important;
+  }
+  
+  html.modal-open {
+    overflow: hidden !important;
+  }
 }
 
 @layer utilities {

@@ -2,9 +2,6 @@ export interface Contact {
   id: number;
   email: string;
   firstName: string;
-  lastName: string;
-  phone?: string;
-  company?: string;
   tags: string[];
   status: 'active' | 'inactive' | 'unsubscribed';
   createdAt: string;
@@ -20,6 +17,4 @@ export interface ContactStats {
   active: number;
   vip: number;
   inactive: number;
-  withPhone: number;
-  withCompany: number;
 } 

@@ -7,6 +7,7 @@ public class AuthResponse {
     private String message;
     private UserInfo user;
     private boolean success;
+    private String token;
     
     public AuthResponse() {}
     
@@ -16,12 +17,23 @@ public class AuthResponse {
         this.success = success;
     }
     
+    public AuthResponse(String message, UserInfo user, boolean success, String token) {
+        this.message = message;
+        this.user = user;
+        this.success = success;
+        this.token = token;
+    }
+    
     public static AuthResponse success(String message, User user) {
         return new AuthResponse(message, user != null ? UserInfo.fromUser(user) : null, true);
     }
     
     public static AuthResponse success(String message) {
         return new AuthResponse(message, null, true);
+    }
+    
+    public static AuthResponse success(String message, User user, String token) {
+        return new AuthResponse(message, user != null ? UserInfo.fromUser(user) : null, true, token);
     }
     
     public static AuthResponse error(String message) {
@@ -50,6 +62,14 @@ public class AuthResponse {
     
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+    
+    public String getToken() {
+        return token;
+    }
+    
+    public void setToken(String token) {
+        this.token = token;
     }
     
     public static class UserInfo {

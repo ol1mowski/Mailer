@@ -1,4 +1,4 @@
-import { User, Mail, Tag, Phone, Building, UserX } from 'lucide-react';
+import { User, Mail, Tag, UserX } from 'lucide-react';
 import { Card } from '@/components/ui';
 import type { ContactStats } from '../types/contact.types';
 
@@ -10,8 +10,8 @@ interface ContactStatsProps {
 export const ContactStatsComponent = ({ stats, isLoading = false }: ContactStatsProps) => {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {[...Array(6)].map((_, index) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[...Array(4)].map((_, index) => (
           <Card key={index} className="p-4">
             <div className="flex items-center">
               <div className="h-8 w-8 bg-gray-200 rounded mr-3 animate-pulse" />
@@ -27,7 +27,7 @@ export const ContactStatsComponent = ({ stats, isLoading = false }: ContactStats
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <Card className="p-4">
         <div className="flex items-center">
           <User className="h-8 w-8 text-blue-600 mr-3" />
@@ -61,24 +61,6 @@ export const ContactStatsComponent = ({ stats, isLoading = false }: ContactStats
           <div>
             <p className="text-sm text-gray-600">VIP</p>
             <p className="text-2xl font-semibold text-gray-900">{stats.vip}</p>
-          </div>
-        </div>
-      </Card>
-      <Card className="p-4">
-        <div className="flex items-center">
-          <Phone className="h-8 w-8 text-orange-600 mr-3" />
-          <div>
-            <p className="text-sm text-gray-600">Z telefonem</p>
-            <p className="text-2xl font-semibold text-gray-900">{stats.withPhone}</p>
-          </div>
-        </div>
-      </Card>
-      <Card className="p-4">
-        <div className="flex items-center">
-          <Building className="h-8 w-8 text-indigo-600 mr-3" />
-          <div>
-            <p className="text-sm text-gray-600">Z firmą</p>
-            <p className="text-2xl font-semibold text-gray-900">{stats.withCompany}</p>
           </div>
         </div>
       </Card>

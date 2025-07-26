@@ -16,14 +16,11 @@ public class ContactResponse {
     private Long id;
     private String email;
     private String firstName;
-    private String lastName;
-    private String phone;
-    private String company;
     private String status;
     private List<String> tags;
     private LocalDateTime createdAt;
     
     public String getFullName() {
-        return (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "").trim();
+        return firstName != null ? firstName : "";
     }
 } 

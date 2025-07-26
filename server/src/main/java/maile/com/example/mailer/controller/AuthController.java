@@ -41,6 +41,8 @@ public class AuthController {
             User user = authService.getUserByEmail(request.getEmail());
             String token = authService.generateToken(user);
             setAuthCookie(httpResponse, token);
+            
+            return ResponseEntity.ok(AuthResponse.success("Rejestracja zakończona pomyślnie", user, token));
         }
         
         return ResponseEntity.ok(response);
@@ -55,6 +57,8 @@ public class AuthController {
             User user = authService.getUserByEmail(request.getEmail());
             String token = authService.generateToken(user);
             setAuthCookie(httpResponse, token);
+            
+            return ResponseEntity.ok(AuthResponse.success("Logowanie zakończone pomyślnie", user, token));
         }
         
         return ResponseEntity.ok(response);
@@ -85,8 +89,8 @@ public class AuthController {
         Cookie cookie = new Cookie(cookieName, token);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setSecure(false); // true w produkcji z HTTPS
-        cookie.setMaxAge(24 * 60 * 60); // 24 godziny
+        cookie.setSecure(false);
+        cookie.setMaxAge(24 * 60 * 60);
         httpResponse.addCookie(cookie);
     }
 } 

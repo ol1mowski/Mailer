@@ -20,15 +20,15 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
     @Query("SELECT COUNT(c) FROM Contact c WHERE c.user.id = :userId AND c.status = 'INACTIVE'")
     Long countInactiveContactsByUserId(@Param("userId") Long userId);
     
-    @Query("SELECT COUNT(c) FROM Contact c WHERE c.user.id = :userId AND c.phone IS NOT NULL AND c.phone != ''")
-    Long countContactsWithPhoneByUserId(@Param("userId") Long userId);
-    
-    @Query("SELECT COUNT(c) FROM Contact c WHERE c.user.id = :userId AND c.company IS NOT NULL AND c.company != ''")
-    Long countContactsWithCompanyByUserId(@Param("userId") Long userId);
-    
     @Query("SELECT COUNT(c) FROM Contact c WHERE c.user.id = :userId AND 'VIP' MEMBER OF c.tags")
     Long countVipContactsByUserId(@Param("userId") Long userId);
     
     @Query("SELECT c FROM Contact c WHERE c.user.id = :userId ORDER BY c.createdAt DESC")
     List<Contact> findAllByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId);
+    
+    @Query("SELECT COUNT(c) > 0 FROM Contact c WHERE c.email = :email AND c.user.id = :userId")
+    boolean existsByEmailAndUserId(@Param("email") String email, @Param("userId") Long userId);
+    
+    @Query("SELECT c FROM Contact c WHERE c.id = :contactId AND c.user.id = :userId")
+    java.util.Optional<Contact> findByIdAndUserId(@Param("contactId") Long contactId, @Param("userId") Long userId);
 } 
