@@ -21,7 +21,7 @@ Kompletny system zarządzania emailami z autentykacją JWT i HTTP-only cookies.
 - Maven
 
 ### Frontend
-- React 18
+- React 19.1
 - TypeScript
 - TailwindCSS
 - React Query (TanStack Query)
@@ -31,7 +31,7 @@ Kompletny system zarządzania emailami z autentykacją JWT i HTTP-only cookies.
 ## 📋 Wymagania
 
 - Java 17+
-- Node.js 18+
+- Node.js 20+
 - npm lub yarn
 
 ## 🚀 Uruchomienie
