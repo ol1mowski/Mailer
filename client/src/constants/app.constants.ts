@@ -8,8 +8,7 @@ export const APP_CONSTANTS = {
 
 export const ROUTES = {
   DASHBOARD: '/dashboard',
-  CONTACTS: '/contacts',
-  MAILING_LISTS: '/mailing-lists',
+  CONTACTS: '/contacts',  
   EMAIL_TEMPLATES: '/email-templates',
   CAMPAIGNS: '/campaigns',
   ANALYTICS: '/analytics',

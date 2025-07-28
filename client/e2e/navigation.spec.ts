@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Navigation - Basic tests', () => {
   test('should redirect unauthenticated user from protected pages to login', async ({ page }) => {
-    const protectedPages = ['/dashboard', '/contacts', '/mailing-lists', '/email-templates', '/campaigns', '/analytics', '/settings'];
+    const protectedPages = ['/dashboard', '/contacts', '/email-templates', '/campaigns', '/analytics', '/settings'];
     
     for (const pageUrl of protectedPages) {
       await page.goto(pageUrl);

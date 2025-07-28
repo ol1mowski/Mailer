@@ -12,7 +12,6 @@ import { useAuth } from "./hooks/useAuth.hook";
 import { LoginPage } from "./components/auth/LoginPage.page";
 import { Dashboard } from "./components/dashboard/Dashboard.page";
 import { ContactsPage } from "./components/contacts/ContactsPage.page";
-import { MailingListsPage } from "./components/mailingList/MailingListsPage.page";
 import { EmailTemplatesPage } from "./components/emailTemplates/EmailTemplatesPage.page";
 import { CampaignsPage } from "./components/campaigns/CampaignsPage.page";
 import { AnalyticsPage } from "./components/analytics/AnalyticsPage.page";
@@ -101,14 +100,6 @@ function AppContent() {
           element={
             <Layout>
               <ContactsPage />
-            </Layout>
-          }
-        />
-        <Route
-          path={ROUTES.MAILING_LISTS}
-          element={
-            <Layout>
-              <MailingListsPage />
             </Layout>
           }
         />
