@@ -33,8 +33,6 @@ export const CAMPAIGN_STATUSES = [
 export const CONTACT_TAGS = [
   'VIP',
   'Nowy klient',
-  'Aktywny',
-  'Nieaktywny',
   'Test',
   'Newsletter',
 ] as const 

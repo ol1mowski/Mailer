@@ -45,8 +45,8 @@ export const AdditionalInfoSection = ({
             className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
           >
             <option value="active">🟢 Aktywny</option>
-            <option value="inactive">🟡 Nieaktywny</option>
-            <option value="unsubscribed">🔴 Wypisany</option>
+            <option value="inactive">🔴 Nieaktywny</option>
+            <option value="unsubscribed">⚫ Wypisany</option>
           </select>
         </div>
 

@@ -1,6 +1,7 @@
 import { Edit, Trash2 } from 'lucide-react';
 import { Badge, Button } from '@/components/ui';
 import type { Contact } from '../types/contact.types';
+import { cn } from '@/lib/utils';
 
 interface ContactCardProps {
   contact: Contact;
@@ -42,8 +43,15 @@ export const ContactCard = ({ contact, onDelete, onEdit, isLoading }: ContactCar
         </div>
         
         <Badge
-          variant={contact.status === 'active' ? 'default' : 'secondary'}
-          className="text-xs"
+          variant="outline"
+          className={cn(
+            "text-xs",
+            {
+              "bg-green-100 text-green-800 border-green-200": contact.status === 'active',
+              "bg-red-100 text-red-800 border-red-200": contact.status === 'inactive',
+              "bg-gray-100 text-gray-800 border-gray-200": contact.status === 'unsubscribed'
+            }
+          )}
         >
           {contact.status === 'active' ? 'Aktywny' : contact.status === 'inactive' ? 'Nieaktywny' : 'Wypisany'}
         </Badge>

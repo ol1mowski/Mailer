@@ -1,12 +1,21 @@
 package maile.com.example.mailer.config;
 
-import maile.com.example.mailer.entity.*;
-import maile.com.example.mailer.repository.*;
+import java.time.LocalDateTime;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import maile.com.example.mailer.entity.Activity;
+import maile.com.example.mailer.entity.Contact;
+import maile.com.example.mailer.entity.Email;
+import maile.com.example.mailer.entity.EmailTemplate;
+import maile.com.example.mailer.entity.User;
+import maile.com.example.mailer.repository.ActivityRepository;
+import maile.com.example.mailer.repository.ContactRepository;
+import maile.com.example.mailer.repository.EmailRepository;
+import maile.com.example.mailer.repository.EmailTemplateRepository;
+import maile.com.example.mailer.repository.UserRepository;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -71,8 +80,8 @@ public class DataInitializer implements CommandLineRunner {
         if (contactRepository.countByUserId(user.getId()) == 0) {
             String[] names = {"Jan", "Anna", "Piotr", "Maria", "Tomasz", "Katarzyna", "Marek", "Ewa", "Andrzej", "Joanna"};
             String[][] tags = {
-                {"VIP", "Aktywny"}, {"Newsletter"}, {"Nowy klient"}, {"VIP", "Aktywny"}, {"Test"},
-                {"Klient", "Premium"}, {"Newsletter", "Aktywny"}, {"VIP"}, {"Nowy klient"}, {"Klient"}
+                {"VIP"}, {"Newsletter"}, {"Nowy klient"}, {"VIP"}, {"Test"},
+                {"Klient", "Premium"}, {"Newsletter"}, {"VIP"}, {"Nowy klient"}, {"Klient"}
             };
             Contact.ContactStatus[] statuses = {
                 Contact.ContactStatus.ACTIVE, Contact.ContactStatus.ACTIVE, Contact.ContactStatus.INACTIVE,

@@ -2,6 +2,7 @@ import { MoreHorizontal, Edit, Copy, Trash2 } from 'lucide-react'
 import { Badge, Button } from '@/components/ui'
 import type { EmailTemplate } from '../types/emailTemplate.types'
 import { getCategoryLabel } from '../utils/emailTemplateUtils.utils'
+import { cn } from '@/lib/utils'
 
 interface EmailTemplateCardProps {
   template: EmailTemplate
@@ -47,8 +48,14 @@ export const EmailTemplateCard = ({
       <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
         <span>Utworzono: {template.createdAt}</span>
         <Badge
-          variant={template.isActive ? 'default' : 'secondary'}
-          className="text-xs"
+          variant="outline"
+          className={cn(
+            "text-xs",
+            {
+              "bg-green-100 text-green-800 border-green-200": template.isActive,
+              "bg-red-100 text-red-800 border-red-200": !template.isActive
+            }
+          )}
         >
           {template.isActive ? 'Aktywny' : 'Nieaktywny'}
         </Badge>

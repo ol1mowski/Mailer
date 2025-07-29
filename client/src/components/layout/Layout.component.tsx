@@ -24,7 +24,6 @@ interface LayoutProps {
 const navigationItems = [
   { name: 'Dashboard', href: ROUTES.DASHBOARD, icon: BarChart3 },
   { name: 'Kontakty', href: ROUTES.CONTACTS, icon: Users },
-  { name: 'Listy mailingowe', href: ROUTES.MAILING_LISTS, icon: Mail },
   { name: 'Szablony email', href: ROUTES.EMAIL_TEMPLATES, icon: FileText },
   { name: 'Kampanie', href: ROUTES.CAMPAIGNS, icon: Mail },
   { name: 'Analytics', href: ROUTES.ANALYTICS, icon: BarChart3 },
