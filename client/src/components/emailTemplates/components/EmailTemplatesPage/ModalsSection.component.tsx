@@ -1,3 +1,4 @@
+import { Modal } from '@/components/ui'
 import { EmailTemplateForm } from '../EmailTemplateForm'
 import { DeleteConfirmation } from '../DeleteConfirmation.component'
 import type { EmailTemplate } from '../../types/emailTemplate.types'
@@ -28,23 +29,34 @@ export const ModalsSection = ({
 }: ModalsSectionProps) => {
   return (
     <>
-      {showForm && (
+      <Modal
+        isOpen={showForm}
+        onClose={onCloseForm}
+        title={editingTemplate ? 'Edytuj szablon email' : 'Dodaj nowy szablon email'}
+        size="xl"
+      >
         <EmailTemplateForm
           template={editingTemplate}
           onSubmit={onSubmitTemplate}
           onCancel={onCloseForm}
           isLoading={isLoading}
         />
-      )}
+      </Modal>
 
-      {showDeleteConfirm && (
+      <Modal
+        isOpen={showDeleteConfirm}
+        onClose={onCloseDeleteConfirm}
+        title="Potwierdź usunięcie"
+        size="md"
+        variant="danger"
+      >
         <DeleteConfirmation
           template={deletingTemplate}
           onConfirm={onConfirmDelete}
           onCancel={onCloseDeleteConfirm}
           isLoading={isLoading}
         />
-      )}
+      </Modal>
     </>
   )
 }

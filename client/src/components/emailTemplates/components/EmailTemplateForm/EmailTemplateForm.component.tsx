@@ -34,51 +34,59 @@ export const EmailTemplateForm = ({
   } = useEmailTemplateForm(template, onSubmit)
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-7xl h-[90vh] flex flex-col">
+    <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="animate-in slide-in-from-top-4 duration-500 delay-100">
         <FormHeader
           template={template}
           showPreview={showPreview}
           onTogglePreview={() => setShowPreview(!showPreview)}
-          onCancel={onCancel}
           onSelectTemplate={handleSelectTemplate}
           onInsertCode={handleInsertCode}
-          isLoading={isLoading}
         />
+      </div>
 
-        <div className="flex-1 flex overflow-hidden">
-          <div className={`${showPreview ? 'w-1/2' : 'w-full'} p-6 overflow-y-auto border-r border-gray-200`}>
-            <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="flex gap-6 animate-in slide-in-from-bottom-4 duration-500 delay-200">
+        <div className={`${showPreview ? 'w-1/2' : 'w-full'} space-y-6`}>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="animate-in fade-in duration-500 delay-300">
               <SecurityInfo />
+            </div>
 
+            <div className="animate-in slide-in-from-left-4 duration-500 delay-400">
               <BasicInfoSection
                 formData={formData}
                 errors={errors}
                 updateFormData={updateFormData}
                 isLoading={isLoading}
               />
+            </div>
 
+            <div className="animate-in slide-in-from-left-4 duration-500 delay-500">
               <ContentEditorSection
                 formData={formData}
                 errors={errors}
                 updateFormData={updateFormData}
                 isLoading={isLoading}
               />
+            </div>
 
+            <div className="animate-in slide-in-from-bottom-4 duration-500 delay-600">
               <FormActions
                 onCancel={onCancel}
                 isLoading={isLoading}
                 template={template}
               />
-            </form>
-          </div>
+            </div>
+          </form>
+        </div>
 
-          {showPreview && (
+        {showPreview && (
+          <div className="w-1/2 animate-in slide-in-from-right-4 duration-500 delay-300">
             <PreviewSection
               formData={formData}
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )
