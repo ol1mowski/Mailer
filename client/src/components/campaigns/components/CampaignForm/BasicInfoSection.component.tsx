@@ -5,7 +5,7 @@ import { CAMPAIGN_STATUS_LABELS } from '../../types/campaign.types'
 interface BasicInfoSectionProps {
   formData: CampaignFormData
   errors: CampaignFormErrors
-  updateFormData: (field: keyof CampaignFormData, value: any) => void
+  updateFormData: (field: keyof CampaignFormData, value: string) => void
   isLoading: boolean
 }
 

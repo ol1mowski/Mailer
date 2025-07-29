@@ -35,10 +35,9 @@ export const useCampaignForm = (
     }
   }, [campaign])
 
-  const updateFormData = (field: keyof CampaignFormData, value: any) => {
+  const updateFormData = (field: keyof CampaignFormData, value: string | number | null) => {
     setFormData(prev => ({ ...prev, [field]: value }))
     
-    // Clear error for this field
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }))
     }
@@ -48,19 +47,19 @@ export const useCampaignForm = (
     const newErrors: CampaignFormErrors = {}
 
     switch (step) {
-      case 1: // Basic Info
+      case 1: 
         if (!formData.name.trim()) newErrors.name = 'Nazwa kampanii jest wymagana'
         if (!formData.subject.trim()) newErrors.subject = 'Temat jest wymagany'
         break
-      case 2: // Content
+      case 2: 
         if (!formData.content.trim()) newErrors.content = 'Treść jest wymagana'
         break
-      case 3: // Recipients
+      case 3: 
         if (formData.recipientIds.length === 0) newErrors.recipientIds = 'Wybierz co najmniej jednego odbiorcę'
         break
-      case 4: // Template (optional)
+      case 4: 
         break
-      case 5: // Scheduling (optional)
+      case 5: 
         break
     }
 

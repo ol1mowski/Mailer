@@ -4,7 +4,7 @@ import type { CampaignFormData, CampaignFormErrors } from '../../types/campaign.
 interface SchedulingSectionProps {
   formData: CampaignFormData
   errors: CampaignFormErrors
-  updateFormData: (field: keyof CampaignFormData, value: any) => void
+  updateFormData: (field: keyof CampaignFormData, value: string) => void
   isLoading: boolean
 }
 
