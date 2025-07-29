@@ -42,7 +42,7 @@ export const CampaignCard = ({
 
   const canStart = campaign.status === 'draft' || campaign.status === 'scheduled'
   const canPause = campaign.status === 'active'
-  const canEdit = campaign.status === 'draft' || campaign.status === 'scheduled'
+  // Usuwam ograniczenie canEdit - wszystkie kampanie mogą być edytowane
 
   return (
     <Card className="p-6 hover:shadow-lg transition-shadow">
@@ -55,16 +55,15 @@ export const CampaignCard = ({
           </Badge>
         </div>
         <div className="flex items-center gap-2">
-          {canEdit && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleEdit}
-              disabled={isLoading}
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
-          )}
+          {/* Usuwam warunek canEdit - przycisk edycji zawsze widoczny */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleEdit}
+            disabled={isLoading}
+          >
+            <Edit className="h-4 w-4" />
+          </Button>
           {canStart && (
             <Button
               variant="outline"
