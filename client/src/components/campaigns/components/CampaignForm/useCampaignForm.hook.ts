@@ -35,7 +35,7 @@ export const useCampaignForm = (
     }
   }, [campaign])
 
-  const updateFormData = (field: keyof CampaignFormData, value: string | number | null) => {
+  const updateFormData = (field: keyof CampaignFormData, value: string | number | number[] | null) => {
     setFormData(prev => ({ ...prev, [field]: value }))
     
     if (errors[field]) {

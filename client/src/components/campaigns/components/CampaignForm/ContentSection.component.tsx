@@ -5,7 +5,7 @@ import type { CampaignFormData, CampaignFormErrors } from '../../types/campaign.
 interface ContentSectionProps {
   formData: CampaignFormData
   errors: CampaignFormErrors
-  updateFormData: (field: keyof CampaignFormData, value: string) => void
+  updateFormData: (field: keyof CampaignFormData, value: string | number | number[] | null) => void
   isLoading: boolean
 }
 
