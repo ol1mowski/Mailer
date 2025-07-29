@@ -1,5 +1,11 @@
 package maile.com.example.mailer.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maile.com.example.mailer.dto.CreateEmailTemplateRequest;
@@ -9,11 +15,6 @@ import maile.com.example.mailer.entity.EmailTemplate;
 import maile.com.example.mailer.entity.User;
 import maile.com.example.mailer.repository.EmailTemplateRepository;
 import maile.com.example.mailer.repository.UserRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +46,7 @@ public class EmailTemplateService {
                 .subject(request.getSubject())
                 .content(request.getContent())
                 .description(request.getDescription())
-                .status(EmailTemplate.TemplateStatus.valueOf(request.getStatus()))
+                .status(EmailTemplate.TemplateStatus.valueOf(request.getStatus().toUpperCase()))
                 .user(user)
                 .build();
         
@@ -67,7 +68,7 @@ public class EmailTemplateService {
         template.setContent(request.getContent());
         template.setDescription(request.getDescription());
         if (request.getStatus() != null) {
-            template.setStatus(EmailTemplate.TemplateStatus.valueOf(request.getStatus()));
+            template.setStatus(EmailTemplate.TemplateStatus.valueOf(request.getStatus().toUpperCase()));
         }
         
         EmailTemplate updatedTemplate = emailTemplateRepository.save(template);
