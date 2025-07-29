@@ -33,7 +33,7 @@ export const SafePreview = ({ htmlContent, className = '' }: SafePreviewProps) =
         'rows', 'cols',
         'selected', 'checked'
       ],
-      ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+      ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
       KEEP_CONTENT: true,
       RETURN_DOM: false,
       RETURN_DOM_FRAGMENT: false,
