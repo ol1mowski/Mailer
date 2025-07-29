@@ -1,17 +1,20 @@
 package maile.com.example.mailer.config;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import maile.com.example.mailer.entity.Activity;
+import maile.com.example.mailer.entity.Campaign;
 import maile.com.example.mailer.entity.Contact;
 import maile.com.example.mailer.entity.Email;
 import maile.com.example.mailer.entity.EmailTemplate;
 import maile.com.example.mailer.entity.User;
 import maile.com.example.mailer.repository.ActivityRepository;
+import maile.com.example.mailer.repository.CampaignRepository;
 import maile.com.example.mailer.repository.ContactRepository;
 import maile.com.example.mailer.repository.EmailRepository;
 import maile.com.example.mailer.repository.EmailTemplateRepository;
@@ -24,6 +27,7 @@ public class DataInitializer implements CommandLineRunner {
     private final EmailRepository emailRepository;
     private final ContactRepository contactRepository;
     private final EmailTemplateRepository emailTemplateRepository;
+    private final CampaignRepository campaignRepository;
     private final ActivityRepository activityRepository;
     private final PasswordEncoder passwordEncoder;
     
@@ -32,12 +36,14 @@ public class DataInitializer implements CommandLineRunner {
             EmailRepository emailRepository,
             ContactRepository contactRepository,
             EmailTemplateRepository emailTemplateRepository,
+            CampaignRepository campaignRepository,
             ActivityRepository activityRepository,
             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.emailRepository = emailRepository;
         this.contactRepository = contactRepository;
         this.emailTemplateRepository = emailTemplateRepository;
+        this.campaignRepository = campaignRepository;
         this.activityRepository = activityRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -117,6 +123,52 @@ public class DataInitializer implements CommandLineRunner {
                 emailTemplateRepository.save(template);
             }
             System.out.println("Dodano 8 szablonów email testowych");
+        }
+        
+        if (campaignRepository.countByUserId(user.getId()) == 0) {
+            List<Contact> contacts = contactRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
+            List<EmailTemplate> templates = emailTemplateRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId());
+            
+            Campaign.CampaignStatus[] statuses = {
+                Campaign.CampaignStatus.DRAFT,
+                Campaign.CampaignStatus.SCHEDULED,
+                Campaign.CampaignStatus.ACTIVE,
+                Campaign.CampaignStatus.PAUSED,
+                Campaign.CampaignStatus.COMPLETED
+            };
+            
+            for (int i = 1; i <= 10; i++) {
+                int statusIndex = (i - 1) % statuses.length;
+                Campaign campaign = Campaign.builder()
+                        .name("Kampania " + i)
+                        .subject("Temat kampanii " + i)
+                        .content("<h1>Treść kampanii " + i + "</h1><p>To jest przykładowa treść kampanii.</p>")
+                        .description("Opis kampanii " + i)
+                        .status(statuses[statusIndex])
+                        .scheduledAt(statuses[statusIndex] == Campaign.CampaignStatus.SCHEDULED ? 
+                            LocalDateTime.now().plusDays(i) : null)
+                        .startedAt(statuses[statusIndex] == Campaign.CampaignStatus.ACTIVE || 
+                                  statuses[statusIndex] == Campaign.CampaignStatus.PAUSED || 
+                                  statuses[statusIndex] == Campaign.CampaignStatus.COMPLETED ? 
+                            LocalDateTime.now().minusDays(i) : null)
+                        .completedAt(statuses[statusIndex] == Campaign.CampaignStatus.COMPLETED ? 
+                            LocalDateTime.now().minusHours(i) : null)
+                        .totalRecipients(contacts.size())
+                        .sentEmails(statuses[statusIndex] == Campaign.CampaignStatus.ACTIVE || 
+                                  statuses[statusIndex] == Campaign.CampaignStatus.PAUSED || 
+                                  statuses[statusIndex] == Campaign.CampaignStatus.COMPLETED ? 
+                            contacts.size() : 0)
+                        .openedEmails(statuses[statusIndex] == Campaign.CampaignStatus.COMPLETED ? 
+                            (int)(contacts.size() * 0.7) : 0)
+                        .clickedEmails(statuses[statusIndex] == Campaign.CampaignStatus.COMPLETED ? 
+                            (int)(contacts.size() * 0.3) : 0)
+                        .user(user)
+                        .template(templates.isEmpty() ? null : templates.get(i % templates.size()))
+                        .recipients(contacts.isEmpty() ? null : contacts.subList(0, Math.min(5, contacts.size())))
+                        .build();
+                campaignRepository.save(campaign);
+            }
+            System.out.println("Dodano 10 kampanii testowych z różnymi statusami");
         }
         
         if (emailRepository.countByUserId(user.getId()) == 0) {

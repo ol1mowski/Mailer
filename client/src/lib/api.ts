@@ -279,4 +279,69 @@ export const emailTemplateApi = {
     
   toggleTemplateStatus: (id: number) =>
     apiClient.post<EmailTemplate>(`/email-templates/${id}/toggle-status`),
+};
+
+export interface Campaign {
+  id: number;
+  name: string;
+  subject: string;
+  content: string;
+  description: string;
+  status: string;
+  scheduledAt: string | null;
+  startedAt: string | null;
+  completedAt: string | null;
+  totalRecipients: number;
+  sentEmails: number;
+  openedEmails: number;
+  clickedEmails: number;
+  createdAt: string;
+  updatedAt: string;
+  template: EmailTemplate | null;
+  recipients: Contact[] | null;
+}
+
+export interface CreateCampaignRequest {
+  name: string;
+  subject: string;
+  content: string;
+  description?: string;
+  status: string;
+  scheduledAt?: string;
+  templateId?: number;
+  recipientIds?: number[];
+}
+
+export interface UpdateCampaignRequest {
+  name: string;
+  subject: string;
+  content: string;
+  description?: string;
+  status?: string;
+  scheduledAt?: string;
+  templateId?: number;
+  recipientIds?: number[];
+}
+
+export const campaignApi = {
+  getAllCampaigns: () => 
+    apiClient.get<Campaign[]>('/campaigns'),
+    
+  createCampaign: (data: CreateCampaignRequest) =>
+    apiClient.post<Campaign>('/campaigns', data),
+    
+  updateCampaign: (id: number, data: UpdateCampaignRequest) =>
+    apiClient.put<Campaign>(`/campaigns/${id}`, data),
+    
+  deleteCampaign: (id: number) =>
+    apiClient.delete(`/campaigns/${id}`),
+    
+  startCampaign: (id: number) =>
+    apiClient.post<Campaign>(`/campaigns/${id}/start`),
+    
+  pauseCampaign: (id: number) =>
+    apiClient.post<Campaign>(`/campaigns/${id}/pause`),
+    
+  completeCampaign: (id: number) =>
+    apiClient.post<Campaign>(`/campaigns/${id}/complete`),
 }; 
