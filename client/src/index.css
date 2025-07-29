@@ -2,6 +2,120 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Email Preview Styles */
+.preview-content {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+.preview-content h1,
+.preview-content h2,
+.preview-content h3,
+.preview-content h4,
+.preview-content h5,
+.preview-content h6 {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.preview-content h1 { font-size: 2em; }
+.preview-content h2 { font-size: 1.5em; }
+.preview-content h3 { font-size: 1.25em; }
+.preview-content h4 { font-size: 1em; }
+.preview-content h5 { font-size: 0.875em; }
+.preview-content h6 { font-size: 0.85em; }
+
+.preview-content p {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.preview-content ul,
+.preview-content ol {
+  margin-top: 0;
+  margin-bottom: 1em;
+  padding-left: 2em;
+}
+
+.preview-content li {
+  margin-bottom: 0.25em;
+}
+
+.preview-content a {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.preview-content a:hover {
+  color: #0056b3;
+}
+
+.preview-content blockquote {
+  margin: 1em 0;
+  padding: 0.5em 1em;
+  border-left: 4px solid #dee2e6;
+  background-color: #f8f9fa;
+  font-style: italic;
+}
+
+.preview-content code {
+  background-color: #f8f9fa;
+  padding: 0.125em 0.25em;
+  border-radius: 0.25em;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875em;
+}
+
+.preview-content pre {
+  background-color: #f8f9fa;
+  padding: 1em;
+  border-radius: 0.25em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.preview-content pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.preview-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.preview-content th,
+.preview-content td {
+  border: 1px solid #dee2e6;
+  padding: 0.5em;
+  text-align: left;
+}
+
+.preview-content th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.preview-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive email styles */
+@media (max-width: 600px) {
+  .preview-content {
+    font-size: 14px;
+  }
+  
+  .preview-content h1 { font-size: 1.5em; }
+  .preview-content h2 { font-size: 1.25em; }
+  .preview-content h3 { font-size: 1.125em; }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

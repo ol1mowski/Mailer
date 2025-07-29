@@ -233,3 +233,50 @@ export interface UpdateContactRequest {
 export interface ImportContactsRequest {
   contacts: CreateContactRequest[];
 } 
+
+export interface EmailTemplate {
+  id: number;
+  name: string;
+  subject: string;
+  content: string;
+  description: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateEmailTemplateRequest {
+  name: string;
+  subject: string;
+  content: string;
+  description?: string;
+  status?: string;
+}
+
+export interface UpdateEmailTemplateRequest {
+  name: string;
+  subject: string;
+  content: string;
+  description?: string;
+  status?: string;
+}
+
+export const emailTemplateApi = {
+  getAllTemplates: () => 
+    apiClient.get<EmailTemplate[]>('/email-templates'),
+    
+  createTemplate: (data: CreateEmailTemplateRequest) =>
+    apiClient.post<EmailTemplate>('/email-templates', data),
+    
+  updateTemplate: (id: number, data: UpdateEmailTemplateRequest) =>
+    apiClient.put<EmailTemplate>(`/email-templates/${id}`, data),
+    
+  deleteTemplate: (id: number) =>
+    apiClient.delete(`/email-templates/${id}`),
+    
+  duplicateTemplate: (id: number) =>
+    apiClient.post<EmailTemplate>(`/email-templates/${id}/duplicate`),
+    
+  toggleTemplateStatus: (id: number) =>
+    apiClient.post<EmailTemplate>(`/email-templates/${id}/toggle-status`),
+}; 

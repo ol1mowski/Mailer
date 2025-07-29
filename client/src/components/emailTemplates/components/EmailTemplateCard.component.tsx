@@ -1,15 +1,15 @@
 import { MoreHorizontal, Edit, Copy, Trash2 } from 'lucide-react'
 import { Badge, Button } from '@/components/ui'
 import type { EmailTemplate } from '../types/emailTemplate.types'
-import { getCategoryLabel } from '../utils/emailTemplateUtils.utils'
+import { getStatusLabel } from '../utils/emailTemplateUtils.utils'
 import { cn } from '@/lib/utils'
 
 interface EmailTemplateCardProps {
   template: EmailTemplate
-  onEdit: (id: string) => void
-  onDuplicate: (id: string) => void
-  onDelete: (id: string) => void
-  onToggleActive: (id: string) => void
+  onEdit: (id: number) => void
+  onDuplicate: (id: number) => void
+  onDelete: (id: number) => void
+  onToggleActive: (id: number) => void
   isLoading: boolean
 }
 
@@ -27,8 +27,18 @@ export const EmailTemplateCard = ({
         <div className="flex-1">
           <h3 className="font-medium text-gray-900 mb-1">{template.name}</h3>
           <p className="text-sm text-gray-600 mb-2">{template.subject}</p>
-          <Badge variant="outline" className="text-xs">
-            {getCategoryLabel(template.category)}
+          <Badge
+            variant="outline"
+            className={cn(
+              "text-xs",
+              {
+                "bg-green-100 text-green-800 border-green-200": template.status === 'active',
+                "bg-red-100 text-red-800 border-red-200": template.status === 'inactive',
+                "bg-gray-100 text-gray-800 border-gray-200": template.status === 'draft'
+              }
+            )}
+          >
+            {getStatusLabel(template.status)}
           </Badge>
         </div>
         <Button
@@ -46,19 +56,7 @@ export const EmailTemplateCard = ({
       </p>
       
       <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-        <span>Utworzono: {template.createdAt}</span>
-        <Badge
-          variant="outline"
-          className={cn(
-            "text-xs",
-            {
-              "bg-green-100 text-green-800 border-green-200": template.isActive,
-              "bg-red-100 text-red-800 border-red-200": !template.isActive
-            }
-          )}
-        >
-          {template.isActive ? 'Aktywny' : 'Nieaktywny'}
-        </Badge>
+        <span>Utworzono: {new Date(template.createdAt).toLocaleDateString('pl-PL')}</span>
       </div>
       
       <div className="flex gap-2">

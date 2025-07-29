@@ -1,13 +1,14 @@
 import { AlertTriangle, X } from 'lucide-react'
 import { cn } from '@/utils'
+import { Button } from './button.component'
 
 interface ErrorMessageProps {
   title?: string
   message: string
   variant?: 'default' | 'destructive' | 'warning'
-  className?: string
-  onClose?: () => void
+  className?: string    
   showIcon?: boolean
+  onClose?: () => void
 }
 
 export const ErrorMessage = ({ 
@@ -15,8 +16,8 @@ export const ErrorMessage = ({
   message, 
   variant = 'default',
   className,
-  onClose,
-  showIcon = true
+  showIcon = true,
+  onClose
 }: ErrorMessageProps) => {
   const variantClasses = {
     default: 'bg-red-50 border-red-200 text-red-800',
@@ -52,12 +53,14 @@ export const ErrorMessage = ({
         </div>
         
         {onClose && (
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onClose}
-            className="ml-3 p-1 hover:bg-red-100 rounded transition-colors"
+            className="ml-2 h-6 w-6 p-0"
           >
             <X className="h-4 w-4" />
-          </button>
+          </Button>
         )}
       </div>
     </div>

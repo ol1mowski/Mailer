@@ -1,10 +1,11 @@
 import { Search, Plus, Filter, FileText, Edit, Copy } from 'lucide-react'
 import { Button, Input, Card, Loading, ErrorMessage } from '@/components/ui'
-import { EMAIL_TEMPLATE_CATEGORIES } from '@/constants/app.constants'
 import { useEmailTemplates } from './hooks/useEmailTemplates.hook'
 import { calculateEmailTemplateStats } from './utils/emailTemplateUtils.utils'
 import { EmailTemplateHeader } from './components/EmailTemplateHeader.component'
 import { EmailTemplateCard } from './components/EmailTemplateCard.component'
+import { EmailTemplateForm } from './components/EmailTemplateForm.component'
+import { DeleteConfirmation } from './components/DeleteConfirmation.component'
 
 export const EmailTemplatesPage = () => {
   const {
@@ -13,13 +14,20 @@ export const EmailTemplatesPage = () => {
     filters,
     isLoading,
     error,
+    showForm,
+    editingTemplate,
+    showDeleteConfirm,
+    deletingTemplate,
     handleAddTemplate,
     handleEditTemplate,
     handleDuplicateTemplate,
     handleDeleteTemplate,
     handleToggleActive,
-    updateFilters,
-    clearError
+    handleSubmitTemplate,
+    handleConfirmDelete,
+    closeForm,
+    closeDeleteConfirm,
+    updateFilters
   } = useEmailTemplates()
 
   const stats = calculateEmailTemplateStats(templates)
@@ -33,7 +41,6 @@ export const EmailTemplatesPage = () => {
       {error && (
         <ErrorMessage 
           message={error} 
-          onClose={clearError}
         />
       )}
 
@@ -58,7 +65,7 @@ export const EmailTemplatesPage = () => {
           </div>
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-gray-400" />
-            <span className="text-sm text-gray-600">Kategoria:</span>
+            <span className="text-sm text-gray-600">Status:</span>
             <select
               value={filters.selectedCategory}
               onChange={(e) => updateFilters({ selectedCategory: e.target.value })}
@@ -66,11 +73,9 @@ export const EmailTemplatesPage = () => {
               disabled={isLoading}
             >
               <option value="">Wszystkie</option>
-              {EMAIL_TEMPLATE_CATEGORIES.map(category => (
-                <option key={category.value} value={category.value}>
-                  {category.label}
-                </option>
-              ))}
+              <option value="active">Aktywne</option>
+              <option value="inactive">Nieaktywne</option>
+              <option value="draft">Szkice</option>
             </select>
           </div>
         </div>
@@ -99,7 +104,7 @@ export const EmailTemplatesPage = () => {
           <div className="flex items-center">
             <Copy className="h-8 w-8 text-purple-600 mr-3" />
             <div>
-              <p className="text-sm text-gray-600">Kategorie</p>
+              <p className="text-sm text-gray-600">Statusy</p>
               <p className="text-2xl font-semibold text-gray-900">{stats.categories}</p>
             </div>
           </div>
@@ -149,6 +154,24 @@ export const EmailTemplatesPage = () => {
           )}
         </div>
       </Card>
+
+      {showForm && (
+        <EmailTemplateForm
+          template={editingTemplate}
+          onSubmit={handleSubmitTemplate}
+          onCancel={closeForm}
+          isLoading={isLoading}
+        />
+      )}
+
+      {showDeleteConfirm && (
+        <DeleteConfirmation
+          template={deletingTemplate}
+          onConfirm={handleConfirmDelete}
+          onCancel={closeDeleteConfirm}
+          isLoading={isLoading}
+        />
+      )}
     </div>
   )
 } 
