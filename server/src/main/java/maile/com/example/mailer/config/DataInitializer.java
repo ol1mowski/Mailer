@@ -13,12 +13,14 @@ import maile.com.example.mailer.entity.Contact;
 import maile.com.example.mailer.entity.Email;
 import maile.com.example.mailer.entity.EmailTemplate;
 import maile.com.example.mailer.entity.User;
+import maile.com.example.mailer.entity.UserSettings;
 import maile.com.example.mailer.repository.ActivityRepository;
 import maile.com.example.mailer.repository.CampaignRepository;
 import maile.com.example.mailer.repository.ContactRepository;
 import maile.com.example.mailer.repository.EmailRepository;
 import maile.com.example.mailer.repository.EmailTemplateRepository;
 import maile.com.example.mailer.repository.UserRepository;
+import maile.com.example.mailer.repository.UserSettingsRepository;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -29,6 +31,7 @@ public class DataInitializer implements CommandLineRunner {
     private final EmailTemplateRepository emailTemplateRepository;
     private final CampaignRepository campaignRepository;
     private final ActivityRepository activityRepository;
+    private final UserSettingsRepository userSettingsRepository;
     private final PasswordEncoder passwordEncoder;
     
     public DataInitializer(
@@ -38,6 +41,7 @@ public class DataInitializer implements CommandLineRunner {
             EmailTemplateRepository emailTemplateRepository,
             CampaignRepository campaignRepository,
             ActivityRepository activityRepository,
+            UserSettingsRepository userSettingsRepository,
             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.emailRepository = emailRepository;
@@ -45,6 +49,7 @@ public class DataInitializer implements CommandLineRunner {
         this.emailTemplateRepository = emailTemplateRepository;
         this.campaignRepository = campaignRepository;
         this.activityRepository = activityRepository;
+        this.userSettingsRepository = userSettingsRepository;
         this.passwordEncoder = passwordEncoder;
     }
     
@@ -65,21 +70,59 @@ public class DataInitializer implements CommandLineRunner {
             adminUser = userRepository.findByEmail("admin@mailer.com").orElse(null);
         }
         
+        User regularUser = null;
         if (!userRepository.existsByEmail("user@mailer.com")) {
-            User regularUser = new User();
+            regularUser = new User();
             regularUser.setEmail("user@mailer.com");
             regularUser.setPassword(passwordEncoder.encode("password123"));
             regularUser.setFirstName("Regular");
             regularUser.setLastName("User");
             regularUser.setRole(User.UserRole.USER);
             
-            userRepository.save(regularUser);
+            regularUser = userRepository.save(regularUser);
             System.out.println("Testowy użytkownik został utworzony: user@mailer.com / password123");
+        } else {
+            regularUser = userRepository.findByEmail("user@mailer.com").orElse(null);
+        }
+        
+        // Tworzenie domyślnych ustawień dla użytkowników
+        if (adminUser != null && userSettingsRepository.countByUserId(adminUser.getId()) == 0) {
+            createDefaultUserSettings(adminUser);
+        }
+        
+        if (regularUser != null && userSettingsRepository.countByUserId(regularUser.getId()) == 0) {
+            createDefaultUserSettings(regularUser);
         }
         
         if (adminUser != null) {
             initializeDashboardData(adminUser);
         }
+    }
+    
+    private void createDefaultUserSettings(User user) {
+        UserSettings userSettings = UserSettings.builder()
+                .user(user)
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .timezone("Europe/Warsaw")
+                .emailNotifications(true)
+                .smsNotifications(false)
+                .campaignNotifications(true)
+                .weeklyReports(true)
+                .monthlyReports(true)
+                .loginNotifications(true)
+                .passwordChangeReminder(true)
+                .smtpEncryption("TLS")
+                .accountStatus(UserSettings.AccountStatus.ACTIVE)
+                .subscriptionPlan("FREE")
+                .storageUsed(0L)
+                .storageLimit(1000000000L) // 1GB
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+        
+        userSettingsRepository.save(userSettings);
+        System.out.println("Domyślne ustawienia utworzone dla użytkownika: " + user.getEmail());
     }
     
     private void initializeDashboardData(User user) {   

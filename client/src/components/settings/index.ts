@@ -1,16 +1,9 @@
-export { SettingsPage } from './SettingsPage.page'
-export { SettingsHeader } from './components/SettingsHeader.component'
-export { UserSettingsCard } from './components/UserSettingsCard.component'
-export { NotificationSettingsCard } from './components/NotificationSettingsCard.component'
-export { SecuritySettingsCard } from './components/SecuritySettingsCard.component'
-export { EmailSettingsCard } from './components/EmailSettingsCard.component'
-export { AccountStatusCard } from './components/AccountStatusCard.component'
-export { useSettings } from './hooks/useSettings.hook'
-export type { 
-  UserSettings, 
-  NotificationSettings, 
-  SecuritySettings, 
-  EmailSettings, 
-  AccountStatus, 
-  SettingsData 
-} from './types/settings.types' 
+export * from './SettingsPage.page'
+export * from './components/UserSettingsCard.component'
+export * from './components/NotificationSettingsCard.component'
+export * from './components/SecuritySettingsCard.component'
+export * from './components/EmailSettingsCard.component'
+export * from './components/AccountStatusCard.component'
+export * from './components/SettingsHeader.component'
+export * from './hooks/useSettings.hook'
+export * from './types/settings.types' 

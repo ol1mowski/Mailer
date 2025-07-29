@@ -389,6 +389,65 @@ export interface ExportDataRequest {
   format: string;
 }
 
+export interface UserSettings {
+  firstName: string;
+  lastName: string;
+  timezone: string;
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+  campaignNotifications: boolean;
+  weeklyReports: boolean;
+  monthlyReports: boolean;
+  loginNotifications: boolean;
+  passwordChangeReminder: boolean;
+  smtpHost: string;
+  smtpPort: number;
+  smtpUsername: string;
+  smtpEncryption: string;
+  fromEmail: string;
+  fromName: string;
+  replyToEmail: string;
+  accountStatus: string;
+  subscriptionPlan: string;
+  subscriptionExpires: string;
+  storageUsed: number;
+  storageLimit: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpdateUserSettingsRequest {
+  firstName: string;
+  lastName?: string;
+  timezone?: string;
+  emailNotifications?: boolean;
+  smsNotifications?: boolean;
+  campaignNotifications?: boolean;
+  weeklyReports?: boolean;
+  monthlyReports?: boolean;
+  loginNotifications?: boolean;
+  passwordChangeReminder?: boolean;
+  smtpHost?: string;
+  smtpPort?: number;
+  smtpUsername?: string;
+  smtpPassword?: string;
+  smtpEncryption?: string;
+  fromEmail?: string;
+  fromName?: string;
+  replyToEmail?: string;
+}
+
+export const settingsApi = {
+  getUserSettings: () => 
+    apiClient.get<UserSettings>('/settings'),
+    
+  updateUserSettings: (data: UpdateUserSettingsRequest) =>
+    apiClient.put<UserSettings>('/settings', data),
+    
+  toggleNotification: (type: string) =>
+    apiClient.post<UserSettings>(`/settings/notifications/${type}/toggle`),
+};
+
 export const analyticsApi = {
   getAnalytics: (period: string = '30d') => 
     apiClient.get<AnalyticsData>(`/analytics?period=${period}`),

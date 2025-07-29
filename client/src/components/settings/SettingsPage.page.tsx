@@ -1,70 +1,71 @@
+import { Loading, ErrorMessage } from '@/components/ui'
 import { useSettings } from './hooks/useSettings.hook'
-import { SettingsHeader } from './components/SettingsHeader.component'
 import { UserSettingsCard } from './components/UserSettingsCard.component'
 import { NotificationSettingsCard } from './components/NotificationSettingsCard.component'
 import { SecuritySettingsCard } from './components/SecuritySettingsCard.component'
 import { EmailSettingsCard } from './components/EmailSettingsCard.component'
 import { AccountStatusCard } from './components/AccountStatusCard.component'
-import { ErrorMessage } from '@/components/ui'
+import { SettingsHeader } from './components/SettingsHeader.component'
 
 export const SettingsPage = () => {
   const {
     settings,
     isLoading,
     error,
-    showPassword,
-    setShowPassword,
     updateUserSettings,
-    updateSecuritySettings,
     updateEmailSettings,
     toggleNotification,
-    toggleTwoFactor,
     saveSettings,
-    clearError,
-    hasUnsavedChanges
+    clearError
   } = useSettings()
 
+  if (isLoading) {
+    return <Loading />
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} onClose={clearError} />
+  }
+
+  if (!settings) {
+    return <ErrorMessage message="Nie udało się załadować ustawień" />
+  }
+
   return (
-    <div className="space-y-6">
-      {error && (
-        <ErrorMessage 
-          message={error} 
-          onClose={clearError}
-        />
-      )}
-
-      <SettingsHeader 
-        onSave={saveSettings}
-        isLoading={isLoading}
-        hasUnsavedChanges={hasUnsavedChanges}
-      />
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <UserSettingsCard 
-          userSettings={settings.user}
-          onUpdateSettings={updateUserSettings}
-        />
-
-        <NotificationSettingsCard 
-          notificationSettings={settings.notifications}
-          onToggleNotification={toggleNotification}
-        />
-
-        <SecuritySettingsCard 
-          securitySettings={settings.security}
-          onUpdateSettings={updateSecuritySettings}
-          onToggleTwoFactor={toggleTwoFactor}
-          showPassword={showPassword}
-          onTogglePasswordVisibility={() => setShowPassword(!showPassword)}
-        />
-
-        <EmailSettingsCard 
-          emailSettings={settings.email}
-          onUpdateSettings={updateEmailSettings}
-        />
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SettingsHeader onSave={saveSettings} isLoading={isLoading} hasUnsavedChanges={false} />
+        
+        <div className="mt-8 space-y-8">
+          <UserSettingsCard
+            userSettings={settings.user}
+            onUpdateSettings={updateUserSettings}
+            isLoading={isLoading}
+          />
+          
+          <NotificationSettingsCard
+            notificationSettings={settings.notifications}
+            onToggleNotification={toggleNotification}
+            isLoading={isLoading}
+          />
+          
+          <SecuritySettingsCard
+            securitySettings={settings.security}
+            onToggleNotification={toggleNotification}
+            isLoading={isLoading}
+          />
+          
+          <EmailSettingsCard
+            emailSettings={settings.email}
+            onUpdateSettings={(formData) => updateEmailSettings(formData.email)}
+            isLoading={isLoading}
+          />
+          
+          <AccountStatusCard
+            accountStatus={settings.account}
+          />
+        </div>
       </div>
-
-      <AccountStatusCard accountStatus={settings.account} />
     </div>
   )
 } 
