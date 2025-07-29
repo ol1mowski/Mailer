@@ -1,11 +1,11 @@
 import { Filter } from 'lucide-react'
 import { Button, Card } from '@/components/ui'
-import type { AnalyticsFilters } from '../types/analytics.types'
+import type { AnalyticsFilters, AnalyticsPeriods } from '../types/analytics.types'
 import { getPeriodDays } from '../utils/analyticsUtils.utils'
 
 interface AnalyticsFiltersProps {
   filters: AnalyticsFilters
-  periods: Array<{ value: string; label: string }>
+  periods: AnalyticsPeriods[]
   onUpdateFilters: (filters: Partial<AnalyticsFilters>) => void
 }
 

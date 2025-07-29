@@ -2,7 +2,7 @@ import { Download } from 'lucide-react'
 import { Button, Loading } from '@/components/ui'
 
 interface AnalyticsHeaderProps {
-  onExportData: () => void
+  onExportData: (format: string) => void
   isLoading: boolean
 }
 
@@ -14,7 +14,7 @@ export const AnalyticsHeader = ({ onExportData, isLoading }: AnalyticsHeaderProp
         <p className="text-gray-600">Analizuj wyniki swoich kampanii email</p>
       </div>
       <div className="flex items-center space-x-2">
-        <Button variant="outline" onClick={onExportData} disabled={isLoading}>
+        <Button variant="outline" onClick={() => onExportData('csv')} disabled={isLoading}>
           {isLoading ? (
             <Loading size="sm" variant="dots" />
           ) : (

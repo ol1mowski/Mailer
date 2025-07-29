@@ -1,15 +1,19 @@
 import { useAnalytics } from './hooks/useAnalytics.hook'
-import { mockAnalytics, mockCampaignPerformance, mockMonthlyData, mockBestHours, mockTrends } from './data/mockAnalytics.data'
 import { AnalyticsHeader } from './components/AnalyticsHeader.component'
 import { AnalyticsFiltersComponent } from './components/AnalyticsFilters.component'
 import { AnalyticsMetricsComponent } from './components/AnalyticsMetrics.component'
 import { AnalyticsDetailsComponent } from './components/AnalyticsDetails.component'
 import { CampaignPerformanceTableComponent } from './components/CampaignPerformanceTable.component'
 import { MonthlyChartComponent } from './components/MonthlyChart.component'
-import { ErrorMessage } from '@/components/ui'
+import { Loading, ErrorMessage } from '@/components/ui'
 
 export const AnalyticsPage = () => {
   const {
+    analytics,
+    campaignPerformance,
+    monthlyData,
+    bestHours,
+    trends,
     filters,
     periods,
     isLoading,
@@ -18,6 +22,10 @@ export const AnalyticsPage = () => {
     updateFilters,
     clearError
   } = useAnalytics()
+
+  if (isLoading && !analytics) {
+    return <Loading fullScreen text="Ładowanie analityki..." />
+  }
 
   return (
     <div className="space-y-6">
@@ -39,21 +47,29 @@ export const AnalyticsPage = () => {
         onUpdateFilters={updateFilters}
       />
 
-      <AnalyticsMetricsComponent data={mockAnalytics} />
+      {analytics && (
+        <AnalyticsMetricsComponent data={analytics} />
+      )}
 
-      <AnalyticsDetailsComponent 
-        data={mockAnalytics}
-        bestHours={mockBestHours}
-        trends={mockTrends}
-      />
+      {analytics && bestHours && trends && (
+        <AnalyticsDetailsComponent 
+          data={analytics}
+          bestHours={bestHours}
+          trends={trends}
+        />
+      )}
 
-      <CampaignPerformanceTableComponent campaigns={mockCampaignPerformance} />
+      {campaignPerformance && (
+        <CampaignPerformanceTableComponent campaigns={campaignPerformance} />
+      )}
 
-      <MonthlyChartComponent 
-        data={mockMonthlyData}
-        selectedMetric={filters.selectedMetric}
-        onMetricChange={(metric) => updateFilters({ selectedMetric: metric })}
-      />
+      {monthlyData && (
+        <MonthlyChartComponent 
+          data={monthlyData}
+          selectedMetric={filters.selectedMetric}
+          onMetricChange={(metric) => updateFilters({ selectedMetric: metric })}
+        />
+      )}
     </div>
   )
 } 

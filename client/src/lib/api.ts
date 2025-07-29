@@ -345,3 +345,66 @@ export const campaignApi = {
   completeCampaign: (id: number) =>
     apiClient.post<Campaign>(`/campaigns/${id}/complete`),
 }; 
+
+export interface AnalyticsData {
+  totalEmails: number;
+  totalRecipients: number;
+  totalOpens: number;
+  totalClicks: number;
+  averageOpenRate: number;
+  averageClickRate: number;
+  bounceRate: number;
+  unsubscribeRate: number;
+}
+
+export interface CampaignPerformance {
+  name: string;
+  sent: number;
+  opened: number;
+  clicked: number;
+  openRate: number;
+  clickRate: number;
+}
+
+export interface MonthlyData {
+  month: string;
+  emails: number;
+  opens: number;
+  clicks: number;
+}
+
+export interface BestHours {
+  timeRange: string;
+  percentage: number;
+}
+
+export interface TrendData {
+  metric: string;
+  change: number;
+  isPositive: boolean;
+}
+
+export interface ExportDataRequest {
+  period: string;
+  format: string;
+}
+
+export const analyticsApi = {
+  getAnalytics: (period: string = '30d') => 
+    apiClient.get<AnalyticsData>(`/analytics?period=${period}`),
+    
+  getCampaignPerformance: (period: string = '30d') =>
+    apiClient.get<CampaignPerformance[]>(`/analytics/campaign-performance?period=${period}`),
+    
+  getMonthlyData: (period: string = '30d') =>
+    apiClient.get<MonthlyData[]>(`/analytics/monthly-data?period=${period}`),
+    
+  getBestHours: () =>
+    apiClient.get<BestHours[]>('/analytics/best-hours'),
+    
+  getTrends: (period: string = '30d') =>
+    apiClient.get<TrendData[]>(`/analytics/trends?period=${period}`),
+    
+  exportData: (data: ExportDataRequest) =>
+    apiClient.post<string>('/analytics/export', data),
+}; 

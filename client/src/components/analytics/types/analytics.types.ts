@@ -1,42 +1,18 @@
-export interface AnalyticsData {
-  totalEmails: number
-  totalRecipients: number
-  totalOpens: number
-  totalClicks: number
-  averageOpenRate: number
-  averageClickRate: number
-  bounceRate: number
-  unsubscribeRate: number
-}
+import type { AnalyticsData, CampaignPerformance, MonthlyData, BestHours, TrendData } from '@/lib/api'
 
-export interface CampaignPerformance {
-  name: string
-  sent: number
-  opened: number
-  clicked: number
-  openRate: number
-  clickRate: number
-}
-
-export interface MonthlyData {
-  month: string
-  emails: number
-  opens: number
-  clicks: number
-}
+export type { AnalyticsData, CampaignPerformance, MonthlyData, BestHours, TrendData }
 
 export interface AnalyticsFilters {
   selectedPeriod: string
   selectedMetric: string
 }
 
-export interface BestHours {
-  timeRange: string
-  percentage: number
+export interface AnalyticsPeriods {
+  value: string
+  label: string
 }
 
-export interface TrendData {
-  metric: string
-  change: number
-  isPositive: boolean
+export interface AnalyticsMetrics {
+  value: string
+  label: string
 } 
