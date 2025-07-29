@@ -405,6 +405,35 @@ export const analyticsApi = {
   getTrends: (period: string = '30d') =>
     apiClient.get<TrendData[]>(`/analytics/trends?period=${period}`),
     
-  exportData: (data: ExportDataRequest) =>
-    apiClient.post<string>('/analytics/export', data),
+  exportData: async (data: ExportDataRequest): Promise<void> => {
+    const response = await fetch(`${API_BASE_URL}/analytics/export`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+      throw new Error('Błąd eksportu danych');
+    }
+
+    if (data.format.toLowerCase() === 'xml') {
+      // Pobierz plik XML
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `analytics_${data.period}.xml`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } else {
+      // Dla innych formatów zwróć tekst
+      const result = await response.text();
+      console.log('Export result:', result);
+    }
+  },
 }; 

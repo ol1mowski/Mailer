@@ -76,9 +76,8 @@ export const useAnalytics = () => {
 
   const exportDataMutation = useMutation({
     mutationFn: analyticsApi.exportData,
-    onSuccess: (data) => {
-      toast.success('Dane zostały wyeksportowane')
-      console.log('Export result:', data)
+    onSuccess: () => {
+      toast.success('Dane zostały wyeksportowane i pobrane')
     },
     onError: (error: Error) => {
       setError(`Błąd eksportu danych: ${error.message}`)
@@ -86,7 +85,7 @@ export const useAnalytics = () => {
     }
   })
 
-  const handleExportData = async (format: string = 'csv') => {
+  const handleExportData = async (format: string = 'xml') => {
     exportDataMutation.mutate({
       period: filters.selectedPeriod,
       format

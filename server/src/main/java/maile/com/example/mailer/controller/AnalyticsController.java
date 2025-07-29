@@ -2,6 +2,8 @@ package maile.com.example.mailer.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -127,6 +129,18 @@ public class AnalyticsController {
         try {
             Long userId = getCurrentUserId();
             String result = analyticsService.exportData(userId, request.getPeriod(), request.getFormat());
+            
+            if ("xml".equalsIgnoreCase(request.getFormat())) {
+                // Zwróć XML jako plik do pobrania
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_XML);
+                headers.setContentDispositionFormData("attachment", "analytics_" + request.getPeriod() + ".xml");
+                
+                return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(result);
+            }
+            
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             log.error("Błąd podczas eksportu danych: ", e);

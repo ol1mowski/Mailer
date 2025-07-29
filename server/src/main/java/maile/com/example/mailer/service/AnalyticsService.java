@@ -1,19 +1,33 @@
 package maile.com.example.mailer.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import maile.com.example.mailer.dto.*;
-import maile.com.example.mailer.entity.Campaign;
-import maile.com.example.mailer.entity.User;
-import maile.com.example.mailer.repository.CampaignRepository;
-import maile.com.example.mailer.repository.UserRepository;
-import org.springframework.stereotype.Service;
-
+import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import maile.com.example.mailer.dto.AnalyticsResponse;
+import maile.com.example.mailer.dto.BestHoursResponse;
+import maile.com.example.mailer.dto.CampaignPerformanceResponse;
+import maile.com.example.mailer.dto.MonthlyDataResponse;
+import maile.com.example.mailer.dto.TrendDataResponse;
+import maile.com.example.mailer.entity.Campaign;
+import maile.com.example.mailer.repository.CampaignRepository;
+import maile.com.example.mailer.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -135,8 +149,11 @@ public class AnalyticsService {
     public String exportData(Long userId, String period, String format) {
         log.info("Eksport danych dla użytkownika: {}, okresu: {} i formatu: {}", userId, period, format);
         
-        // W rzeczywistej implementacji tutaj byłaby logika generowania pliku
-        // Na razie zwracamy przykładowy komunikat
+        if ("xml".equalsIgnoreCase(format)) {
+            return generateXmlExport(userId, period);
+        }
+        
+        // Dla innych formatów zwracamy komunikat
         return "Dane zostały wyeksportowane w formacie " + format + " dla okresu " + period;
     }
     
@@ -167,5 +184,103 @@ public class AnalyticsService {
                 .openRate(Math.round(openRate * 100.0) / 100.0)
                 .clickRate(Math.round(clickRate * 100.0) / 100.0)
                 .build();
+    }
+
+    private String generateXmlExport(Long userId, String period) {
+        try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.newDocument();
+            
+            // Root element
+            Element rootElement = doc.createElement("analytics");
+            rootElement.setAttribute("period", period);
+            rootElement.setAttribute("exportDate", LocalDateTime.now().toString());
+            doc.appendChild(rootElement);
+            
+            // Pobierz dane analityczne
+            AnalyticsResponse analytics = getAnalytics(userId, period);
+            List<CampaignPerformanceResponse> campaignPerformance = getCampaignPerformance(userId, period);
+            List<MonthlyDataResponse> monthlyData = getMonthlyData(userId, period);
+            List<BestHoursResponse> bestHours = getBestHours(userId);
+            List<TrendDataResponse> trends = getTrends(userId, period);
+            
+            // Dodaj główne statystyki
+            Element summaryElement = doc.createElement("summary");
+            addElement(doc, summaryElement, "totalEmails", analytics.getTotalEmails().toString());
+            addElement(doc, summaryElement, "totalRecipients", analytics.getTotalRecipients().toString());
+            addElement(doc, summaryElement, "totalOpens", analytics.getTotalOpens().toString());
+            addElement(doc, summaryElement, "totalClicks", analytics.getTotalClicks().toString());
+            addElement(doc, summaryElement, "averageOpenRate", analytics.getAverageOpenRate().toString());
+            addElement(doc, summaryElement, "averageClickRate", analytics.getAverageClickRate().toString());
+            addElement(doc, summaryElement, "bounceRate", analytics.getBounceRate().toString());
+            addElement(doc, summaryElement, "unsubscribeRate", analytics.getUnsubscribeRate().toString());
+            rootElement.appendChild(summaryElement);
+            
+            // Dodaj wydajność kampanii
+            Element campaignsElement = doc.createElement("campaigns");
+            for (CampaignPerformanceResponse campaign : campaignPerformance) {
+                Element campaignElement = doc.createElement("campaign");
+                addElement(doc, campaignElement, "name", campaign.getName());
+                addElement(doc, campaignElement, "sent", campaign.getSent().toString());
+                addElement(doc, campaignElement, "opened", campaign.getOpened().toString());
+                addElement(doc, campaignElement, "clicked", campaign.getClicked().toString());
+                addElement(doc, campaignElement, "openRate", campaign.getOpenRate().toString());
+                addElement(doc, campaignElement, "clickRate", campaign.getClickRate().toString());
+                campaignsElement.appendChild(campaignElement);
+            }
+            rootElement.appendChild(campaignsElement);
+            
+            // Dodaj dane miesięczne
+            Element monthlyElement = doc.createElement("monthlyData");
+            for (MonthlyDataResponse monthly : monthlyData) {
+                Element monthElement = doc.createElement("month");
+                addElement(doc, monthElement, "name", monthly.getMonth());
+                addElement(doc, monthElement, "emails", monthly.getEmails().toString());
+                addElement(doc, monthElement, "opens", monthly.getOpens().toString());
+                addElement(doc, monthElement, "clicks", monthly.getClicks().toString());
+                monthlyElement.appendChild(monthElement);
+            }
+            rootElement.appendChild(monthlyElement);
+            
+            // Dodaj najlepsze godziny
+            Element bestHoursElement = doc.createElement("bestHours");
+            for (BestHoursResponse hour : bestHours) {
+                Element hourElement = doc.createElement("hour");
+                addElement(doc, hourElement, "timeRange", hour.getTimeRange());
+                addElement(doc, hourElement, "percentage", hour.getPercentage().toString());
+                bestHoursElement.appendChild(hourElement);
+            }
+            rootElement.appendChild(bestHoursElement);
+            
+            // Dodaj trendy
+            Element trendsElement = doc.createElement("trends");
+            for (TrendDataResponse trend : trends) {
+                Element trendElement = doc.createElement("trend");
+                addElement(doc, trendElement, "metric", trend.getMetric());
+                addElement(doc, trendElement, "change", trend.getChange().toString());
+                addElement(doc, trendElement, "isPositive", trend.getIsPositive().toString());
+                trendsElement.appendChild(trendElement);
+            }
+            rootElement.appendChild(trendsElement);
+            
+            // Konwertuj do stringa
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            StringWriter writer = new StringWriter();
+            transformer.transform(new DOMSource(doc), new StreamResult(writer));
+            
+            return writer.toString();
+            
+        } catch (Exception e) {
+            log.error("Błąd podczas generowania XML: ", e);
+            return "Błąd podczas generowania pliku XML";
+        }
+    }
+    
+    private void addElement(Document doc, Element parent, String name, String value) {
+        Element element = doc.createElement(name);
+        element.appendChild(doc.createTextNode(value));
+        parent.appendChild(element);
     }
 }

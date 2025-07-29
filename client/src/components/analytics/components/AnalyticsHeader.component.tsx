@@ -14,13 +14,13 @@ export const AnalyticsHeader = ({ onExportData, isLoading }: AnalyticsHeaderProp
         <p className="text-gray-600">Analizuj wyniki swoich kampanii email</p>
       </div>
       <div className="flex items-center space-x-2">
-        <Button variant="outline" onClick={() => onExportData('csv')} disabled={isLoading}>
+        <Button variant="outline" onClick={() => onExportData('xml')} disabled={isLoading}>
           {isLoading ? (
             <Loading size="sm" variant="dots" />
           ) : (
             <>
               <Download className="h-4 w-4 mr-2" />
-              Eksportuj dane
+              Eksportuj XML
             </>
           )}
         </Button>
