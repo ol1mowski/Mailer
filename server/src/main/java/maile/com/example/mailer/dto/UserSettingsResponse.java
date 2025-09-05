@@ -19,16 +19,6 @@ public class UserSettingsResponse {
     private String lastName;
     private String timezone;
     
-    // Ustawienia powiadomień
-    private Boolean emailNotifications;
-    private Boolean smsNotifications;
-    private Boolean campaignNotifications;
-    private Boolean weeklyReports;
-    private Boolean monthlyReports;
-    
-    // Ustawienia bezpieczeństwa
-    private Boolean loginNotifications;
-    private Boolean passwordChangeReminder;
     
     // Ustawienia email
     private String smtpHost;
@@ -43,8 +33,6 @@ public class UserSettingsResponse {
     private UserSettings.AccountStatus accountStatus;
     private String subscriptionPlan;
     private LocalDateTime subscriptionExpires;
-    private Long storageUsed;
-    private Long storageLimit;
     
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

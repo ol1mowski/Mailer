@@ -20,14 +20,6 @@ public class UpdateUserSettingsRequest {
     
     private String timezone;
     
-    private Boolean emailNotifications;
-    private Boolean smsNotifications;
-    private Boolean campaignNotifications;
-    private Boolean weeklyReports;
-    private Boolean monthlyReports;
-    
-    private Boolean loginNotifications;
-    private Boolean passwordChangeReminder;
     
     private String smtpHost;
     private Integer smtpPort;

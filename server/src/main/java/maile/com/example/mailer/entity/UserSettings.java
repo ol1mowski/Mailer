@@ -50,28 +50,6 @@ public class UserSettings {
     @Column(name = "timezone")
     private String timezone;
     
-    // Ustawienia powiadomień
-    @Column(name = "email_notifications")
-    private Boolean emailNotifications;
-    
-    @Column(name = "sms_notifications")
-    private Boolean smsNotifications;
-    
-    @Column(name = "campaign_notifications")
-    private Boolean campaignNotifications;
-    
-    @Column(name = "weekly_reports")
-    private Boolean weeklyReports;
-    
-    @Column(name = "monthly_reports")
-    private Boolean monthlyReports;
-    
-    // Ustawienia bezpieczeństwa
-    @Column(name = "login_notifications")
-    private Boolean loginNotifications;
-    
-    @Column(name = "password_change_reminder")
-    private Boolean passwordChangeReminder;
     
     // Ustawienia email
     @Column(name = "smtp_host")
@@ -109,11 +87,6 @@ public class UserSettings {
     @Column(name = "subscription_expires")
     private LocalDateTime subscriptionExpires;
     
-    @Column(name = "storage_used")
-    private Long storageUsed;
-    
-    @Column(name = "storage_limit")
-    private Long storageLimit;
     
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)

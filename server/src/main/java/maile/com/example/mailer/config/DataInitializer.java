@@ -104,18 +104,9 @@ public class DataInitializer implements CommandLineRunner {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .timezone("Europe/Warsaw")
-                .emailNotifications(true)
-                .smsNotifications(false)
-                .campaignNotifications(true)
-                .weeklyReports(true)
-                .monthlyReports(true)
-                .loginNotifications(true)
-                .passwordChangeReminder(true)
                 .smtpEncryption("TLS")
                 .accountStatus(UserSettings.AccountStatus.ACTIVE)
                 .subscriptionPlan("FREE")
-                .storageUsed(0L)
-                .storageLimit(1000000000L) // 1GB
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();

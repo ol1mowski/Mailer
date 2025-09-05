@@ -4,8 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,17 +51,6 @@ public class UserSettingsController {
         }
     }
     
-    @PostMapping("/notifications/{type}/toggle")
-    public ResponseEntity<UserSettingsResponse> toggleNotification(@PathVariable String type) {
-        try {
-            Long userId = getCurrentUserId();
-            UserSettingsResponse settings = userSettingsService.toggleNotification(userId, type);
-            return ResponseEntity.ok(settings);
-        } catch (Exception e) {
-            log.error("Błąd podczas przełączania powiadomienia: ", e);
-            return ResponseEntity.badRequest().build();
-        }
-    }
     
     private Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
