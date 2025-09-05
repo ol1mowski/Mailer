@@ -383,13 +383,11 @@ export interface UserSettings {
   firstName: string;
   lastName: string;
   timezone: string;
-  smtpHost: string;
-  smtpPort: number;
-  smtpUsername: string;
-  smtpEncryption: string;
+  resendApiKey: string;
   fromEmail: string;
   fromName: string;
   replyToEmail: string;
+  customDomain: string;
   accountStatus: string;
   subscriptionPlan: string;
   subscriptionExpires: string;
@@ -401,14 +399,35 @@ export interface UpdateUserSettingsRequest {
   firstName: string;
   lastName?: string;
   timezone?: string;
-  smtpHost?: string;
-  smtpPort?: number;
-  smtpUsername?: string;
-  smtpPassword?: string;
-  smtpEncryption?: string;
+  resendApiKey?: string;
   fromEmail?: string;
   fromName?: string;
   replyToEmail?: string;
+  customDomain?: string;
+}
+
+export interface SendEmailRequest {
+  to: string[];
+  cc?: string[];
+  bcc?: string[];
+  subject: string;
+  html: string;
+  text?: string;
+  attachments?: EmailAttachment[];
+}
+
+export interface EmailAttachment {
+  filename: string;
+  contentType: string;
+  content: string; // Base64 encoded
+}
+
+export interface SendEmailResponse {
+  id?: string;
+  status: string;
+  message: string;
+  sentAt?: string;
+  recipientCount?: number;
 }
 
 export const settingsApi = {
@@ -417,4 +436,12 @@ export const settingsApi = {
     
   updateUserSettings: (data: UpdateUserSettingsRequest) =>
     apiClient.put<UserSettings>('/settings', data),
+};
+
+export const emailApi = {
+  sendEmail: (data: SendEmailRequest) =>
+    apiClient.post<SendEmailResponse>('/emails/send', data),
+    
+  validateConfiguration: () =>
+    apiClient.get<{isValid: boolean; message: string}>('/emails/configuration/validate'),
 };

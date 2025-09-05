@@ -9,14 +9,11 @@ export interface SettingsFormData {
     timezone: string;
   };
   email: {
-    smtpHost: string;
-    smtpPort: number;
-    smtpUsername: string;
-    smtpPassword: string;
-    smtpEncryption: string;
+    resendApiKey: string;
     fromEmail: string;
     fromName: string;
     replyToEmail: string;
+    customDomain: string;
   };
   account: {
     status: string;
@@ -32,13 +29,11 @@ export interface SettingsFormErrors {
     timezone?: string;
   };
   email: {
-    smtpHost?: string;
-    smtpPort?: string;
-    smtpUsername?: string;
-    smtpPassword?: string;
+    resendApiKey?: string;
     fromEmail?: string;
     fromName?: string;
     replyToEmail?: string;
+    customDomain?: string;
   };
 }
 
@@ -56,8 +51,9 @@ export const TIMEZONES: TimezoneOption[] = [
   { value: 'Asia/Tokyo', label: 'Asia/Tokyo (UTC+9)' },
 ];
 
-export const SMTP_ENCRYPTION_OPTIONS = [
-  { value: 'TLS', label: 'TLS' },
-  { value: 'SSL', label: 'SSL' },
-  { value: 'NONE', label: 'Brak' },
-]; 
+// Opcje dla Resend - obecnie nie potrzebujemy szyfrowania SMTP
+export const RESEND_HELP_TEXT = {
+  apiKey: 'Klucz API Resend można uzyskać na stronie resend.com w sekcji API Keys',
+  customDomain: 'Opcjonalna domena niestandardowa skonfigurowana w Resend',
+  fromEmail: 'Adres email nadawcy (musi być zweryfikowany w Resend)',
+}; 

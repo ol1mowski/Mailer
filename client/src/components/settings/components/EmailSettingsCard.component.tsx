@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Card } from '@/components/ui'
 import { Input, Label } from '@/components/ui'
-import { SMTP_ENCRYPTION_OPTIONS } from '../types/settings.types'
+import { RESEND_HELP_TEXT } from '../types/settings.types'
 import type { SettingsFormData } from '../types/settings.types'
 
 interface EmailSettingsCardProps {
@@ -13,7 +13,7 @@ interface EmailSettingsCardProps {
 export const EmailSettingsCard = ({ emailSettings, onUpdateSettings, isLoading }: EmailSettingsCardProps) => {
   const [formData, setFormData] = useState(emailSettings)
 
-  const handleInputChange = (field: keyof typeof emailSettings, value: string | number) => {
+  const handleInputChange = (field: keyof typeof emailSettings, value: string) => {
     const updatedData = { ...formData, [field]: value }
     setFormData(updatedData)
     
@@ -27,124 +27,134 @@ export const EmailSettingsCard = ({ emailSettings, onUpdateSettings, isLoading }
   return (
     <Card className="p-6">
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Ustawienia SMTP</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Ustawienia Resend Email</h3>
         <p className="text-sm text-gray-600">
-          Skonfiguruj serwer SMTP do wysyłania emaili
+          Skonfiguruj Resend do wysyłania emaili z Twojej domeny
         </p>
       </div>
 
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="smtpHost">Serwer SMTP</Label>
-            <Input
-              id="smtpHost"
-              type="text"
-              value={formData.smtpHost}
-              onChange={(e) => handleInputChange('smtpHost', e.target.value)}
-              disabled={isLoading}
-              placeholder="smtp.gmail.com"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="smtpPort">Port SMTP</Label>
-            <Input
-              id="smtpPort"
-              type="number"
-              value={formData.smtpPort}
-              onChange={(e) => handleInputChange('smtpPort', parseInt(e.target.value) || 587)}
-              disabled={isLoading}
-              placeholder="587"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="smtpUsername">Nazwa użytkownika</Label>
-            <Input
-              id="smtpUsername"
-              type="text"
-              value={formData.smtpUsername}
-              onChange={(e) => handleInputChange('smtpUsername', e.target.value)}
-              disabled={isLoading}
-              placeholder="twoj@email.com"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="smtpPassword">Hasło</Label>
-            <Input
-              id="smtpPassword"
-              type="password"
-              value={formData.smtpPassword}
-              onChange={(e) => handleInputChange('smtpPassword', e.target.value)}
-              disabled={isLoading}
-              placeholder="Wprowadź hasło"
-            />
-          </div>
-        </div>
-
+      <div className="space-y-6">
+        {/* Klucz API Resend */}
         <div>
-          <Label htmlFor="smtpEncryption">Szyfrowanie</Label>
-          <select
-            id="smtpEncryption"
-            value={formData.smtpEncryption}
-            onChange={(e) => handleInputChange('smtpEncryption', e.target.value)}
+          <Label htmlFor="resendApiKey" className="text-sm font-medium text-gray-700">
+            Klucz API Resend *
+          </Label>
+          <Input
+            id="resendApiKey"
+            type="password"
+            value={formData.resendApiKey}
+            onChange={(e) => handleInputChange('resendApiKey', e.target.value)}
+            className="mt-1"
+            placeholder="re_..."
             disabled={isLoading}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            {SMTP_ENCRYPTION_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            {RESEND_HELP_TEXT.apiKey}
+          </p>
         </div>
 
-        <div className="border-t border-gray-200 pt-4">
-          <h4 className="text-md font-medium text-gray-900 mb-4">Ustawienia nadawcy</h4>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="fromEmail">Email nadawcy</Label>
-              <Input
-                id="fromEmail"
-                type="email"
-                value={formData.fromEmail}
-                onChange={(e) => handleInputChange('fromEmail', e.target.value)}
-                disabled={isLoading}
-                placeholder="noreply@twoja-firma.com"
-              />
-            </div>
+        {/* Email nadawcy */}
+        <div>
+          <Label htmlFor="fromEmail" className="text-sm font-medium text-gray-700">
+            Email nadawcy *
+          </Label>
+          <Input
+            id="fromEmail"
+            type="email"
+            value={formData.fromEmail}
+            onChange={(e) => handleInputChange('fromEmail', e.target.value)}
+            className="mt-1"
+            placeholder="noreply@twoja-domena.com"
+            disabled={isLoading}
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            {RESEND_HELP_TEXT.fromEmail}
+          </p>
+        </div>
 
-            <div>
-              <Label htmlFor="fromName">Nazwa nadawcy</Label>
-              <Input
-                id="fromName"
-                type="text"
-                value={formData.fromName}
-                onChange={(e) => handleInputChange('fromName', e.target.value)}
-                disabled={isLoading}
-                placeholder="Twoja Firma"
-              />
-            </div>
+        {/* Nazwa nadawcy */}
+        <div>
+          <Label htmlFor="fromName" className="text-sm font-medium text-gray-700">
+            Nazwa nadawcy
+          </Label>
+          <Input
+            id="fromName"
+            type="text"
+            value={formData.fromName}
+            onChange={(e) => handleInputChange('fromName', e.target.value)}
+            className="mt-1"
+            placeholder="Twoja Firma"
+            disabled={isLoading}
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            Opcjonalna nazwa wyświetlana jako nadawca
+          </p>
+        </div>
+
+        {/* Reply-To */}
+        <div>
+          <Label htmlFor="replyToEmail" className="text-sm font-medium text-gray-700">
+            Reply-To Email
+          </Label>
+          <Input
+            id="replyToEmail"
+            type="email"
+            value={formData.replyToEmail}
+            onChange={(e) => handleInputChange('replyToEmail', e.target.value)}
+            className="mt-1"
+            placeholder="kontakt@twoja-domena.com"
+            disabled={isLoading}
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            Adres na który będą kierowane odpowiedzi
+          </p>
+        </div>
+
+        {/* Domena niestandardowa */}
+        <div>
+          <Label htmlFor="customDomain" className="text-sm font-medium text-gray-700">
+            Domena niestandardowa
+          </Label>
+          <Input
+            id="customDomain"
+            type="text"
+            value={formData.customDomain}
+            onChange={(e) => handleInputChange('customDomain', e.target.value)}
+            className="mt-1"
+            placeholder="twoja-domena.com"
+            disabled={isLoading}
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            {RESEND_HELP_TEXT.customDomain}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
           </div>
-
-          <div className="mt-4">
-            <Label htmlFor="replyToEmail">Email odpowiedzi</Label>
-            <Input
-              id="replyToEmail"
-              type="email"
-              value={formData.replyToEmail}
-              onChange={(e) => handleInputChange('replyToEmail', e.target.value)}
-              disabled={isLoading}
-              placeholder="support@twoja-firma.com"
-            />
+          <div className="ml-3">
+            <h3 className="text-sm font-medium text-blue-800">
+              Informacje o Resend
+            </h3>
+            <div className="mt-2 text-sm text-blue-700">
+              <p>
+                Resend to nowoczesna usługa email API. Aby rozpocząć:
+              </p>
+              <ul className="list-disc list-inside mt-1 space-y-1">
+                <li>Utwórz konto na <a href="https://resend.com" target="_blank" rel="noopener noreferrer" className="underline">resend.com</a></li>
+                <li>Zweryfikuj swoją domenę w panelu Resend</li>
+                <li>Wygeneruj klucz API i wklej go powyżej</li>
+                <li>Skonfiguruj adres nadawcy z zweryfikowanej domeny</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </Card>
   )
-} 
+}

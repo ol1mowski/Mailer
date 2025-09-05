@@ -42,17 +42,11 @@ public class UserSettingsService {
         userSettings.setLastName(request.getLastName());
         userSettings.setTimezone(request.getTimezone());
         
-                
-        userSettings.setSmtpHost(request.getSmtpHost());
-        userSettings.setSmtpPort(request.getSmtpPort());
-        userSettings.setSmtpUsername(request.getSmtpUsername());
-        if (request.getSmtpPassword() != null && !request.getSmtpPassword().isEmpty()) {
-            userSettings.setSmtpPassword(request.getSmtpPassword());
-        }
-        userSettings.setSmtpEncryption(request.getSmtpEncryption());
+        userSettings.setResendApiKey(request.getResendApiKey());
         userSettings.setFromEmail(request.getFromEmail());
         userSettings.setFromName(request.getFromName());
         userSettings.setReplyToEmail(request.getReplyToEmail());
+        userSettings.setCustomDomain(request.getCustomDomain());
         
         UserSettings savedSettings = userSettingsRepository.save(userSettings);
         log.info("Ustawienia zaktualizowane dla użytkownika: {}", userId);
@@ -72,7 +66,6 @@ public class UserSettingsService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .timezone("Europe/Warsaw")
-                .smtpEncryption("TLS")
                 .accountStatus(UserSettings.AccountStatus.ACTIVE)
                 .subscriptionPlan("FREE")
                 .createdAt(LocalDateTime.now())
@@ -87,13 +80,11 @@ public class UserSettingsService {
                 .firstName(userSettings.getFirstName())
                 .lastName(userSettings.getLastName())
                 .timezone(userSettings.getTimezone())
-                .smtpHost(userSettings.getSmtpHost())
-                .smtpPort(userSettings.getSmtpPort())
-                .smtpUsername(userSettings.getSmtpUsername())
-                .smtpEncryption(userSettings.getSmtpEncryption())
+                .resendApiKey(userSettings.getResendApiKey())
                 .fromEmail(userSettings.getFromEmail())
                 .fromName(userSettings.getFromName())
                 .replyToEmail(userSettings.getReplyToEmail())
+                .customDomain(userSettings.getCustomDomain())
                 .accountStatus(userSettings.getAccountStatus())
                 .subscriptionPlan(userSettings.getSubscriptionPlan())
                 .subscriptionExpires(userSettings.getSubscriptionExpires())

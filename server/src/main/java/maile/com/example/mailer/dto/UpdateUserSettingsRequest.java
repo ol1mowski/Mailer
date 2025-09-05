@@ -21,11 +21,7 @@ public class UpdateUserSettingsRequest {
     private String timezone;
     
     
-    private String smtpHost;
-    private Integer smtpPort;
-    private String smtpUsername;
-    private String smtpPassword;
-    private String smtpEncryption;
+    private String resendApiKey;
     
     @Email(message = "Nieprawidłowy format adresu email")
     private String fromEmail;
@@ -34,4 +30,6 @@ public class UpdateUserSettingsRequest {
     
     @Email(message = "Nieprawidłowy format adresu email")
     private String replyToEmail;
+    
+    private String customDomain;
 }

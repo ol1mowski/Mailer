@@ -1,0 +1,2 @@
+org.springframework.context.ApplicationContextInitializer=\
+maile.com.example.mailer.config.DotenvConfig

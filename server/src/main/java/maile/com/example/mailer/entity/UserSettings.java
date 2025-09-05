@@ -40,7 +40,6 @@ public class UserSettings {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
     
-    // Ustawienia użytkownika
     @Column(name = "first_name")
     private String firstName;
     
@@ -51,32 +50,21 @@ public class UserSettings {
     private String timezone;
     
     
-    // Ustawienia email
-    @Column(name = "smtp_host")
-    private String smtpHost;
-    
-    @Column(name = "smtp_port")
-    private Integer smtpPort;
-    
-    @Column(name = "smtp_username")
-    private String smtpUsername;
-    
-    @Column(name = "smtp_password")
-    private String smtpPassword;
-    
-    @Column(name = "smtp_encryption")
-    private String smtpEncryption;
+    @Column(name = "resend_api_key")
+    private String resendApiKey;
     
     @Column(name = "from_email")
     private String fromEmail;
     
-    @Column(name = "from_name")
+    @Column(name = "from_name") 
     private String fromName;
     
     @Column(name = "reply_to_email")
     private String replyToEmail;
     
-    // Status konta
+    @Column(name = "custom_domain")
+    private String customDomain;
+    
     @Column(name = "account_status")
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;

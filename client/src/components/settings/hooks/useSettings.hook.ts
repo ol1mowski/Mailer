@@ -40,14 +40,11 @@ export const useSettings = () => {
       timezone: settings.timezone || 'Europe/Warsaw',
     },
     email: {
-      smtpHost: settings.smtpHost || '',
-      smtpPort: settings.smtpPort || 587,
-      smtpUsername: settings.smtpUsername || '',
-      smtpPassword: '',
-      smtpEncryption: settings.smtpEncryption || 'TLS',
+      resendApiKey: settings.resendApiKey || '',
       fromEmail: settings.fromEmail || '',
       fromName: settings.fromName || '',
       replyToEmail: settings.replyToEmail || '',
+      customDomain: settings.customDomain || '',
     },
     account: {
       status: settings.accountStatus || 'ACTIVE',
@@ -60,14 +57,11 @@ export const useSettings = () => {
     firstName: formData.user.firstName,
     lastName: formData.user.lastName,
     timezone: formData.user.timezone,
-    smtpHost: formData.email.smtpHost,
-    smtpPort: formData.email.smtpPort,
-    smtpUsername: formData.email.smtpUsername,
-    smtpPassword: formData.email.smtpPassword,
-    smtpEncryption: formData.email.smtpEncryption,
+    resendApiKey: formData.email.resendApiKey,
     fromEmail: formData.email.fromEmail,
     fromName: formData.email.fromName,
     replyToEmail: formData.email.replyToEmail,
+    customDomain: formData.email.customDomain,
   })
 
   const updateUserSettings = (formData: SettingsFormData) => {

@@ -1,9 +1,18 @@
 package maile.com.example.mailer.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maile.com.example.mailer.dto.CampaignResponse;
 import maile.com.example.mailer.dto.CreateCampaignRequest;
+import maile.com.example.mailer.dto.SendEmailRequest;
+import maile.com.example.mailer.dto.SendEmailResponse;
 import maile.com.example.mailer.dto.UpdateCampaignRequest;
 import maile.com.example.mailer.entity.Campaign;
 import maile.com.example.mailer.entity.Contact;
@@ -13,12 +22,6 @@ import maile.com.example.mailer.repository.CampaignRepository;
 import maile.com.example.mailer.repository.ContactRepository;
 import maile.com.example.mailer.repository.EmailTemplateRepository;
 import maile.com.example.mailer.repository.UserRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class CampaignService {
     private final UserRepository userRepository;
     private final EmailTemplateRepository emailTemplateRepository;
     private final ContactRepository contactRepository;
+    private final ResendEmailService resendEmailService;
     
     public List<CampaignResponse> getAllCampaigns(Long userId) {
         log.info("Pobieranie wszystkich kampanii dla użytkownika: {}", userId);
@@ -61,14 +65,12 @@ public class CampaignService {
                 .clickedEmails(0)
                 .build();
         
-        // Dodaj template jeśli podano
         if (request.getTemplateId() != null) {
             EmailTemplate template = emailTemplateRepository.findByIdAndUserId(request.getTemplateId(), userId)
                     .orElseThrow(() -> new RuntimeException("Szablon nie został znaleziony"));
             campaign.setTemplate(template);
         }
         
-        // Dodaj odbiorców jeśli podano
         if (request.getRecipientIds() != null && !request.getRecipientIds().isEmpty()) {
             List<Contact> recipients = contactRepository.findAllById(request.getRecipientIds());
             campaign.setRecipients(recipients);
@@ -77,6 +79,12 @@ public class CampaignService {
         
         Campaign savedCampaign = campaignRepository.save(campaign);
         log.info("Kampania utworzona z ID: {}", savedCampaign.getId());
+        
+
+        if (savedCampaign.getStatus() == Campaign.CampaignStatus.ACTIVE) {
+            log.info("Automatyczne uruchamianie kampanii z statusem ACTIVE: {}", savedCampaign.getId());
+            return startCampaign(savedCampaign.getId(), userId);
+        }
         
         return mapToCampaignResponse(savedCampaign);
     }
@@ -99,14 +107,12 @@ public class CampaignService {
             campaign.setScheduledAt(request.getScheduledAt());
         }
         
-        // Aktualizuj template jeśli podano
         if (request.getTemplateId() != null) {
             EmailTemplate template = emailTemplateRepository.findByIdAndUserId(request.getTemplateId(), userId)
                     .orElseThrow(() -> new RuntimeException("Szablon nie został znaleziony"));
             campaign.setTemplate(template);
         }
         
-        // Aktualizuj odbiorców jeśli podano
         if (request.getRecipientIds() != null) {
             List<Contact> recipients = contactRepository.findAllById(request.getRecipientIds());
             campaign.setRecipients(recipients);
@@ -138,15 +144,29 @@ public class CampaignService {
                 .orElseThrow(() -> new RuntimeException("Kampania nie została znaleziona"));
         
         if (campaign.getStatus() != Campaign.CampaignStatus.DRAFT && 
-            campaign.getStatus() != Campaign.CampaignStatus.SCHEDULED) {
-            throw new RuntimeException("Kampania może być uruchomiona tylko ze statusu DRAFT lub SCHEDULED");
+            campaign.getStatus() != Campaign.CampaignStatus.SCHEDULED &&
+            campaign.getStatus() != Campaign.CampaignStatus.ACTIVE) {
+            throw new RuntimeException("Kampania może być uruchomiona tylko ze statusu DRAFT, SCHEDULED lub ACTIVE");
+        }
+        
+        if (campaign.getRecipients() == null || campaign.getRecipients().isEmpty()) {
+            throw new RuntimeException("Kampania musi mieć przypisanych odbiorców");
         }
         
         campaign.setStatus(Campaign.CampaignStatus.ACTIVE);
         campaign.setStartedAt(LocalDateTime.now());
         
+        try {
+            sendCampaignEmails(campaign, userId);
+            campaign.setSentEmails(campaign.getRecipients().size());
+        } catch (Exception e) {
+            log.error("Błąd podczas wysyłania maili kampanii {}: {}", campaignId, e.getMessage());
+            campaign.setStatus(Campaign.CampaignStatus.PAUSED);
+            throw new RuntimeException("Błąd podczas wysyłania maili: " + e.getMessage());
+        }
+        
         Campaign updatedCampaign = campaignRepository.save(campaign);
-        log.info("Kampania uruchomiona: {}", updatedCampaign.getId());
+        log.info("Kampania uruchomiona i maile wysłane: {}", updatedCampaign.getId());
         
         return mapToCampaignResponse(updatedCampaign);
     }
@@ -184,6 +204,64 @@ public class CampaignService {
         log.info("Kampania zakończona: {}", updatedCampaign.getId());
         
         return mapToCampaignResponse(updatedCampaign);
+    }
+    
+    private void sendCampaignEmails(Campaign campaign, Long userId) {
+        log.info("Wysyłanie maili kampanii {} do {} odbiorców", campaign.getId(), campaign.getRecipients().size());
+
+        List<String> recipientEmails = campaign.getRecipients().stream()
+                .filter(contact -> contact.getStatus() == Contact.ContactStatus.ACTIVE)
+                .map(Contact::getEmail)
+                .collect(Collectors.toList());
+
+        if (recipientEmails.isEmpty()) {
+            throw new RuntimeException("Brak aktywnych odbiorców do wysłania kampanii");
+        }
+
+        String emailContent = campaign.getContent();
+        String emailSubject = campaign.getSubject();
+
+        if (campaign.getTemplate() != null) {
+            emailContent = campaign.getTemplate().getContent();
+            emailSubject = campaign.getTemplate().getSubject();
+        }
+
+        int successCount = 0;
+        int failureCount = 0;
+
+        for (String recipientEmail : recipientEmails) {
+            try {
+                SendEmailRequest emailRequest = SendEmailRequest.builder()
+                        .to(List.of(recipientEmail))
+                        .subject(emailSubject)
+                        .html(emailContent)
+                        .build();
+
+                SendEmailResponse response = resendEmailService.sendEmail(emailRequest, userId);
+
+                if ("success".equals(response.getStatus())) {
+                    successCount++;
+                    log.debug("Email wysłany pomyślnie do: {}", recipientEmail);
+                } else {
+                    failureCount++;
+                    log.warn("Błąd wysyłania email do {}: {}", recipientEmail, response.getMessage());
+                }
+            } catch (Exception e) {
+                failureCount++;
+                log.error("Wyjątek podczas wysyłania email do {}: {}", recipientEmail, e.getMessage());
+            }
+        }
+
+        if (successCount == 0) {
+            throw new RuntimeException("Nie udało się wysłać żadnego emaila");
+        }
+
+        if (failureCount > 0) {
+            log.warn("Kampania {} - wysłano: {}, błędy: {}", campaign.getId(), successCount, failureCount);
+        }
+
+        log.info("Pomyślnie wysłano maile kampanii {} do {}/{} odbiorców", 
+                campaign.getId(), successCount, recipientEmails.size());
     }
     
     private CampaignResponse mapToCampaignResponse(Campaign campaign) {
