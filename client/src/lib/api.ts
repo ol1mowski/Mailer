@@ -346,16 +346,6 @@ export const campaignApi = {
     apiClient.post<Campaign>(`/campaigns/${id}/complete`),
 }; 
 
-export interface AnalyticsData {
-  totalEmails: number;
-  totalRecipients: number;
-  totalOpens: number;
-  totalClicks: number;
-  averageOpenRate: number;
-  averageClickRate: number;
-  bounceRate: number;
-  unsubscribeRate: number;
-}
 
 export interface CampaignPerformance {
   name: string;
@@ -447,52 +437,3 @@ export const settingsApi = {
   toggleNotification: (type: string) =>
     apiClient.post<UserSettings>(`/settings/notifications/${type}/toggle`),
 };
-
-export const analyticsApi = {
-  getAnalytics: (period: string = '30d') => 
-    apiClient.get<AnalyticsData>(`/analytics?period=${period}`),
-    
-  getCampaignPerformance: (period: string = '30d') =>
-    apiClient.get<CampaignPerformance[]>(`/analytics/campaign-performance?period=${period}`),
-    
-  getMonthlyData: (period: string = '30d') =>
-    apiClient.get<MonthlyData[]>(`/analytics/monthly-data?period=${period}`),
-    
-  getBestHours: () =>
-    apiClient.get<BestHours[]>('/analytics/best-hours'),
-    
-  getTrends: (period: string = '30d') =>
-    apiClient.get<TrendData[]>(`/analytics/trends?period=${period}`),
-    
-  exportData: async (data: ExportDataRequest): Promise<void> => {
-    const response = await fetch(`${API_BASE_URL}/analytics/export`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-      body: JSON.stringify(data)
-    });
-
-    if (!response.ok) {
-      throw new Error('Błąd eksportu danych');
-    }
-
-    if (data.format.toLowerCase() === 'xml') {
-      // Pobierz plik XML
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `analytics_${data.period}.xml`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } else {
-      // Dla innych formatów zwróć tekst
-      const result = await response.text();
-      console.log('Export result:', result);
-    }
-  },
-}; 

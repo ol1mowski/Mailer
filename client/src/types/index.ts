@@ -62,17 +62,6 @@ export interface Campaign {
   updatedAt: Date
 }
 
-export interface Analytics {
-  totalEmails: number
-  totalContacts: number
-  totalTemplates: number
-  totalCampaigns: number
-  openRate: number
-  clickRate: number
-  bounceRate: number
-  recentActivity: Activity[]
-}
-
 export interface Activity {
   id: string
   type: 'email_sent' | 'contact_added' | 'template_created' | 'campaign_started'

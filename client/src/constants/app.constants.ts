@@ -11,7 +11,6 @@ export const ROUTES = {
   CONTACTS: '/contacts',  
   EMAIL_TEMPLATES: '/email-templates',
   CAMPAIGNS: '/campaigns',
-  ANALYTICS: '/analytics',
   SETTINGS: '/settings',
 } as const
 

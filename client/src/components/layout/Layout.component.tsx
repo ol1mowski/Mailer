@@ -26,7 +26,6 @@ const navigationItems = [
   { name: 'Kontakty', href: ROUTES.CONTACTS, icon: Users },
   { name: 'Szablony email', href: ROUTES.EMAIL_TEMPLATES, icon: FileText },
   { name: 'Kampanie', href: ROUTES.CAMPAIGNS, icon: Mail },
-  { name: 'Analytics', href: ROUTES.ANALYTICS, icon: BarChart3 },
   { name: 'Ustawienia', href: ROUTES.SETTINGS, icon: Settings },
 ]
 

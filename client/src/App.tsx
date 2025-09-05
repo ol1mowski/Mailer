@@ -14,7 +14,6 @@ import { Dashboard } from "./components/dashboard/Dashboard.page";
 import { ContactsPage } from "./components/contacts/ContactsPage.page";
 import { EmailTemplatesPage } from "./components/emailTemplates/EmailTemplatesPage.page";
 import { CampaignsPage } from "./components/campaigns/CampaignsPage.page";
-import { AnalyticsPage } from "./components/analytics/AnalyticsPage.page";
 import { SettingsPage } from "./components/settings/SettingsPage.page";
 import { Layout } from "./components/layout/Layout.component";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
@@ -116,14 +115,6 @@ function AppContent() {
           element={
             <Layout>
               <CampaignsPage />
-            </Layout>
-          }
-        />
-        <Route
-          path={ROUTES.ANALYTICS}
-          element={
-            <Layout>
-              <AnalyticsPage />
             </Layout>
           }
         />

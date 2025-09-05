@@ -17,13 +17,6 @@ export const mockQuickActions: QuickAction[] = [
   },
   {
     id: '3',
-    title: 'Sprawdź statystyki',
-    description: 'Przeglądaj szczegółowe analizy',
-    icon: 'BarChart3',
-    href: '/analytics'
-  },
-  {
-    id: '4',
     title: 'Szablony email',
     description: 'Zarządzaj szablonami wiadomości',
     icon: 'FileText',
