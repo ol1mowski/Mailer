@@ -29,10 +29,8 @@ export const SettingsHeader = ({ onSave, isLoading, hasUnsavedChanges }: Setting
         <Button 
           onClick={() => onSave({
             user: { firstName: '', lastName: '', timezone: '' },
-            notifications: { emailNotifications: false, smsNotifications: false, campaignNotifications: false, weeklyReports: false, monthlyReports: false },
-            security: { loginNotifications: false, passwordChangeReminder: false },
             email: { smtpHost: '', smtpPort: 587, smtpUsername: '', smtpPassword: '', smtpEncryption: 'TLS', fromEmail: '', fromName: '', replyToEmail: '' },
-            account: { status: '', plan: '', expires: '', storageUsed: 0, storageLimit: 0 }
+            account: { status: '', plan: '', expires: '' }
           })}
           disabled={isLoading || !hasUnsavedChanges}
           className="flex items-center"

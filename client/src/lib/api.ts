@@ -383,13 +383,6 @@ export interface UserSettings {
   firstName: string;
   lastName: string;
   timezone: string;
-  emailNotifications: boolean;
-  smsNotifications: boolean;
-  campaignNotifications: boolean;
-  weeklyReports: boolean;
-  monthlyReports: boolean;
-  loginNotifications: boolean;
-  passwordChangeReminder: boolean;
   smtpHost: string;
   smtpPort: number;
   smtpUsername: string;
@@ -400,8 +393,6 @@ export interface UserSettings {
   accountStatus: string;
   subscriptionPlan: string;
   subscriptionExpires: string;
-  storageUsed: number;
-  storageLimit: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -410,13 +401,6 @@ export interface UpdateUserSettingsRequest {
   firstName: string;
   lastName?: string;
   timezone?: string;
-  emailNotifications?: boolean;
-  smsNotifications?: boolean;
-  campaignNotifications?: boolean;
-  weeklyReports?: boolean;
-  monthlyReports?: boolean;
-  loginNotifications?: boolean;
-  passwordChangeReminder?: boolean;
   smtpHost?: string;
   smtpPort?: number;
   smtpUsername?: string;
@@ -433,7 +417,4 @@ export const settingsApi = {
     
   updateUserSettings: (data: UpdateUserSettingsRequest) =>
     apiClient.put<UserSettings>('/settings', data),
-    
-  toggleNotification: (type: string) =>
-    apiClient.post<UserSettings>(`/settings/notifications/${type}/toggle`),
 };

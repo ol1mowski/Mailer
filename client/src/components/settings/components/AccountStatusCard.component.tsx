@@ -35,19 +35,6 @@ export const AccountStatusCard = ({ accountStatus }: AccountStatusCardProps) => 
     }
   }
 
-  const formatStorage = (bytes: number) => {
-    const mb = bytes / (1024 * 1024)
-    if (mb >= 1024) {
-      return `${(mb / 1024).toFixed(1)} GB`
-    }
-    return `${mb.toFixed(1)} MB`
-  }
-
-  const getStoragePercentage = () => {
-    if (accountStatus.storageLimit === 0) return 0
-    return (accountStatus.storageUsed / accountStatus.storageLimit) * 100
-  }
-
   return (
     <Card className="p-6">
       <div className="mb-6">
@@ -83,35 +70,6 @@ export const AccountStatusCard = ({ accountStatus }: AccountStatusCardProps) => 
             <span className="text-sm text-gray-900">
               {new Date(accountStatus.expires).toLocaleDateString('pl-PL')}
             </span>
-          </div>
-        )}
-
-        <div className="border-t border-gray-200 pt-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Przestrzeń dyskowa</span>
-            <span className="text-sm text-gray-900">
-              {formatStorage(accountStatus.storageUsed)} / {formatStorage(accountStatus.storageLimit)}
-            </span>
-          </div>
-          
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${Math.min(getStoragePercentage(), 100)}%` }}
-            />
-          </div>
-          
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>0%</span>
-            <span>100%</span>
-          </div>
-        </div>
-
-        {getStoragePercentage() > 80 && (
-          <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-            <p className="text-sm text-yellow-800">
-              Uwaga: Przestrzeń dyskowa jest prawie pełna. Rozważ upgrade planu.
-            </p>
           </div>
         )}
       </div>

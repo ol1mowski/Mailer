@@ -1,8 +1,6 @@
 import { Loading, ErrorMessage } from '@/components/ui'
 import { useSettings } from './hooks/useSettings.hook'
 import { UserSettingsCard } from './components/UserSettingsCard.component'
-import { NotificationSettingsCard } from './components/NotificationSettingsCard.component'
-import { SecuritySettingsCard } from './components/SecuritySettingsCard.component'
 import { EmailSettingsCard } from './components/EmailSettingsCard.component'
 import { AccountStatusCard } from './components/AccountStatusCard.component'
 import { SettingsHeader } from './components/SettingsHeader.component'
@@ -14,7 +12,6 @@ export const SettingsPage = () => {
     error,
     updateUserSettings,
     updateEmailSettings,
-    toggleNotification,
     saveSettings,
     clearError
   } = useSettings()
@@ -35,32 +32,20 @@ export const SettingsPage = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <SettingsHeader onSave={saveSettings} isLoading={isLoading} hasUnsavedChanges={false} />
-        
+
         <div className="mt-8 space-y-8">
           <UserSettingsCard
             userSettings={settings.user}
             onUpdateSettings={updateUserSettings}
             isLoading={isLoading}
           />
-          
-          <NotificationSettingsCard
-            notificationSettings={settings.notifications}
-            onToggleNotification={toggleNotification}
-            isLoading={isLoading}
-          />
-          
-          <SecuritySettingsCard
-            securitySettings={settings.security}
-            onToggleNotification={toggleNotification}
-            isLoading={isLoading}
-          />
-          
+
           <EmailSettingsCard
             emailSettings={settings.email}
             onUpdateSettings={(formData) => updateEmailSettings(formData.email)}
             isLoading={isLoading}
           />
-          
+
           <AccountStatusCard
             accountStatus={settings.account}
           />

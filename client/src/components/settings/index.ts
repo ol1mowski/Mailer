@@ -1,7 +1,5 @@
 export * from './SettingsPage.page'
 export * from './components/UserSettingsCard.component'
-export * from './components/NotificationSettingsCard.component'
-export * from './components/SecuritySettingsCard.component'
 export * from './components/EmailSettingsCard.component'
 export * from './components/AccountStatusCard.component'
 export * from './components/SettingsHeader.component'

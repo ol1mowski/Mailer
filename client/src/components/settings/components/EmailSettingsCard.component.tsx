@@ -17,13 +17,10 @@ export const EmailSettingsCard = ({ emailSettings, onUpdateSettings, isLoading }
     const updatedData = { ...formData, [field]: value }
     setFormData(updatedData)
     
-    // Aktualizuj ustawienia w rodzicu
     onUpdateSettings({
       user: { firstName: '', lastName: '', timezone: '' },
-      notifications: { emailNotifications: false, smsNotifications: false, campaignNotifications: false, weeklyReports: false, monthlyReports: false },
-      security: { loginNotifications: false, passwordChangeReminder: false },
       email: updatedData,
-      account: { status: '', plan: '', expires: '', storageUsed: 0, storageLimit: 0 }
+      account: { status: '', plan: '', expires: '' }
     })
   }
 

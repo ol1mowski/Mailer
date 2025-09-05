@@ -8,17 +8,6 @@ export interface SettingsFormData {
     lastName: string;
     timezone: string;
   };
-  notifications: {
-    emailNotifications: boolean;
-    smsNotifications: boolean;
-    campaignNotifications: boolean;
-    weeklyReports: boolean;
-    monthlyReports: boolean;
-  };
-  security: {
-    loginNotifications: boolean;
-    passwordChangeReminder: boolean;
-  };
   email: {
     smtpHost: string;
     smtpPort: number;
@@ -33,8 +22,6 @@ export interface SettingsFormData {
     status: string;
     plan: string;
     expires: string;
-    storageUsed: number;
-    storageLimit: number;
   };
 }
 
