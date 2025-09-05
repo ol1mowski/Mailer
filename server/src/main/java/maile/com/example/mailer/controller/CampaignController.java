@@ -28,7 +28,7 @@ import maile.com.example.mailer.service.CampaignService;
 @RequestMapping("/api/campaigns")
 @RequiredArgsConstructor
 @Slf4j
-public class CampaignController {
+public class CampaignController extends BaseController {
     
     private final CampaignService campaignService;
     private final UserRepository userRepository;
@@ -36,20 +36,7 @@ public class CampaignController {
     @GetMapping
     public ResponseEntity<List<CampaignResponse>> getAllCampaigns() {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Long userId = 1L;
-            
-            if (authentication != null && authentication.getPrincipal() instanceof User) {
-                User user = (User) authentication.getPrincipal();
-                userId = user.getId();
-            } else if (authentication != null && authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.UserDetails) {
-                String email = ((org.springframework.security.core.userdetails.UserDetails) authentication.getPrincipal()).getUsername();
-                User user = userRepository.findByEmail(email).orElse(null);
-                if (user != null) {
-                    userId = user.getId();
-                }
-            }
-            
+            Long userId = getCurrentUserId();
             List<CampaignResponse> campaigns = campaignService.getAllCampaigns(userId);
             log.info("Pobrano kampanie dla użytkownika: {}", userId);
             

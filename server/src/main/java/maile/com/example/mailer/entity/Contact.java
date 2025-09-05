@@ -68,11 +68,15 @@ public class Contact {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String firstName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ElementCollection
     @CollectionTable(name = "contact_tags", joinColumns = @JoinColumn(name = "contact_id"))
@@ -86,8 +90,4 @@ public class Contact {
     @Column(nullable = false)
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 } 

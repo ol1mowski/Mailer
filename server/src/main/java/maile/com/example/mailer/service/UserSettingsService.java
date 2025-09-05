@@ -1,5 +1,7 @@
 package maile.com.example.mailer.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +13,6 @@ import maile.com.example.mailer.entity.User;
 import maile.com.example.mailer.entity.UserSettings;
 import maile.com.example.mailer.repository.UserRepository;
 import maile.com.example.mailer.repository.UserSettingsRepository;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -38,12 +38,10 @@ public class UserSettingsService {
         UserSettings userSettings = userSettingsRepository.findByUserId(userId)
                 .orElseGet(() -> createDefaultUserSettings(userId));
         
-        // Aktualizuj ustawienia użytkownika
         userSettings.setFirstName(request.getFirstName());
         userSettings.setLastName(request.getLastName());
         userSettings.setTimezone(request.getTimezone());
         
-        // Aktualizuj ustawienia powiadomień
         if (request.getEmailNotifications() != null) {
             userSettings.setEmailNotifications(request.getEmailNotifications());
         }
@@ -60,15 +58,13 @@ public class UserSettingsService {
             userSettings.setMonthlyReports(request.getMonthlyReports());
         }
         
-        // Aktualizuj ustawienia bezpieczeństwa
         if (request.getLoginNotifications() != null) {
             userSettings.setLoginNotifications(request.getLoginNotifications());
         }
         if (request.getPasswordChangeReminder() != null) {
             userSettings.setPasswordChangeReminder(request.getPasswordChangeReminder());
         }
-        
-        // Aktualizuj ustawienia email
+                
         userSettings.setSmtpHost(request.getSmtpHost());
         userSettings.setSmtpPort(request.getSmtpPort());
         userSettings.setSmtpUsername(request.getSmtpUsername());

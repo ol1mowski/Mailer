@@ -85,7 +85,6 @@ public class DataInitializer implements CommandLineRunner {
             regularUser = userRepository.findByEmail("user@mailer.com").orElse(null);
         }
         
-        // Tworzenie domyślnych ustawień dla użytkowników
         if (adminUser != null && userSettingsRepository.countByUserId(adminUser.getId()) == 0) {
             createDefaultUserSettings(adminUser);
         }

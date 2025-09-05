@@ -27,7 +27,6 @@ import maile.com.example.mailer.dto.MonthlyDataResponse;
 import maile.com.example.mailer.dto.TrendDataResponse;
 import maile.com.example.mailer.entity.Campaign;
 import maile.com.example.mailer.repository.CampaignRepository;
-import maile.com.example.mailer.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +34,6 @@ import maile.com.example.mailer.repository.UserRepository;
 public class AnalyticsService {
     
     private final CampaignRepository campaignRepository;
-    private final UserRepository userRepository;
     
     public AnalyticsResponse getAnalytics(Long userId, String period) {
         log.info("Pobieranie analityki dla użytkownika: {} i okresu: {}", userId, period);
@@ -45,7 +43,6 @@ public class AnalyticsService {
         
         List<Campaign> campaigns = campaignRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
         
-        // Filtruj kampanie według okresu
         List<Campaign> filteredCampaigns = campaigns.stream()
                 .filter(campaign -> campaign.getCreatedAt().isAfter(startDate) && campaign.getCreatedAt().isBefore(endDate))
                 .collect(Collectors.toList());
@@ -57,8 +54,8 @@ public class AnalyticsService {
         
         double averageOpenRate = totalRecipients > 0 ? (double) totalOpens / totalRecipients * 100 : 0;
         double averageClickRate = totalRecipients > 0 ? (double) totalClicks / totalRecipients * 100 : 0;
-        double bounceRate = 2.5; // Przykładowe dane
-        double unsubscribeRate = 0.8; // Przykładowe dane
+        double bounceRate = 2.5;
+        double unsubscribeRate = 0.8;
         
         return AnalyticsResponse.builder()
                 .totalEmails(totalEmails)
@@ -94,7 +91,6 @@ public class AnalyticsService {
         
         List<Campaign> campaigns = campaignRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
         
-        // Grupuj kampanie według miesięcy
         return campaigns.stream()
                 .filter(campaign -> campaign.getCreatedAt().isAfter(startDate) && campaign.getCreatedAt().isBefore(endDate))
                 .collect(Collectors.groupingBy(
@@ -125,7 +121,6 @@ public class AnalyticsService {
     public List<BestHoursResponse> getBestHours(Long userId) {
         log.info("Pobieranie najlepszych godzin dla użytkownika: {}", userId);
         
-        // Przykładowe dane - w rzeczywistej implementacji byłyby pobierane z bazy
         return List.of(
                 BestHoursResponse.builder().timeRange("9:00 - 11:00").percentage(32.0).build(),
                 BestHoursResponse.builder().timeRange("14:00 - 16:00").percentage(28.0).build(),
@@ -137,7 +132,6 @@ public class AnalyticsService {
     public List<TrendDataResponse> getTrends(Long userId, String period) {
         log.info("Pobieranie trendów dla użytkownika: {} i okresu: {}", userId, period);
         
-        // Przykładowe dane - w rzeczywistej implementacji byłyby obliczane na podstawie historycznych danych
         return List.of(
                 TrendDataResponse.builder().metric("Otwarcia").change(12.0).isPositive(true).build(),
                 TrendDataResponse.builder().metric("Kliknięcia").change(8.0).isPositive(true).build(),
@@ -153,7 +147,6 @@ public class AnalyticsService {
             return generateXmlExport(userId, period);
         }
         
-        // Dla innych formatów zwracamy komunikat
         return "Dane zostały wyeksportowane w formacie " + format + " dla okresu " + period;
     }
     
@@ -192,20 +185,18 @@ public class AnalyticsService {
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             Document doc = docBuilder.newDocument();
             
-            // Root element
             Element rootElement = doc.createElement("analytics");
             rootElement.setAttribute("period", period);
             rootElement.setAttribute("exportDate", LocalDateTime.now().toString());
             doc.appendChild(rootElement);
             
-            // Pobierz dane analityczne
             AnalyticsResponse analytics = getAnalytics(userId, period);
             List<CampaignPerformanceResponse> campaignPerformance = getCampaignPerformance(userId, period);
             List<MonthlyDataResponse> monthlyData = getMonthlyData(userId, period);
             List<BestHoursResponse> bestHours = getBestHours(userId);
             List<TrendDataResponse> trends = getTrends(userId, period);
             
-            // Dodaj główne statystyki
+           
             Element summaryElement = doc.createElement("summary");
             addElement(doc, summaryElement, "totalEmails", analytics.getTotalEmails().toString());
             addElement(doc, summaryElement, "totalRecipients", analytics.getTotalRecipients().toString());
@@ -217,7 +208,7 @@ public class AnalyticsService {
             addElement(doc, summaryElement, "unsubscribeRate", analytics.getUnsubscribeRate().toString());
             rootElement.appendChild(summaryElement);
             
-            // Dodaj wydajność kampanii
+           
             Element campaignsElement = doc.createElement("campaigns");
             for (CampaignPerformanceResponse campaign : campaignPerformance) {
                 Element campaignElement = doc.createElement("campaign");
@@ -231,7 +222,7 @@ public class AnalyticsService {
             }
             rootElement.appendChild(campaignsElement);
             
-            // Dodaj dane miesięczne
+           
             Element monthlyElement = doc.createElement("monthlyData");
             for (MonthlyDataResponse monthly : monthlyData) {
                 Element monthElement = doc.createElement("month");
@@ -243,7 +234,7 @@ public class AnalyticsService {
             }
             rootElement.appendChild(monthlyElement);
             
-            // Dodaj najlepsze godziny
+           
             Element bestHoursElement = doc.createElement("bestHours");
             for (BestHoursResponse hour : bestHours) {
                 Element hourElement = doc.createElement("hour");
@@ -253,7 +244,7 @@ public class AnalyticsService {
             }
             rootElement.appendChild(bestHoursElement);
             
-            // Dodaj trendy
+           
             Element trendsElement = doc.createElement("trends");
             for (TrendDataResponse trend : trends) {
                 Element trendElement = doc.createElement("trend");
@@ -264,7 +255,7 @@ public class AnalyticsService {
             }
             rootElement.appendChild(trendsElement);
             
-            // Konwertuj do stringa
+           
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             StringWriter writer = new StringWriter();

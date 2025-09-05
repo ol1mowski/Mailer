@@ -1,16 +1,26 @@
 package maile.com.example.mailer.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -27,7 +37,7 @@ public class User implements UserDetails {
 
     @NotBlank(message = "Hasło jest wymagane")
     @Size(min = 6, message = "Hasło musi mieć minimum 6 znaków")
-    @Column(nullable = false)
+    @Column(name = "password_hash", nullable = false)
     private String password;
 
     @NotBlank(message = "Imię jest wymagane")
