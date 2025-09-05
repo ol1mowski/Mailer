@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import maile.com.example.mailer.dto.AuthResponse;
 import maile.com.example.mailer.dto.LoginRequest;
 import maile.com.example.mailer.dto.RegisterRequest;
@@ -16,6 +17,7 @@ import maile.com.example.mailer.entity.User;
 import maile.com.example.mailer.repository.UserRepository;
 
 @Service
+@Slf4j
 public class AuthService {
     
     private final UserRepository userRepository;
@@ -82,7 +84,7 @@ public class AuthService {
                 return userRepository.findByEmail(email).orElse(null);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Błąd podczas pobierania aktualnego użytkownika: ", e);
         }
         return null;
     }

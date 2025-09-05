@@ -21,7 +21,6 @@ import maile.com.example.mailer.dto.CampaignResponse;
 import maile.com.example.mailer.dto.CreateCampaignRequest;
 import maile.com.example.mailer.dto.UpdateCampaignRequest;
 import maile.com.example.mailer.entity.User;
-import maile.com.example.mailer.repository.UserRepository;
 import maile.com.example.mailer.service.CampaignService;
 
 @RestController
@@ -31,7 +30,6 @@ import maile.com.example.mailer.service.CampaignService;
 public class CampaignController extends BaseController {
     
     private final CampaignService campaignService;
-    private final UserRepository userRepository;
     
     @GetMapping
     public ResponseEntity<List<CampaignResponse>> getAllCampaigns() {

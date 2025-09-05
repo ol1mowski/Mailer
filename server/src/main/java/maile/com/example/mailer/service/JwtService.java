@@ -36,13 +36,12 @@ public class JwtService {
     
     public String generateToken(Map<String, Object> extraClaims, User user) {
         return Jwts.builder()
-        .setClaims(extraClaims)
-        .setSubject(user.getEmail())
-        .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + expiration))
+        .claims(extraClaims)
+        .subject(user.getEmail())
+        .issuedAt(new Date(System.currentTimeMillis()))
+        .expiration(new Date(System.currentTimeMillis() + expiration))
         .signWith(getSigningKey(), Jwts.SIG.HS256)
         .compact();
-
     }
     
     public String extractUsername(String token) {
