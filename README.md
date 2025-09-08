@@ -2,6 +2,12 @@
 
 Kompletny system zarządzania emailami z autentykacją JWT i HTTP-only cookies.
 
+
+<img width="1916" height="942" alt="1" src="https://github.com/user-attachments/assets/690643fa-6039-47eb-b035-74e97dfb54ba" />
+<img width="1901" height="942" alt="2" src="https://github.com/user-attachments/assets/0faf3f67-80b8-48c0-9d83-e0a845fa0846" />
+<img width="1227" height="874" alt="3" src="https://github.com/user-attachments/assets/d3eb9440-7408-44b6-9512-89b168a0add5" />
+
+
 ## 🚀 Funkcjonalności
 
 - **Autentykacja JWT** z HTTP-only cookies dla bezpieczeństwa
