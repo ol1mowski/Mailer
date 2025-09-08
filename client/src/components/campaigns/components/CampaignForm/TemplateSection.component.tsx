@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Label, Textarea } from '@/components/ui'
+import { Label, HtmlEditor } from '@/components/ui'
 import { useQuery } from '@tanstack/react-query'
 import { emailTemplateApi } from '@/lib/api'
 import type { CampaignFormData, CampaignFormErrors } from '../../types/campaign.types'
@@ -88,7 +88,6 @@ export const TemplateSection = ({
 
   return (
     <div className="space-y-6 animate-in slide-in-from-left-4 duration-500 delay-500">
-      {/* Wybór szablonu */}
       <div>
         <Label>Wybierz szablon email</Label>
         <p className="text-sm text-gray-600 mt-1">
@@ -174,20 +173,18 @@ export const TemplateSection = ({
 
         <div className="flex gap-6">
           <div className={`${showPreview ? 'w-1/2' : 'w-full'}`}>
-            <Textarea
-              id="content"
+            <HtmlEditor
               value={customContent}
-              onChange={(e) => handleContentChange(e.target.value)}
-              placeholder="Wprowadź treść email w formacie HTML..."
+              onChange={handleContentChange}
+              height="500px"
               disabled={isLoading}
-              className="mt-1 font-mono text-sm"
-              rows={20}
+              className="mt-1"
             />
             {errors.content && (
               <p className="mt-1 text-sm text-red-600">{errors.content}</p>
             )}
             <div className="text-xs text-gray-500 mt-2">
-              <p>Możesz używać HTML do formatowania. Wspierane tagi: &lt;div&gt;, &lt;p&gt;, &lt;h1&gt;-&lt;h6&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;, &lt;img&gt;</p>
+              <p>💡 <strong>Wskazówki:</strong> Użyj snippetów: <code>email-container</code>, <code>email-header</code>, <code>email-button</code>, <code>email-footer</code></p>
             </div>
           </div>
 
