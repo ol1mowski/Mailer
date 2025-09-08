@@ -29,7 +29,7 @@ export const SettingsHeader = ({ onSave, isLoading, hasUnsavedChanges }: Setting
         <Button 
           onClick={() => onSave({
             user: { firstName: '', lastName: '', timezone: '' },
-            email: { smtpHost: '', smtpPort: 587, smtpUsername: '', smtpPassword: '', smtpEncryption: 'TLS', fromEmail: '', fromName: '', replyToEmail: '' },
+            email: { resendApiKey: '', fromEmail: '', fromName: '', replyToEmail: '', customDomain: '' },
             account: { status: '', plan: '', expires: '' }
           })}
           disabled={isLoading || !hasUnsavedChanges}

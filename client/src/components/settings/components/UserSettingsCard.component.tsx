@@ -19,7 +19,7 @@ export const UserSettingsCard = ({ userSettings, onUpdateSettings, isLoading }: 
     
     onUpdateSettings({
       user: updatedData,
-      email: { smtpHost: '', smtpPort: 587, smtpUsername: '', smtpPassword: '', smtpEncryption: 'TLS', fromEmail: '', fromName: '', replyToEmail: '' },
+      email: { resendApiKey: '', fromEmail: '', fromName: '', replyToEmail: '', customDomain: '' },
       account: { status: '', plan: '', expires: '' }
     })
   }
