@@ -34,7 +34,6 @@ export const EmailSettingsCard = ({ emailSettings, onUpdateSettings, isLoading }
       </div>
 
       <div className="space-y-6">
-        {/* Klucz API Resend */}
         <div>
           <Label htmlFor="resendApiKey" className="text-sm font-medium text-gray-700">
             Klucz API Resend *
@@ -53,7 +52,6 @@ export const EmailSettingsCard = ({ emailSettings, onUpdateSettings, isLoading }
           </p>
         </div>
 
-        {/* Email nadawcy */}
         <div>
           <Label htmlFor="fromEmail" className="text-sm font-medium text-gray-700">
             Email nadawcy *
@@ -72,7 +70,6 @@ export const EmailSettingsCard = ({ emailSettings, onUpdateSettings, isLoading }
           </p>
         </div>
 
-        {/* Nazwa nadawcy */}
         <div>
           <Label htmlFor="fromName" className="text-sm font-medium text-gray-700">
             Nazwa nadawcy
@@ -91,7 +88,6 @@ export const EmailSettingsCard = ({ emailSettings, onUpdateSettings, isLoading }
           </p>
         </div>
 
-        {/* Reply-To */}
         <div>
           <Label htmlFor="replyToEmail" className="text-sm font-medium text-gray-700">
             Reply-To Email
@@ -110,7 +106,6 @@ export const EmailSettingsCard = ({ emailSettings, onUpdateSettings, isLoading }
           </p>
         </div>
 
-        {/* Domena niestandardowa */}
         <div>
           <Label htmlFor="customDomain" className="text-sm font-medium text-gray-700">
             Domena niestandardowa
