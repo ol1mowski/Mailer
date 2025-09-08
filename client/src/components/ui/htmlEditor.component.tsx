@@ -1,5 +1,6 @@
 import { Editor } from '@monaco-editor/react'
 import { useRef } from 'react'
+import type * as monaco from 'monaco-editor'
 
 interface HtmlEditorProps {
   value: string
@@ -16,12 +17,12 @@ export const HtmlEditor = ({
   disabled = false,
   className = '' 
 }: HtmlEditorProps) => {
-  const editorRef = useRef<any>(null)
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
 
-  const handleEditorDidMount = (editor: any, monaco: any) => {
+  const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor, monacoInstance: typeof monaco) => {
     editorRef.current = editor
 
-    monaco.languages.html.htmlDefaults.setOptions({
+    monacoInstance.languages.html.htmlDefaults.setOptions({
       format: {
         tabSize: 2,
         insertSpaces: true,
@@ -38,45 +39,63 @@ export const HtmlEditor = ({
       }
     })
 
-    monaco.languages.registerCompletionItemProvider('html', {
-      provideCompletionItems: () => ({
+    monacoInstance.languages.registerCompletionItemProvider('html', {
+      provideCompletionItems: (_, position) => ({
         suggestions: [
           {
             label: 'email-container',
-            kind: monaco.languages.CompletionItemKind.Snippet,
+            kind: monacoInstance.languages.CompletionItemKind.Snippet,
             insertText: [
               '<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">',
               '  $0',
               '</div>'
             ].join('\n'),
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: 'Podstawowy kontener dla email'
+            insertTextRules: monacoInstance.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: 'Podstawowy kontener dla email',
+            range: {
+              startLineNumber: position.lineNumber,
+              startColumn: position.column,
+              endLineNumber: position.lineNumber,
+              endColumn: position.column
+            }
           },
           {
             label: 'email-header',
-            kind: monaco.languages.CompletionItemKind.Snippet,
+            kind: monacoInstance.languages.CompletionItemKind.Snippet,
             insertText: [
               '<div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-bottom: 1px solid #dee2e6;">',
               '  <h1 style="color: #333; margin: 0;">$1</h1>',
               '</div>'
             ].join('\n'),
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: 'Header dla email'
+            insertTextRules: monacoInstance.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: 'Header dla email',
+            range: {
+              startLineNumber: position.lineNumber,
+              startColumn: position.column,
+              endLineNumber: position.lineNumber,
+              endColumn: position.column
+            }
           },
           {
             label: 'email-button',
-            kind: monaco.languages.CompletionItemKind.Snippet,
+            kind: monacoInstance.languages.CompletionItemKind.Snippet,
             insertText: [
               '<div style="text-align: center; margin: 30px 0;">',
               '  <a href="$1" style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">$2</a>',
               '</div>'
             ].join('\n'),
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: 'Przycisk CTA dla email'
+            insertTextRules: monacoInstance.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: 'Przycisk CTA dla email',
+            range: {
+              startLineNumber: position.lineNumber,
+              startColumn: position.column,
+              endLineNumber: position.lineNumber,
+              endColumn: position.column
+            }
           },
           {
             label: 'email-footer',
-            kind: monaco.languages.CompletionItemKind.Snippet,
+            kind: monacoInstance.languages.CompletionItemKind.Snippet,
             insertText: [
               '<div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #dee2e6; margin-top: 30px;">',
               '  <p style="color: #6c757d; font-size: 12px; margin: 0;">',
@@ -84,8 +103,14 @@ export const HtmlEditor = ({
               '  </p>',
               '</div>'
             ].join('\n'),
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: 'Footer dla email'
+            insertTextRules: monacoInstance.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            documentation: 'Footer dla email',
+            range: {
+              startLineNumber: position.lineNumber,
+              startColumn: position.column,
+              endLineNumber: position.lineNumber,
+              endColumn: position.column
+            }
           }
         ]
       })

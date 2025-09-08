@@ -56,7 +56,7 @@ export const TemplateSection = ({
       setCustomContent(basicContent)
       updateFormData('content', basicContent)
     }
-  }, [selectedTemplate, formData.templateId])
+  }, [selectedTemplate, formData.templateId, updateFormData])
 
   const handleTemplateSelect = (templateId: number | null) => {
     updateFormData('templateId', templateId)

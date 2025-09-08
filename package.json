@@ -2,5 +2,44 @@
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
     "monaco-editor": "^0.52.2"
+  },
+  "name": "mailer",
+  "version": "1.0.0",
+  "description": "Kompletny system zarządzania emailami z autentykacją JWT i HTTP-only cookies.",
+  "main": "index.js",
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.6"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "test:client": "cd client && npm run test",
+    "test:server": "cd server && mvnw.cmd test",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && mvnw.cmd compile",
+    "lint:client": "cd client && npm run lint",
+    "type-check:client": "cd client && npx tsc --noEmit",
+    "test:all": "npm run test:client && npm run test:server",
+    "build:all": "npm run build:client && npm run build:server",
+    "check:all": "npm run lint:client && npm run type-check:client && npm run build:all && npm run test:all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ol1mowski/Mailer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ol1mowski/Mailer/issues"
+  },
+  "homepage": "https://github.com/ol1mowski/Mailer#readme",
+  "lint-staged": {
+    "client/**/*.{js,jsx,ts,tsx}": [
+      "npm run lint:client"
+    ],
+    "server/**/*.java": [
+      "npm run build:server"
+    ]
   }
 }
