@@ -41,6 +41,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("OPTIONS", "/**").permitAll() 
                 .requestMatchers("/api/auth/**", "/api/dashboard/**", "/api/contacts/**", "/api/email-templates/**", "/api/campaigns/**", "/api/analytics/**", "/api/settings/**").permitAll()
                 .anyRequest().authenticated()
             )
@@ -56,10 +57,31 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:5173", "http://localhost:5174"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:5173", "http://localhost:5174", "http://localhost:3000"));
+        
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
+        
+        configuration.setAllowedHeaders(Arrays.asList(
+            "Authorization", 
+            "Content-Type", 
+            "X-Requested-With", 
+            "Accept", 
+            "Origin", 
+            "Access-Control-Request-Method", 
+            "Access-Control-Request-Headers",
+            "Cache-Control"
+        ));
+        
+        configuration.setExposedHeaders(Arrays.asList(
+            "Access-Control-Allow-Origin", 
+            "Access-Control-Allow-Credentials",
+            "Authorization"
+        ));
+        
         configuration.setAllowCredentials(true);
+        
+        configuration.setMaxAge(3600L);
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
