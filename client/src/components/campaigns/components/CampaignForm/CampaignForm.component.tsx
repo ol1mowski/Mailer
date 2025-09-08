@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { BasicInfoSection } from './BasicInfoSection.component'
-import { ContentSection } from './ContentSection.component'
 import { RecipientsSection } from './RecipientsSection.component'
 import { TemplateSection } from './TemplateSection.component'
 import { SchedulingSection } from './SchedulingSection.component'
@@ -33,10 +32,9 @@ export const CampaignForm = ({
 
   const steps = [
     { id: 1, name: 'Podstawowe informacje', component: BasicInfoSection },
-    { id: 2, name: 'Treść', component: ContentSection },
+    { id: 2, name: 'Szablon i treść', component: TemplateSection },
     { id: 3, name: 'Odbiorcy', component: RecipientsSection },
-    { id: 4, name: 'Szablon', component: TemplateSection },
-    { id: 5, name: 'Harmonogram', component: SchedulingSection }
+    { id: 4, name: 'Harmonogram', component: SchedulingSection }
   ]
 
   const handleNext = () => {

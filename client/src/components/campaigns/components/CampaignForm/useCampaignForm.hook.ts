@@ -47,19 +47,18 @@ export const useCampaignForm = (
     const newErrors: CampaignFormErrors = {}
 
     switch (step) {
-      case 1: 
+      case 1:
         if (!formData.name.trim()) newErrors.name = 'Nazwa kampanii jest wymagana'
         if (!formData.subject.trim()) newErrors.subject = 'Temat jest wymagany'
         break
-      case 2: 
-        if (!formData.content.trim()) newErrors.content = 'Treść jest wymagana'
+      case 2:
+        if (!formData.content.trim()) newErrors.content = 'Treść email jest wymagana'
         break
-      case 3: 
+      case 3:
         if (formData.recipientIds.length === 0) newErrors.recipientIds = 'Wybierz co najmniej jednego odbiorcę'
         break
-      case 4: 
-        break
-      case 5: 
+      case 4:
+        // Brak wymaganych pól dla harmonogramu
         break
     }
 

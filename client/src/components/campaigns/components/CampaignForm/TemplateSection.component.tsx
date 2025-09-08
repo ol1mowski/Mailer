@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Label } from '@/components/ui'
+import { useState, useEffect } from 'react'
+import { Label, Textarea } from '@/components/ui'
 import { useQuery } from '@tanstack/react-query'
 import { emailTemplateApi } from '@/lib/api'
 import type { CampaignFormData, CampaignFormErrors } from '../../types/campaign.types'
@@ -18,6 +18,8 @@ export const TemplateSection = ({
   isLoading
 }: TemplateSectionProps) => {
   const [searchTerm, setSearchTerm] = useState('')
+  const [showPreview, setShowPreview] = useState(true)
+  const [customContent, setCustomContent] = useState(formData.content)
   
   const { data: templates = [] } = useQuery({
     queryKey: ['emailTemplates'],
@@ -30,18 +32,67 @@ export const TemplateSection = ({
     template.subject.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  const selectedTemplate = templates.find(t => t.id === formData.templateId)
+
+  useEffect(() => {
+    if (selectedTemplate && selectedTemplate.content) {
+      setCustomContent(selectedTemplate.content)
+      updateFormData('content', selectedTemplate.content)
+    } else if (!formData.templateId) {
+      const basicContent = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+  <h1 style="color: #333; text-align: center;">Witaj!</h1>
+  <p style="color: #666; line-height: 1.6;">
+    Tutaj wpisz treść swojego email...
+  </p>
+  <div style="text-align: center; margin: 30px 0;">
+    <a href="#" style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px;">
+      Przycisk CTA
+    </a>
+  </div>
+  <p style="color: #999; font-size: 12px; text-align: center;">
+    © 2024 Twoja Firma. Wszystkie prawa zastrzeżone.
+  </p>
+</div>`
+      setCustomContent(basicContent)
+      updateFormData('content', basicContent)
+    }
+  }, [selectedTemplate, formData.templateId])
+
   const handleTemplateSelect = (templateId: number | null) => {
     updateFormData('templateId', templateId)
   }
 
-  const selectedTemplate = templates.find(t => t.id === formData.templateId)
+  const handleContentChange = (content: string) => {
+    setCustomContent(content)
+    updateFormData('content', content)
+  }
+
+  const renderPreview = () => {
+    if (!customContent) return <p className="text-gray-500 italic">Brak treści do wyświetlenia</p>
+    
+    return (
+      <div className="bg-white border border-gray-200 rounded-lg p-6 h-full overflow-auto">
+        <div className="mb-4 pb-2 border-b border-gray-200">
+          <h4 className="text-sm font-medium text-gray-900">Podgląd email</h4>
+          {selectedTemplate && (
+            <p className="text-xs text-gray-600 mt-1">Szablon: {selectedTemplate.name}</p>
+          )}
+        </div>
+        <div 
+          className="prose prose-sm max-w-none"
+          dangerouslySetInnerHTML={{ __html: customContent }}
+        />
+      </div>
+    )
+  }
 
   return (
-    <div className="space-y-6 animate-in slide-in-from-left-4 duration-500 delay-700">
+    <div className="space-y-6 animate-in slide-in-from-left-4 duration-500 delay-500">
+      {/* Wybór szablonu */}
       <div>
-        <Label>Wybierz szablon (opcjonalnie)</Label>
+        <Label>Wybierz szablon email</Label>
         <p className="text-sm text-gray-600 mt-1">
-          Możesz wybrać szablon email, który zostanie użyty jako podstawa
+          Wybierz gotowy szablon lub rozpocznij z pustym szablonem
         </p>
       </div>
 
@@ -55,8 +106,8 @@ export const TemplateSection = ({
         />
       </div>
 
-      <div className="space-y-4">
-        <div className="flex items-center gap-3">
+      <div className="space-y-3 max-h-48 overflow-y-auto">
+        <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
           <input
             type="radio"
             id="no-template"
@@ -66,15 +117,15 @@ export const TemplateSection = ({
             disabled={isLoading}
             className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
           />
-          <label htmlFor="no-template" className="text-sm font-medium text-gray-900">
-            Bez szablonu - użyj własnej treści
+          <label htmlFor="no-template" className="text-sm font-medium text-gray-900 cursor-pointer">
+            Pusty szablon - zacznij od podstaw
           </label>
         </div>
 
         {filteredTemplates.map((template) => (
           <div
             key={template.id}
-            className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors"
+            className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors"
           >
             <div className="flex items-start gap-3">
               <input
@@ -109,13 +160,44 @@ export const TemplateSection = ({
         ))}
       </div>
 
-      {selectedTemplate && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 animate-in fade-in duration-300">
-          <h4 className="text-sm font-medium text-blue-900 mb-2">Wybrany szablon</h4>
-          <p className="text-sm text-blue-800">{selectedTemplate.name}</p>
-          <p className="text-sm text-blue-700 mt-1">{selectedTemplate.subject}</p>
+      <div className="border-t border-gray-200 pt-6">
+        <div className="flex items-center justify-between mb-4">
+          <Label htmlFor="content">Treść email *</Label>
+          <button
+            type="button"
+            onClick={() => setShowPreview(!showPreview)}
+            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+          >
+            {showPreview ? 'Ukryj podgląd' : 'Pokaż podgląd'}
+          </button>
         </div>
-      )}
+
+        <div className="flex gap-6">
+          <div className={`${showPreview ? 'w-1/2' : 'w-full'}`}>
+            <Textarea
+              id="content"
+              value={customContent}
+              onChange={(e) => handleContentChange(e.target.value)}
+              placeholder="Wprowadź treść email w formacie HTML..."
+              disabled={isLoading}
+              className="mt-1 font-mono text-sm"
+              rows={20}
+            />
+            {errors.content && (
+              <p className="mt-1 text-sm text-red-600">{errors.content}</p>
+            )}
+            <div className="text-xs text-gray-500 mt-2">
+              <p>Możesz używać HTML do formatowania. Wspierane tagi: &lt;div&gt;, &lt;p&gt;, &lt;h1&gt;-&lt;h6&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;, &lt;img&gt;</p>
+            </div>
+          </div>
+
+          {showPreview && (
+            <div className="w-1/2 animate-in slide-in-from-right-4 duration-500">
+              {renderPreview()}
+            </div>
+          )}
+        </div>
+      </div>
 
       {errors.templateId && (
         <p className="text-sm text-red-600">{errors.templateId}</p>
