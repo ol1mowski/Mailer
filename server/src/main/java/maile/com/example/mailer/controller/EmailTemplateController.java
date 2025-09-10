@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +33,20 @@ import maile.com.example.mailer.service.EmailTemplateService;
 @RequestMapping("/api/email-templates")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Szablony Email", description = "Zarządzanie szablonami emailów")
+@SecurityRequirement(name = "JWT")
 public class EmailTemplateController {
     
     private final EmailTemplateService emailTemplateService;
     private final UserRepository userRepository;
     
     @GetMapping
+    @Operation(summary = "Pobierz wszystkie szablony", 
+               description = "Zwraca listę wszystkich szablonów email aktualnego użytkownika")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Szablony pobrane pomyślnie"),
+        @ApiResponse(responseCode = "500", description = "Błąd serwera")
+    })
     public ResponseEntity<List<EmailTemplateResponse>> getAllTemplates() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

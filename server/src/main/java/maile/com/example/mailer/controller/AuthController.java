@@ -8,6 +8,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -19,6 +27,7 @@ import maile.com.example.mailer.service.AuthService;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Autentykacja", description = "Endpointy do zarządzania autentykacją użytkowników")
 public class AuthController {
     
     private final AuthService authService;
@@ -31,8 +40,20 @@ public class AuthController {
     }
     
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request,
-                                                HttpServletResponse httpResponse) {
+    @Operation(summary = "Rejestracja nowego użytkownika", 
+               description = "Tworzy nowe konto użytkownika i automatycznie loguje go")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Rejestracja zakończona pomyślnie",
+                    content = @Content(mediaType = "application/json", 
+                                     schema = @Schema(implementation = AuthResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe",
+                    content = @Content(mediaType = "application/json", 
+                                     schema = @Schema(implementation = AuthResponse.class)))
+    })
+    public ResponseEntity<AuthResponse> register(
+            @Parameter(description = "Dane rejestracyjne użytkownika", required = true)
+            @Valid @RequestBody RegisterRequest request,
+            HttpServletResponse httpResponse) {
         AuthResponse response = authService.register(request);
         
         if (response.isSuccess()) {
@@ -47,8 +68,20 @@ public class AuthController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, 
-                                            HttpServletResponse httpResponse) {
+    @Operation(summary = "Logowanie użytkownika", 
+               description = "Uwierzytelnia użytkownika i ustawia JWT token w HTTP-only cookie")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Logowanie zakończone pomyślnie",
+                    content = @Content(mediaType = "application/json", 
+                                     schema = @Schema(implementation = AuthResponse.class))),
+        @ApiResponse(responseCode = "401", description = "Nieprawidłowe dane logowania",
+                    content = @Content(mediaType = "application/json", 
+                                     schema = @Schema(implementation = AuthResponse.class)))
+    })
+    public ResponseEntity<AuthResponse> login(
+            @Parameter(description = "Dane logowania użytkownika", required = true)
+            @Valid @RequestBody LoginRequest request, 
+            HttpServletResponse httpResponse) {
         AuthResponse response = authService.login(request);
         
         if (response.isSuccess()) {
@@ -63,6 +96,13 @@ public class AuthController {
     }
     
     @PostMapping("/logout")
+    @Operation(summary = "Wylogowanie użytkownika", 
+               description = "Usuwa JWT token z HTTP-only cookie")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Wylogowanie zakończone pomyślnie",
+                    content = @Content(mediaType = "application/json", 
+                                     schema = @Schema(implementation = AuthResponse.class)))
+    })
     public ResponseEntity<AuthResponse> logout(HttpServletResponse httpResponse) {
         Cookie cookie = new Cookie(cookieName, null);
         cookie.setPath("/");
@@ -75,6 +115,17 @@ public class AuthController {
     }
     
     @GetMapping("/me")
+    @Operation(summary = "Pobierz dane aktualnego użytkownika", 
+               description = "Zwraca informacje o aktualnie zalogowanym użytkowniku")
+    @SecurityRequirement(name = "JWT")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Dane użytkownika pobrane pomyślnie",
+                    content = @Content(mediaType = "application/json", 
+                                     schema = @Schema(implementation = AuthResponse.class))),
+        @ApiResponse(responseCode = "401", description = "Użytkownik nie jest zalogowany",
+                    content = @Content(mediaType = "application/json", 
+                                     schema = @Schema(implementation = AuthResponse.class)))
+    })
     public ResponseEntity<AuthResponse> getCurrentUser() {
         User currentUser = authService.getCurrentUser();
         if (currentUser != null) {

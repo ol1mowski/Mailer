@@ -14,6 +14,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +35,19 @@ import maile.com.example.mailer.service.CampaignService;
 @RequestMapping("/api/campaigns")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Kampanie", description = "Zarządzanie kampaniami emailowymi")
+@SecurityRequirement(name = "JWT")
 public class CampaignController extends BaseController {
     
     private final CampaignService campaignService;
     
     @GetMapping
+    @Operation(summary = "Pobierz wszystkie kampanie", 
+               description = "Zwraca listę wszystkich kampanii aktualnego użytkownika")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Kampanie pobrane pomyślnie"),
+        @ApiResponse(responseCode = "500", description = "Błąd serwera")
+    })
     public ResponseEntity<List<CampaignResponse>> getAllCampaigns() {
         try {
             Long userId = getCurrentUserId();
@@ -46,7 +62,17 @@ public class CampaignController extends BaseController {
     }
     
     @PostMapping
-    public ResponseEntity<CampaignResponse> createCampaign(@Valid @RequestBody CreateCampaignRequest request) {
+    @Operation(summary = "Utwórz nową kampanię", 
+               description = "Tworzy nową kampanię emailową")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Kampania utworzona pomyślnie",
+                    content = @Content(mediaType = "application/json", 
+                                     schema = @Schema(implementation = CampaignResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane wejściowe")
+    })
+    public ResponseEntity<CampaignResponse> createCampaign(
+            @Parameter(description = "Dane nowej kampanii", required = true)
+            @Valid @RequestBody CreateCampaignRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Long userId = 1L;
@@ -73,8 +99,18 @@ public class CampaignController extends BaseController {
     }
     
     @PutMapping("/{campaignId}")
+    @Operation(summary = "Zaktualizuj kampanię", 
+               description = "Aktualizuje istniejącą kampanię")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Kampania zaktualizowana pomyślnie",
+                    content = @Content(mediaType = "application/json", 
+                                     schema = @Schema(implementation = CampaignResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Nieprawidłowe dane lub kampania nie istnieje")
+    })
     public ResponseEntity<CampaignResponse> updateCampaign(
+            @Parameter(description = "ID kampanii do aktualizacji", required = true)
             @PathVariable Long campaignId,
+            @Parameter(description = "Nowe dane kampanii", required = true)
             @Valid @RequestBody UpdateCampaignRequest request) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -102,7 +138,15 @@ public class CampaignController extends BaseController {
     }
     
     @DeleteMapping("/{campaignId}")
-    public ResponseEntity<Void> deleteCampaign(@PathVariable Long campaignId) {
+    @Operation(summary = "Usuń kampanię", 
+               description = "Usuwa kampanię o podanym ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Kampania usunięta pomyślnie"),
+        @ApiResponse(responseCode = "400", description = "Kampania nie istnieje lub błąd podczas usuwania")
+    })
+    public ResponseEntity<Void> deleteCampaign(
+            @Parameter(description = "ID kampanii do usunięcia", required = true)
+            @PathVariable Long campaignId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Long userId = 1L;
@@ -129,7 +173,17 @@ public class CampaignController extends BaseController {
     }
     
     @PostMapping("/{campaignId}/start")
-    public ResponseEntity<CampaignResponse> startCampaign(@PathVariable Long campaignId) {
+    @Operation(summary = "Uruchom kampanię", 
+               description = "Uruchamia kampanię i rozpoczyna wysyłanie emailów")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Kampania uruchomiona pomyślnie",
+                    content = @Content(mediaType = "application/json", 
+                                     schema = @Schema(implementation = CampaignResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Nie można uruchomić kampanii")
+    })
+    public ResponseEntity<CampaignResponse> startCampaign(
+            @Parameter(description = "ID kampanii do uruchomienia", required = true)
+            @PathVariable Long campaignId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Long userId = 1L;
@@ -156,7 +210,17 @@ public class CampaignController extends BaseController {
     }
     
     @PostMapping("/{campaignId}/pause")
-    public ResponseEntity<CampaignResponse> pauseCampaign(@PathVariable Long campaignId) {
+    @Operation(summary = "Wstrzymaj kampanię", 
+               description = "Wstrzymuje aktywną kampanię")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Kampania wstrzymana pomyślnie",
+                    content = @Content(mediaType = "application/json", 
+                                     schema = @Schema(implementation = CampaignResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Nie można wstrzymać kampanii")
+    })
+    public ResponseEntity<CampaignResponse> pauseCampaign(
+            @Parameter(description = "ID kampanii do wstrzymania", required = true)
+            @PathVariable Long campaignId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Long userId = 1L;
@@ -183,7 +247,17 @@ public class CampaignController extends BaseController {
     }
     
     @PostMapping("/{campaignId}/complete")
-    public ResponseEntity<CampaignResponse> completeCampaign(@PathVariable Long campaignId) {
+    @Operation(summary = "Zakończ kampanię", 
+               description = "Oznacza kampanię jako zakończoną")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Kampania zakończona pomyślnie",
+                    content = @Content(mediaType = "application/json", 
+                                     schema = @Schema(implementation = CampaignResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Nie można zakończyć kampanii")
+    })
+    public ResponseEntity<CampaignResponse> completeCampaign(
+            @Parameter(description = "ID kampanii do zakończenia", required = true)
+            @PathVariable Long campaignId) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Long userId = 1L;
