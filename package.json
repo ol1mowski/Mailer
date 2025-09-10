@@ -39,7 +39,7 @@
       "npm run lint:client"
     ],
     "server/**/*.java": [
-      "npm run build:server"
+      "cd server && mvn compile"
     ]
   }
 }

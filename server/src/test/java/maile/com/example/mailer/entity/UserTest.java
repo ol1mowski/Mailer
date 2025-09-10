@@ -120,7 +120,7 @@ class UserTest {
         // When
         Set<ConstraintViolation<User>> violations = validator.validate(user);
 
-        // Then
+                
         assertThat(violations).isNotEmpty();
         assertThat(violations).anyMatch(violation -> 
             violation.getPropertyPath().toString().equals("password") &&
@@ -151,10 +151,10 @@ class UserTest {
         // Given
         user.setLastName("");
 
-        // When
+        
         Set<ConstraintViolation<User>> violations = validator.validate(user);
 
-        // Then
+        
         assertThat(violations).isNotEmpty();
         assertThat(violations).anyMatch(violation -> 
             violation.getPropertyPath().toString().equals("lastName") &&
@@ -165,7 +165,7 @@ class UserTest {
     @Test
     @DisplayName("Should implement UserDetails correctly")
     void shouldImplementUserDetailsCorrectly() {
-        // When
+        
         String username = user.getUsername();
         String password = user.getPassword();
         boolean isEnabled = user.isEnabled();
@@ -173,7 +173,7 @@ class UserTest {
         boolean isAccountNonLocked = user.isAccountNonLocked();
         boolean isCredentialsNonExpired = user.isCredentialsNonExpired();
 
-        // Then
+        
         assertThat(username).isEqualTo("test@example.com");
         assertThat(password).isEqualTo("password123");
         assertThat(isEnabled).isTrue();
@@ -188,7 +188,7 @@ class UserTest {
         // When
         var authorities = user.getAuthorities();
 
-        // Then
+        
         assertThat(authorities).hasSize(1);
         assertThat(authorities).anyMatch(authority -> 
             authority instanceof SimpleGrantedAuthority &&
@@ -202,10 +202,10 @@ class UserTest {
         // Given
         user.setRole(User.UserRole.ADMIN);
 
-        // When
+        
         var authorities = user.getAuthorities();
 
-        // Then
+        
         assertThat(authorities).hasSize(1);
         assertThat(authorities).anyMatch(authority -> 
             authority instanceof SimpleGrantedAuthority &&
@@ -216,13 +216,12 @@ class UserTest {
     @Test
     @DisplayName("Should set timestamps on persist")
     void shouldSetTimestampsOnPersist() {
-        // Given
+        
         LocalDateTime beforePersist = LocalDateTime.now();
 
-        // When
+        
         user.onCreate();
 
-        // Then
         assertThat(user.getCreatedAt()).isNotNull();
         assertThat(user.getUpdatedAt()).isNotNull();
         assertThat(user.getCreatedAt()).isAfterOrEqualTo(beforePersist);
@@ -231,23 +230,19 @@ class UserTest {
 
     @Test
     @DisplayName("Should update timestamp on update")
-    void shouldUpdateTimestampOnUpdate() {
-        // Given
+    void shouldUpdateTimestampOnUpdate() {      
         user.onCreate();
         LocalDateTime createdAt = user.getCreatedAt();
         LocalDateTime beforeUpdate = LocalDateTime.now();
 
-        // Wait a bit to ensure different timestamp
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
-        // When
         user.onUpdate();
 
-        // Then
         assertThat(user.getCreatedAt()).isEqualTo(createdAt);
         assertThat(user.getUpdatedAt()).isAfter(beforeUpdate);
         assertThat(user.getUpdatedAt()).isAfter(createdAt);
@@ -256,10 +251,8 @@ class UserTest {
     @Test
     @DisplayName("Should use constructor correctly")
     void shouldUseConstructorCorrectly() {
-        // When
         User constructedUser = new User("test@example.com", "password123", "Jan", "Kowalski");
 
-        // Then
         assertThat(constructedUser.getEmail()).isEqualTo("test@example.com");
         assertThat(constructedUser.getPassword()).isEqualTo("password123");
         assertThat(constructedUser.getFirstName()).isEqualTo("Jan");
@@ -270,10 +263,8 @@ class UserTest {
     @Test
     @DisplayName("Should handle disabled account")
     void shouldHandleDisabledAccount() {
-        // Given
         user.setEnabled(false);
 
-        // When
         boolean isEnabled = user.isEnabled();
 
         // Then
@@ -283,10 +274,8 @@ class UserTest {
     @Test
     @DisplayName("Should handle expired account")
     void shouldHandleExpiredAccount() {
-        // Given
         user.setAccountNonExpired(false);
 
-        // When
         boolean isAccountNonExpired = user.isAccountNonExpired();
 
         // Then
@@ -296,10 +285,8 @@ class UserTest {
     @Test
     @DisplayName("Should handle locked account")
     void shouldHandleLockedAccount() {
-        // Given
         user.setAccountNonLocked(false);
 
-        // When
         boolean isAccountNonLocked = user.isAccountNonLocked();
 
         // Then
@@ -309,13 +296,10 @@ class UserTest {
     @Test
     @DisplayName("Should handle expired credentials")
     void shouldHandleExpiredCredentials() {
-        // Given
         user.setCredentialsNonExpired(false);
 
-        // When
         boolean isCredentialsNonExpired = user.isCredentialsNonExpired();
 
-        // Then
         assertThat(isCredentialsNonExpired).isFalse();
     }
 } 

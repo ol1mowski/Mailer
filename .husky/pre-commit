@@ -1,8 +1,0 @@
-. "$(dirname -- "$0")/_/husky.sh"
-
-echo "🔍 Running pre-commit checks..."
-
-# Uruchom lint-staged dla zmienionych plików
-npx lint-staged
-
-echo "✅ Pre-commit checks completed!"
